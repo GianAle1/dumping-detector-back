@@ -1,54 +1,47 @@
-from flask import Flask, render_template, request
+# app.py
+from flask import Flask, render_template, request, send_file
+from scraper.aliexpress_scraper import obtener_productos as obtener_productos_aliexpress
+from scraper.temu_scraper import obtener_productos_temu
+from scraper.alibaba_scraper import obtener_productos_alibaba
+
 import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-import time
+import os
 
 app = Flask(__name__)
 
-# Cargar datos locales ficticios
-data_local = pd.read_csv('data/productos_nacionales.csv')
-
-def scrape_aliexpress(producto):
-    options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    driver = webdriver.Chrome(options=options)
-
-    url = f"https://www.aliexpress.com/wholesale?SearchText={producto}"
-    driver.get(url)
-    time.sleep(5)
-
-    resultados = []
-    items = driver.find_elements(By.CSS_SELECTOR, 'div._3t7zg._2f4Ho')[:5]
-    for item in items:
-        try:
-            nombre = item.find_element(By.CSS_SELECTOR, 'a._3t7zg._2f4Ho span').text
-            precio = item.find_element(By.CSS_SELECTOR, 'div.mGXnE._37W_B span').text
-            precio = float(precio.replace('$', '').strip())
-            resultados.append({'producto': nombre, 'precio': precio})
-        except:
-            continue
-
-    driver.quit()
-    return pd.DataFrame(resultados)
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 def index():
-    comparacion = pd.DataFrame()
-    if request.method == 'POST':
-        producto = request.form['producto']
-        precios_china = scrape_aliexpress(producto)
-        precios_local = data_local[data_local['producto'].str.contains(producto, case=False)]
+    productos = []
+    archivo_csv = None
 
-        if not precios_local.empty and not precios_china.empty:
-            precio_local_prom = precios_local['precio'].mean()
-            precios_china['dumping'] = precios_china['precio'] < precio_local_prom * 0.8
-            comparacion = precios_china
-            comparacion['precio_local_prom'] = precio_local_prom
+    if request.method == "POST":
+        producto = request.form["producto"]
+        plataforma = request.form["plataforma"]
 
-    return render_template('index.html', tabla=comparacion.to_html(classes='table table-bordered', index=False))
+        if plataforma == "aliexpress":
+            productos = obtener_productos_aliexpress(producto)
+            archivo_csv = "data/productos_aliexpress.csv"
+        elif plataforma == "temu":
+            productos = obtener_productos_temu(producto)
+            archivo_csv = "data/productos_temu.csv"
+            
+        elif plataforma == "alibaba":
+            productos = obtener_productos_alibaba(producto)
+            archivo_csv = "data/productos_alibaba.csv"
 
-if __name__ == '__main__':
+
+        if productos:
+            os.makedirs("data", exist_ok=True)
+            df = pd.DataFrame(productos)
+            df.to_csv(archivo_csv, index=False, encoding="utf-8-sig")
+
+    return render_template("index.html", productos=productos)
+
+
+@app.route("/descargar/<nombre>")
+def descargar(nombre):
+    path = f"data/{nombre}"
+    return send_file(path, as_attachment=True)
+
+if __name__ == "__main__":
     app.run(debug=True)
