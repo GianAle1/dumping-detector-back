@@ -17,7 +17,7 @@
   <form method="POST" class="mb-4">
     <div class="mb-3">
       <label for="producto" class="form-label">Producto</label>
-      <input type="text" class="form-control" id="producto" name="producto" placeholder="Ej: polo de algodon" required>
+      <input type="text" class="form-control" id="producto" name="producto" placeholder="Ej: polo de algodón" required>
     </div>
     <div class="mb-3">
       <label for="plataforma" class="form-label">Plataforma</label>
@@ -25,6 +25,7 @@
         <option value="aliexpress">AliExpress</option>
         <option value="temu">Temu</option>
         <option value="alibaba">Alibaba</option>
+        <option value="madeinchina">Made-in-China</option>
       </select>
     </div>
     <button type="submit" class="btn btn-primary">Buscar</button>
@@ -47,7 +48,17 @@
           <tr>
             <td>{{ loop.index }}</td>
             <td>{{ p.titulo }}</td>
-            <td>{{ p.precio }}</td>
+            <td>
+              {% if p.precio %}
+                S/ {{ p.precio }}
+              {% elif p.precio_min and p.precio_max %}
+                US$ {{ p.precio_min }} - {{ p.precio_max }}
+              {% elif p.precio_min %}
+                US$ {{ p.precio_min }}
+              {% else %}
+                No disponible
+              {% endif %}
+            </td>
             {% if p.link %}<td><a href="{{ p.link }}" target="_blank">Ver</a></td>{% endif %}
           </tr>
         {% endfor %}
