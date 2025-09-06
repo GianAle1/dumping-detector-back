@@ -2,19 +2,18 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import time
 import os
 from datetime import datetime
 import re
 
-CHROMEDRIVER_PATH = "C:\\Program Files (x86)\\chromedriver.exe"
-
 def obtener_productos_made_in_china(producto, paginas=4):
     options = Options()
     # options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    service = Service(CHROMEDRIVER_PATH)
+    service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
     resultados = []
