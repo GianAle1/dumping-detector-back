@@ -2,10 +2,10 @@ from celery import Celery
 import os
 import pandas as pd
 
-from scraper.aliexpress_scraper import obtener_productos_aliexpress
-from scraper.temu_scraper import obtener_productos_temu
-from scraper.alibaba_scraper import obtener_productos_alibaba
-from scraper.madeinchina_scraper import obtener_productos_made_in_china
+from scraper.aliexpress_scraper import AliExpressScraper
+from scraper.temu_scraper import TemuScraper
+from scraper.alibaba_scraper import AlibabaScraper
+from scraper.madeinchina_scraper import MadeInChinaScraper
 
 
 celery_app = Celery(
@@ -14,15 +14,11 @@ celery_app = Celery(
     backend=os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/0"),
 )
 
-
 SCRAPERS = {
-    "aliexpress": (obtener_productos_aliexpress, "productos_aliexpress.csv"),
-    "temu": (obtener_productos_temu, "productos_temu.csv"),
-    "alibaba": (obtener_productos_alibaba, "productos_alibaba.csv"),
-    "madeinchina": (
-        obtener_productos_made_in_china,
-        "productos_madeinchina.csv",
-    ),
+    "aliexpress": (AliExpressScraper, "productos_aliexpress.csv"),
+    "temu": (TemuScraper, "productos_temu.csv"),
+    "alibaba": (AlibabaScraper, "productos_alibaba.csv"),
+    "madeinchina": (MadeInChinaScraper, "productos_madeinchina.csv"),
 }
 
 
@@ -32,8 +28,9 @@ def scrapear(producto: str, plataforma: str):
     if scraper_info is None:
         return {"success": False, "message": "Plataforma no soportada."}
 
-    scraper_func, csv_name = scraper_info
-    productos = scraper_func(producto)
+    scraper_cls, csv_name = scraper_info
+    scraper = scraper_cls()
+    productos = scraper.parse(producto)
     archivo_csv = os.path.join("data", csv_name)
 
     if productos:
@@ -43,4 +40,3 @@ def scrapear(producto: str, plataforma: str):
         return {"success": True, "productos": productos, "archivo": csv_name}
 
     return {"success": False, "message": "No se encontraron productos."}
-
