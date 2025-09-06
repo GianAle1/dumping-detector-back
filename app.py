@@ -9,30 +9,43 @@ from scraper.madeinchina_scraper import obtener_productos_made_in_china
 import pandas as pd
 import os
 
+SCRAPERS = {
+    "aliexpress": (obtener_productos_aliexpress, "productos_aliexpress.csv"),
+    "temu": (obtener_productos_temu, "productos_temu.csv"),
+    "alibaba": (obtener_productos_alibaba, "productos_alibaba.csv"),
+    "madeinchina": (obtener_productos_made_in_china, "productos_madeinchina.csv"),
+}
+
 app = Flask(__name__)
 CORS(app)  # Permitir peticiones desde el frontend React
 
 @app.route("/api/scrape", methods=["POST"])
 def scrape():
-    data = request.get_json()
+    data = request.get_json() or {}
     producto = data.get("producto")
     plataforma = data.get("plataforma")
 
-    productos = []
-    archivo_csv = None
+    if not producto or not plataforma:
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": "Los parámetros 'producto' y 'plataforma' son obligatorios.",
+                }
+            ),
+            400,
+        )
 
-    if plataforma == "aliexpress":
-        productos = obtener_productos_aliexpress(producto)
-        archivo_csv = "data/productos_aliexpress.csv"
-    elif plataforma == "temu":
-        productos = obtener_productos_temu(producto)
-        archivo_csv = "data/productos_temu.csv"
-    elif plataforma == "alibaba":
-        productos = obtener_productos_alibaba(producto)
-        archivo_csv = "data/productos_alibaba.csv"
-    elif plataforma == "madeinchina":
-        productos = obtener_productos_made_in_china(producto)
-        archivo_csv = "data/productos_madeinchina.csv"
+    scraper_info = SCRAPERS.get(plataforma)
+    if scraper_info is None:
+        return (
+            jsonify({"success": False, "message": "Plataforma no soportada."}),
+            400,
+        )
+
+    scraper_func, csv_name = scraper_info
+    productos = scraper_func(producto)
+    archivo_csv = os.path.join("data", csv_name)
 
     if productos:
         os.makedirs("data", exist_ok=True)
