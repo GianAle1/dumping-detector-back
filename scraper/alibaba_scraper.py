@@ -2,12 +2,11 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 import pandas as pd
 import os
 import re
-
-CHROMEDRIVER_PATH = "C:\\Program Files (x86)\\chromedriver.exe"
 
 def extraer_rango_precio(texto):
     match = re.findall(r"([\d.,]+)", texto)
@@ -25,7 +24,7 @@ def obtener_productos_alibaba(producto, max_paginas=4):
     options = Options()
     # options.add_argument('--headless')
     options.add_argument('--disable-gpu')
-    service = Service(CHROMEDRIVER_PATH)
+    service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
     resultados = []
