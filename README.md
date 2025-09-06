@@ -11,6 +11,15 @@ scraper de forma asíncrona.
 pip install -r requirements.txt
 ```
 
+### Variables de entorno
+
+Antes de iniciar la aplicación o los workers, define las siguientes variables de entorno:
+
+- `DEBUG`: activa el modo de depuración de Flask (`True` o `False`, por defecto `False`).
+- `CELERY_BROKER_URL`: URL del broker de mensajes para Celery.
+- `CELERY_RESULT_BACKEND`: URL del backend de resultados para Celery.
+- `ALLOWED_ORIGINS`: lista separada por comas de dominios permitidos para CORS (usa `*` para permitir todos).
+
 ### Levantar los servicios
 
 1. Inicia un broker y backend de resultados, por ejemplo Redis:
