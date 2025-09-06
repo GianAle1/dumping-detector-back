@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
+from config import Config
 from tasks import scrapear
 
 app = Flask(__name__)
-CORS(app)  # Permitir peticiones desde el frontend React
+app.config.from_object(Config)
+CORS(app, origins=app.config["ALLOWED_ORIGINS"])  # Permitir peticiones desde dominios permitidos
 
 @app.route("/api/scrape", methods=["POST"])
 def scrape():
@@ -41,4 +43,4 @@ def descargar(nombre):
     return send_file(path, as_attachment=True)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=app.config["DEBUG"])
