@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
-import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from .base import BaseScraper
 
 
@@ -15,7 +17,9 @@ class MadeInChinaScraper(BaseScraper):
             )
             print(f"🌐 Visitando página {pagina} - {url}")
             self.driver.get(url)
-            time.sleep(8)
+            WebDriverWait(self.driver, 8).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.list-node-content"))
+            )
             self.scroll(3)
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")

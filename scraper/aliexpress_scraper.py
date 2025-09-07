@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 import re
-import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from .base import BaseScraper
 
 
@@ -15,7 +17,9 @@ class AliExpressScraper(BaseScraper):
             )
             print(f"🌀 Cargando AliExpress: Página {page}")
             self.driver.get(url)
-            time.sleep(10)
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.jr_js"))
+            )
             self.scroll(6)
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")

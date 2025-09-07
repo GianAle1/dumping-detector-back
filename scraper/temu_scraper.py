@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
-import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from .base import BaseScraper
 
 
@@ -8,7 +10,9 @@ class TemuScraper(BaseScraper):
     def parse(self, producto: str):
         url = f"https://www.temu.com/pe/search.html?search_key={producto.replace(' ', '%20')}"
         self.driver.get(url)
-        time.sleep(10)
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "div._6q6qVUF5._1UrrHYym"))
+        )
         self.scroll(5)
 
         soup = BeautifulSoup(self.driver.page_source, "html.parser")
