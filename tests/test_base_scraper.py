@@ -6,13 +6,15 @@ from scraper.base import BaseScraper
 
 class TestBaseScraper(unittest.TestCase):
     @patch("scraper.base.webdriver.Chrome")
-    @patch("scraper.base.ChromeDriverManager")
-    def test_initialization_and_close(self, mock_manager, mock_chrome):
+    @patch("scraper.base.Service")
+    def test_initialization_and_close(self, mock_service, mock_chrome):
         mock_driver = MagicMock()
         mock_chrome.return_value = mock_driver
-        mock_manager.return_value.install.return_value = "/path/to/chromedriver"
 
         scraper = BaseScraper()
+
+        mock_service.assert_called_once_with("/usr/bin/chromedriver")
+        mock_chrome.assert_called_once()
         self.assertIs(scraper.driver, mock_driver)
 
         scraper.close()
