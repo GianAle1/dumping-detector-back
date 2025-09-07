@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import re
 import logging
+from urllib.parse import quote_plus
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -16,7 +17,7 @@ class AliExpressScraper(BaseScraper):
 
             for page in range(1, paginas + 1):
                 url = (
-                    f"https://es.aliexpress.com/wholesale?SearchText={producto.replace(' ', '+')}&page={page}"
+                    f"https://es.aliexpress.com/wholesale?SearchText={quote_plus(producto)}&page={page}"
                 )
                 logging.info("Cargando AliExpress: Página %s", page)
                 self.driver.get(url)
