@@ -1,46 +1,41 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 
-from scraper.aliexpress_scraper import obtener_productos_aliexpress
-from scraper.temu_scraper import obtener_productos_temu
-from scraper.alibaba_scraper import obtener_productos_alibaba
-from scraper.madeinchina_scraper import obtener_productos_made_in_china
-
-import pandas as pd
-import os
+from config import Config
+from tasks import scrapear
 
 app = Flask(__name__)
-CORS(app)  # Permitir peticiones desde el frontend React
+app.config.from_object(Config)
+CORS(app, origins=app.config["ALLOWED_ORIGINS"])  # Permitir peticiones desde dominios permitidos
 
 @app.route("/api/scrape", methods=["POST"])
 def scrape():
-    data = request.get_json()
+    data = request.get_json() or {}
     producto = data.get("producto")
     plataforma = data.get("plataforma")
 
-    productos = []
-    archivo_csv = None
+    if not producto or not plataforma:
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": "Los parámetros 'producto' y 'plataforma' son obligatorios.",
+                }
+            ),
+            400,
+        )
+    task = scrapear.delay(producto, plataforma)
+    return jsonify({"task_id": task.id}), 202
 
-    if plataforma == "aliexpress":
-        productos = obtener_productos_aliexpress(producto)
-        archivo_csv = "data/productos_aliexpress.csv"
-    elif plataforma == "temu":
-        productos = obtener_productos_temu(producto)
-        archivo_csv = "data/productos_temu.csv"
-    elif plataforma == "alibaba":
-        productos = obtener_productos_alibaba(producto)
-        archivo_csv = "data/productos_alibaba.csv"
-    elif plataforma == "madeinchina":
-        productos = obtener_productos_made_in_china(producto)
-        archivo_csv = "data/productos_madeinchina.csv"
 
-    if productos:
-        os.makedirs("data", exist_ok=True)
-        df = pd.DataFrame(productos)
-        df.to_csv(archivo_csv, index=False, encoding="utf-8-sig")
-        return jsonify({"success": True, "productos": productos})
-
-    return jsonify({"success": False, "message": "No se encontraron productos."})
+@app.route("/api/resultado/<task_id>")
+def resultado(task_id):
+    task = scrapear.AsyncResult(task_id)
+    if task.state == "PENDING":
+        return jsonify({"state": task.state})
+    if task.state == "SUCCESS":
+        return jsonify({"state": task.state, **task.result})
+    return jsonify({"state": task.state, "message": str(task.info)}), 400
 
 @app.route("/api/descargar/<nombre>")
 def descargar(nombre):
@@ -48,4 +43,4 @@ def descargar(nombre):
     return send_file(path, as_attachment=True)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=app.config["DEBUG"])

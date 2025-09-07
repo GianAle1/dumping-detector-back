@@ -1,0 +1,46 @@
+from celery import Celery
+import os
+import pandas as pd
+from flask import Flask
+
+from config import Config
+from scraper.aliexpress_scraper import AliExpressScraper
+from scraper.temu_scraper import TemuScraper
+from scraper.alibaba_scraper import AlibabaScraper
+from scraper.madeinchina_scraper import MadeInChinaScraper
+
+flask_app = Flask(__name__)
+flask_app.config.from_object(Config)
+
+celery_app = Celery(
+    "tasks",
+    broker=flask_app.config["CELERY_BROKER_URL"],
+    backend=flask_app.config["CELERY_RESULT_BACKEND"],
+)
+
+SCRAPERS = {
+    "aliexpress": (AliExpressScraper, "productos_aliexpress.csv"),
+    "temu": (TemuScraper, "productos_temu.csv"),
+    "alibaba": (AlibabaScraper, "productos_alibaba.csv"),
+    "madeinchina": (MadeInChinaScraper, "productos_madeinchina.csv"),
+}
+
+
+@celery_app.task(name="scrapear")
+def scrapear(producto: str, plataforma: str):
+    scraper_info = SCRAPERS.get(plataforma)
+    if scraper_info is None:
+        return {"success": False, "message": "Plataforma no soportada."}
+
+    scraper_cls, csv_name = scraper_info
+    scraper = scraper_cls()
+    productos = scraper.parse(producto)
+    archivo_csv = os.path.join("data", csv_name)
+
+    if productos:
+        os.makedirs("data", exist_ok=True)
+        df = pd.DataFrame(productos)
+        df.to_csv(archivo_csv, index=False, encoding="utf-8-sig")
+        return {"success": True, "productos": productos, "archivo": csv_name}
+
+    return {"success": False, "message": "No se encontraron productos."}
