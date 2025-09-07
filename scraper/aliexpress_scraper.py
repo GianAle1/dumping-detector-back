@@ -21,7 +21,9 @@ class AliExpressScraper(BaseScraper):
             self.driver.get(url)
             try:
                 WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "div.lh_jy"))
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, "div.search-item-card-wrapper-gallery")
+                    )
                 )
                 self.scroll(6)
             except TimeoutException:
@@ -29,18 +31,20 @@ class AliExpressScraper(BaseScraper):
                 continue
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
-            bloques = soup.find_all("div", class_="lh_jy")
+            bloques = soup.select("div.search-item-card-wrapper-gallery")
             logging.info("Página %s: %s productos encontrados", page, len(bloques))
 
             for bloque in bloques:
                 try:
-                    titulo_tag = bloque.select_one("div.lh_ae h3.lh_ki")
-                    titulo = titulo_tag.text.strip() if titulo_tag else "Sin título"
+                    card = bloque.select_one("a.search-card-item")
+                    if not card:
+                        continue
 
-                    precio_tag = bloque.select_one("div.lh_cv div.lh_k0")
+                    titulo = card.get("title", "Sin título").strip()
+
+                    precio_tag = card.select_one("[data-price]")
                     if precio_tag:
-                        spans = precio_tag.find_all("span")
-                        precio_texto = "".join(span.text for span in spans)
+                        precio_texto = precio_tag.get("data-price") or precio_tag.text
                         precio_texto = (
                             re.sub(r"[^0-9.,]", "", precio_texto).replace(",", ".")
                         )
@@ -48,38 +52,43 @@ class AliExpressScraper(BaseScraper):
                     else:
                         precio = None
 
-                    precio_ori_tag = bloque.select_one("div.lh_cv div.lh_k1 span")
+                    precio_ori_tag = card.select_one("[data-original-price]")
                     if precio_ori_tag:
-                        texto = (
-                            re.sub(r"[^0-9.,]", "", precio_ori_tag.text).replace(",", ".")
-                        )
+                        texto = precio_ori_tag.get("data-original-price") or precio_ori_tag.text
+                        texto = re.sub(r"[^0-9.,]", "", texto).replace(",", ".")
                         precio_original = float(texto) if texto else None
                     else:
                         precio_original = None
 
-                    descuento_tag = bloque.select_one("div.lh_cv span.lh_lz")
+                    descuento_tag = card.select_one("[data-discount]")
                     descuento = (
-                        descuento_tag.text.strip() if descuento_tag else None
+                        descuento_tag.get("data-discount")
+                        if descuento_tag and descuento_tag.get("data-discount")
+                        else descuento_tag.text.strip()
+                        if descuento_tag
+                        else None
                     )
 
-                    ventas_tag = bloque.select_one("div.lh_j5 span.lh_j7")
+                    ventas_tag = card.select_one("[data-sold]")
                     if ventas_tag:
-                        ventas_texto = (
-                            ventas_tag.text.strip().replace(" vendidos", "").replace("+", "")
-                        )
-                        ventas = (
-                            int(re.sub(r"[^\d]", "", ventas_texto)) if ventas_texto else 0
-                        )
+                        ventas_texto = ventas_tag.get("data-sold") or ventas_tag.text
                     else:
-                        ventas = 0
+                        ventas_texto = card.get_text(" ")
+                        ventas_match = re.search(
+                            r"([\d\.\,]+)\s*vendidos?",
+                            ventas_texto,
+                            re.IGNORECASE,
+                        )
+                        ventas_texto = ventas_match.group(1) if ventas_match else ""
+                    ventas_texto = ventas_texto.replace("+", "")
+                    ventas = (
+                        int(re.sub(r"[^\d]", "", ventas_texto)) if ventas_texto else 0
+                    )
 
-                    link_tag = bloque.find("a", class_="lh_e")
                     link = (
-                        "https:" + link_tag["href"]
-                        if link_tag and link_tag["href"].startswith("//")
-                        else link_tag["href"]
-                        if link_tag
-                        else ""
+                        "https:" + card["href"]
+                        if card["href"].startswith("//")
+                        else card["href"]
                     )
 
                     resultados.append(
