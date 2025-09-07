@@ -110,11 +110,10 @@ class AliExpressScraper(BaseScraper):
                             int(re.sub(r"[^\d]", "", ventas_texto)) if ventas_texto else 0
                         )
 
-                        link = (
-                            "https:" + card["href"]
-                            if card["href"].startswith("//")
-                            else card["href"]
-                        )
+                        href = card.get("href")
+                        if not href:
+                            continue
+                        link = "https:" + href if href.startswith("//") else href
 
                         resultados.append(
                             {
