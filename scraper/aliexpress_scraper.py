@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import re
 import logging
+import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -25,7 +26,13 @@ class AliExpressScraper(BaseScraper):
                 )
                 self.scroll(6)
             except TimeoutException:
-                logging.warning("No se cargó la página %s", page)
+                os.makedirs("cache", exist_ok=True)
+                file_path = f"cache/aliexpress_p{page}.html"
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(self.driver.page_source)
+                logging.warning(
+                    "No se cargó la página %s. HTML guardado en %s", page, file_path
+                )
                 continue
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
