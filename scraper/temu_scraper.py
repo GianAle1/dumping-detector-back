@@ -3,6 +3,7 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import logging
 from .base import BaseScraper
 
 
@@ -19,7 +20,7 @@ class TemuScraper(BaseScraper):
         productos = []
 
         bloques = soup.find_all("div", class_="_6q6qVUF5 _1UrrHYym")
-        print(f"🔍 Se encontraron {len(bloques)} productos en Temu")
+        logging.info("Se encontraron %s productos en Temu", len(bloques))
 
         for bloque in bloques:
             try:
@@ -65,7 +66,7 @@ class TemuScraper(BaseScraper):
                     }
                 )
             except Exception as e:
-                print(f"❌ Error procesando producto: {e}")
+                logging.error("Error procesando producto: %s", e)
                 continue
 
         self.close()

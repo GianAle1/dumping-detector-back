@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
+import logging
 
 from config import Config
 from tasks import scrapear
+import logging_config
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -15,6 +17,7 @@ def scrape():
     plataforma = data.get("plataforma")
 
     if not producto or not plataforma:
+        logging.warning("Parametros faltantes en solicitud de scraping")
         return (
             jsonify(
                 {
@@ -24,6 +27,7 @@ def scrape():
             ),
             400,
         )
+    logging.info("Iniciando scraping de %s en %s", producto, plataforma)
     task = scrapear.delay(producto, plataforma)
     return jsonify({"task_id": task.id}), 202
 

@@ -3,6 +3,7 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import logging
 from .base import BaseScraper
 
 
@@ -15,7 +16,7 @@ class MadeInChinaScraper(BaseScraper):
                 "https://es.made-in-china.com/productSearch?keyword="
                 f"{producto.replace(' ', '+')}&currentPage={pagina}&type=Product"
             )
-            print(f"🌐 Visitando página {pagina} - {url}")
+            logging.info("Visitando página %s - %s", pagina, url)
             self.driver.get(url)
             WebDriverWait(self.driver, 8).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "div.list-node-content"))
@@ -24,7 +25,7 @@ class MadeInChinaScraper(BaseScraper):
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
             bloques = soup.find_all("div", class_="list-node-content")
-            print(f"🔍 Página {pagina}: {len(bloques)} productos encontrados")
+            logging.info("Página %s: %s productos encontrados", pagina, len(bloques))
 
             for bloque in bloques:
                 try:
@@ -82,7 +83,7 @@ class MadeInChinaScraper(BaseScraper):
                         }
                     )
                 except Exception as e:
-                    print(f"❌ Error procesando producto en página {pagina}: {e}")
+                    logging.error("Error procesando producto en página %s: %s", pagina, e)
                     continue
 
         self.close()

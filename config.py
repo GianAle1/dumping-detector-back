@@ -5,6 +5,7 @@ class Config:
     """Application configuration loaded from environment variables."""
 
     DEBUG = os.environ.get("DEBUG", "false").lower() in {"1", "true", "t", "yes"}
+    LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
     CELERY_BROKER_URL = os.environ.get(
         "CELERY_BROKER_URL", "redis://localhost:6379/0"
     )
