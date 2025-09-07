@@ -5,14 +5,13 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
 class BaseScraper:
     """Common setup for Selenium based scrapers."""
 
     def __init__(self, data_dir: str = "data"):
         options = webdriver.ChromeOptions()
         options.binary_location = "/usr/bin/chromium"
-        options.add_argument("--headless=new")
+        ##options.add_argument("--headless=new")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
