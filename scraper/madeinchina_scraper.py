@@ -3,7 +3,7 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
 import logging
 from .base import BaseScraper
 
@@ -19,14 +19,30 @@ class MadeInChinaScraper(BaseScraper):
                     f"{producto.replace(' ', '+')}&currentPage={pagina}&type=Product"
                 )
                 logging.info("Visitando página %s - %s", pagina, url)
-                self.driver.get(url)
-                try:
-                    WebDriverWait(self.driver, 8).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "div.list-node-content"))
+
+                cargada = False
+                for intento in range(3):
+                    try:
+                        self.driver.get(url)
+                        WebDriverWait(self.driver, 8).until(
+                            EC.presence_of_element_located(
+                                (By.CSS_SELECTOR, "div.list-node-content")
+                            )
+                        )
+                        self.scroll(3)
+                        cargada = True
+                        break
+                    except WebDriverException as e:
+                        logging.error(
+                            "Error cargando Made-in-China página %s (intento %s): %s",
+                            pagina,
+                            intento + 1,
+                            e,
+                        )
+                if not cargada:
+                    logging.error(
+                        "Omitiendo página %s de Made-in-China tras varios fallos", pagina
                     )
-                    self.scroll(3)
-                except TimeoutException:
-                    logging.warning("No se cargó la página %s", pagina)
                     continue
 
                 soup = BeautifulSoup(self.driver.page_source, "html.parser")

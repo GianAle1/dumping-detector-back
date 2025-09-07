@@ -6,7 +6,7 @@ from urllib.parse import quote_plus
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
 from .base import BaseScraper
 
 
@@ -33,16 +33,30 @@ class AliExpressScraper(BaseScraper):
                     f"https://es.aliexpress.com/wholesale?SearchText={quote_plus(producto)}&page={page}"
                 )
                 logging.info("Cargando AliExpress: Página %s", page)
-                self.driver.get(url)
-                try:
-                    WebDriverWait(self.driver, 10).until(
-                        EC.presence_of_element_located(
-                            (By.CSS_SELECTOR, "div.search-item-card-wrapper-gallery")
+
+                cargada = False
+                for intento in range(3):
+                    try:
+                        self.driver.get(url)
+                        WebDriverWait(self.driver, 10).until(
+                            EC.presence_of_element_located(
+                                (By.CSS_SELECTOR, "div.search-item-card-wrapper-gallery")
+                            )
                         )
+                        self.scroll(6)
+                        cargada = True
+                        break
+                    except WebDriverException as e:
+                        logging.error(
+                            "Error cargando AliExpress página %s (intento %s): %s",
+                            page,
+                            intento + 1,
+                            e,
+                        )
+                if not cargada:
+                    logging.error(
+                        "Omitiendo página %s de AliExpress tras varios fallos", page
                     )
-                    self.scroll(6)
-                except TimeoutException:
-                    logging.warning("No se cargó la página %s", page)
                     continue
 
                 soup = BeautifulSoup(self.driver.page_source, "html.parser")
