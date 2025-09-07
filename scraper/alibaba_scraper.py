@@ -77,7 +77,13 @@ class AlibabaScraper(BaseScraper):
                         proveedor_tag.get_text(strip=True) if proveedor_tag else "Sin proveedor"
                     )
 
-                    ventas_tag = bloque.find("div", class_="search-card-e-market-power-common")
+                    ventas_tag = None
+                    for item in bloque.find_all(
+                        "div", class_="search-card-m-sale-features__item"
+                    ):
+                        if "Pedido mín" in item.get_text():
+                            ventas_tag = item
+                            break
                     ventas = ventas_tag.get_text(strip=True) if ventas_tag else "No info"
 
                     rating_tag = bloque.find("span", class_="search-card-e-review")
