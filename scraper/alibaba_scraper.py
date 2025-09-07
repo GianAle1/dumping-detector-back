@@ -42,93 +42,95 @@ class AlibabaScraper(BaseScraper):
     def parse(self, producto: str, max_paginas: int = 4):
         resultados = []
 
-        for pagina in range(1, max_paginas + 1):
-            logging.info("Scrapeando página %s", pagina)
-            url = (
-                f"https://www.alibaba.com/trade/search?SearchText={producto.replace(' ', '+')}&page={pagina}"
-            )
-            self.driver.get(url)
-            try:
-                WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "div.card-info.gallery-card-layout-info"))
+        try:
+            for pagina in range(1, max_paginas + 1):
+                logging.info("Scrapeando página %s", pagina)
+                url = (
+                    f"https://www.alibaba.com/trade/search?SearchText={producto.replace(' ', '+')}&page={pagina}"
                 )
-                self.scroll(3)
-            except TimeoutException:
-                logging.warning("No se cargó la página %s", pagina)
-                continue
-
-            soup = BeautifulSoup(self.driver.page_source, "html.parser")
-            bloques = soup.find_all("div", class_="card-info gallery-card-layout-info")
-            if not bloques:
-                logging.info("Alibaba no devolvió más resultados; deteniendo en la página %s", pagina)
-                break
-
-            for bloque in bloques:
+                self.driver.get(url)
                 try:
-                    titulo_tag = bloque.find("h2", class_="search-card-e-title")
-                    titulo = (
-                        titulo_tag.get_text(strip=True) if titulo_tag else "Sin título"
+                    WebDriverWait(self.driver, 10).until(
+                        EC.presence_of_element_located((By.CSS_SELECTOR, "div.card-info.gallery-card-layout-info"))
                     )
-
-                    enlace_tag = (
-                        bloque.select_one("a.search-card-item")
-                        or bloque.select_one("h2.search-card-e-title a")
-                    )
-                    enlace = enlace_tag.get("href", "") if enlace_tag else ""
-                    if enlace:
-                        if enlace.startswith("//"):
-                            enlace = "https:" + enlace
-                        elif enlace.startswith("/"):
-                            enlace = "https://www.alibaba.com" + enlace
-                        elif not enlace.startswith("http"):
-                            enlace = "https://www.alibaba.com/" + enlace
-
-                    precio_tag = bloque.find("div", class_="search-card-e-price-main")
-                    precio_texto = (
-                        precio_tag.get_text(strip=True).replace("\xa0", " ")
-                        if precio_tag
-                        else "Sin precio"
-                    )
-                    precio_min, precio_max, precio_prom, moneda = extraer_rango_precio(
-                        precio_texto
-                    )
-
-                    proveedor_tag = bloque.find("a", class_="search-card-e-company")
-                    proveedor = (
-                        proveedor_tag.get_text(strip=True) if proveedor_tag else "Sin proveedor"
-                    )
-
-                    ventas_tag = None
-                    for item in bloque.find_all(
-                        "div", class_="search-card-m-sale-features__item"
-                    ):
-                        if "Pedido mín" in item.get_text():
-                            ventas_tag = item
-                            break
-                    ventas = ventas_tag.get_text(strip=True) if ventas_tag else "No info"
-
-                    rating_tag = bloque.find("span", class_="search-card-e-review")
-                    rating = rating_tag.get_text(strip=True) if rating_tag else "No rating"
-
-                    resultados.append(
-                        {
-                            "pagina": pagina,
-                            "titulo": titulo,
-                            "precio_min": precio_min,
-                            "precio_max": precio_max,
-                            "precio_promedio": precio_prom,
-                            "moneda": moneda,
-                            "proveedor": proveedor,
-                            "ventas": ventas,
-                            "rating": rating,
-                            "link": enlace,
-                            "plataforma": "Alibaba",
-                            "fecha_scraping": datetime.now().strftime("%Y-%m-%d"),
-                        }
-                    )
-                except Exception as e:
-                    logging.error("Error en producto: %s", e)
+                    self.scroll(3)
+                except TimeoutException:
+                    logging.warning("No se cargó la página %s", pagina)
                     continue
 
-        self.close()
-        return resultados
+                soup = BeautifulSoup(self.driver.page_source, "html.parser")
+                bloques = soup.find_all("div", class_="card-info gallery-card-layout-info")
+                if not bloques:
+                    logging.info("Alibaba no devolvió más resultados; deteniendo en la página %s", pagina)
+                    break
+
+                for bloque in bloques:
+                    try:
+                        titulo_tag = bloque.find("h2", class_="search-card-e-title")
+                        titulo = (
+                            titulo_tag.get_text(strip=True) if titulo_tag else "Sin título"
+                        )
+
+                        enlace_tag = (
+                            bloque.select_one("a.search-card-item")
+                            or bloque.select_one("h2.search-card-e-title a")
+                        )
+                        enlace = enlace_tag.get("href", "") if enlace_tag else ""
+                        if enlace:
+                            if enlace.startswith("//"):
+                                enlace = "https:" + enlace
+                            elif enlace.startswith("/"):
+                                enlace = "https://www.alibaba.com" + enlace
+                            elif not enlace.startswith("http"):
+                                enlace = "https://www.alibaba.com/" + enlace
+
+                        precio_tag = bloque.find("div", class_="search-card-e-price-main")
+                        precio_texto = (
+                            precio_tag.get_text(strip=True).replace("\xa0", " ")
+                            if precio_tag
+                            else "Sin precio"
+                        )
+                        precio_min, precio_max, precio_prom, moneda = extraer_rango_precio(
+                            precio_texto
+                        )
+
+                        proveedor_tag = bloque.find("a", class_="search-card-e-company")
+                        proveedor = (
+                            proveedor_tag.get_text(strip=True) if proveedor_tag else "Sin proveedor"
+                        )
+
+                        ventas_tag = None
+                        for item in bloque.find_all(
+                            "div", class_="search-card-m-sale-features__item"
+                        ):
+                            if "Pedido mín" in item.get_text():
+                                ventas_tag = item
+                                break
+                        ventas = ventas_tag.get_text(strip=True) if ventas_tag else "No info"
+
+                        rating_tag = bloque.find("span", class_="search-card-e-review")
+                        rating = rating_tag.get_text(strip=True) if rating_tag else "No rating"
+
+                        resultados.append(
+                            {
+                                "pagina": pagina,
+                                "titulo": titulo,
+                                "precio_min": precio_min,
+                                "precio_max": precio_max,
+                                "precio_promedio": precio_prom,
+                                "moneda": moneda,
+                                "proveedor": proveedor,
+                                "ventas": ventas,
+                                "rating": rating,
+                                "link": enlace,
+                                "plataforma": "Alibaba",
+                                "fecha_scraping": datetime.now().strftime("%Y-%m-%d"),
+                            }
+                        )
+                    except Exception as e:
+                        logging.error("Error en producto: %s", e)
+                        continue
+
+            return resultados
+        finally:
+            self.close()
