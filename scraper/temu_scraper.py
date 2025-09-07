@@ -3,6 +3,7 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 import logging
 from .base import BaseScraper
 
@@ -11,10 +12,15 @@ class TemuScraper(BaseScraper):
     def parse(self, producto: str):
         url = f"https://www.temu.com/pe/search.html?search_key={producto.replace(' ', '%20')}"
         self.driver.get(url)
-        WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "div._6q6qVUF5._1UrrHYym"))
-        )
-        self.scroll(5)
+        try:
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div._6q6qVUF5._1UrrHYym"))
+            )
+            self.scroll(5)
+        except TimeoutException:
+            logging.warning("No se cargó la página Temu")
+            self.close()
+            return []
 
         soup = BeautifulSoup(self.driver.page_source, "html.parser")
         productos = []
