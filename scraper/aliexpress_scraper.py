@@ -23,6 +23,33 @@ def limpiar_precio(texto: str):
     return float(numero) if numero else None
 
 
+def limpiar_cantidad(texto: str) -> int:
+    """Convierte una cadena de cantidad a ``int``.
+
+    Detecta sufijos ``k`` o ``mil`` antes de limpiar el número para
+    multiplicar la cantidad por mil. Si no hay sufijo, procesa el número
+    como un entero simple.
+    """
+
+    texto = (texto or "").lower().replace("+", "").strip()
+    if not texto:
+        return 0
+
+    multiplicador = 1
+    if "k" in texto or "mil" in texto:
+        multiplicador = 1000
+
+    match = re.search(r"(\d+(?:[\.,]\d+)?)", texto)
+    if not match:
+        return 0
+
+    numero = match.group(1).replace(",", ".")
+    try:
+        return int(float(numero) * multiplicador)
+    except ValueError:
+        return 0
+
+
 class AliExpressScraper(BaseScraper):
     def parse(self, producto: str, paginas: int = 4):
         try:
@@ -105,10 +132,7 @@ class AliExpressScraper(BaseScraper):
                                 re.IGNORECASE,
                             )
                             ventas_texto = ventas_match.group(1) if ventas_match else ""
-                        ventas_texto = ventas_texto.replace("+", "")
-                        ventas = (
-                            int(re.sub(r"[^\d]", "", ventas_texto)) if ventas_texto else 0
-                        )
+                        ventas = limpiar_cantidad(ventas_texto)
 
                         link = (
                             "https:" + card["href"]
