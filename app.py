@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import logging
+from kombu.exceptions import OperationalError
 
 from config import Config
 from tasks import scrapear
@@ -28,7 +29,19 @@ def scrape():
             400,
         )
     logging.info("Iniciando scraping de %s en %s", producto, plataforma)
-    task = scrapear.delay(producto, plataforma)
+    try:
+        task = scrapear.delay(producto, plataforma)
+    except OperationalError:
+        logging.exception("Error al enviar la tarea de scraping")
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": "El servicio de mensajería no está disponible.",
+                }
+            ),
+            503,
+        )
     return jsonify({"task_id": task.id}), 202
 
 
