@@ -11,6 +11,7 @@ class BaseScraper:
 
     def __init__(self, data_dir: str = "data"):
         options = webdriver.ChromeOptions()
+        headless = os.getenv("HEADLESS", "true").lower() in {"1", "true", "yes"}
 
         chromium_path = shutil.which("chromium")
         if not chromium_path:
@@ -18,13 +19,15 @@ class BaseScraper:
                 "Chromium executable not found. Please install chromium or adjust your PATH."
             )
         options.binary_location = chromium_path
-        ##options.add_argument("--headless=new")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
         temp_dir = tempfile.TemporaryDirectory()
         options.add_argument(f"--user-data-dir={temp_dir.name}")
-        options.add_argument("--start-maximized")
+        if headless:
+            options.add_argument("--headless=new")
+        else:
+            options.add_argument("--start-maximized")
 
         chromedriver_path = shutil.which("chromedriver")
         if not chromedriver_path:

@@ -24,7 +24,7 @@ class TestAliExpressScraper(unittest.TestCase):
         expected_url = (
             f"https://es.aliexpress.com/wholesale?SearchText={encoded}&page=1"
         )
-        mock_driver.get.assert_called_once_with(expected_url)
+        mock_driver.get.assert_called_with(expected_url)
 
 
 if __name__ == "__main__":

@@ -47,6 +47,7 @@ Antes de iniciar la aplicación o los workers, define las siguientes variables d
 - `CELERY_BROKER_URL`: URL del broker de mensajes para Celery.
 - `CELERY_RESULT_BACKEND`: URL del backend de resultados para Celery.
 - `ALLOWED_ORIGINS`: lista separada por comas de dominios permitidos para CORS (usa `*` para permitir todos).
+- `HEADLESS`: controla si Chromium se ejecuta sin interfaz gráfica (`True` por defecto).
 
 ### Levantar los servicios
 

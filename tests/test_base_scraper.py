@@ -1,5 +1,6 @@
+import os
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, call
 
 from scraper.base import BaseScraper
 
@@ -32,6 +33,30 @@ class TestBaseScraper(unittest.TestCase):
         )
         with self.assertRaises(FileNotFoundError):
             BaseScraper()
+
+    @patch("scraper.base.webdriver.ChromeOptions")
+    @patch("scraper.base.webdriver.Chrome")
+    @patch("scraper.base.Service")
+    @patch("scraper.base.shutil.which")
+    def test_headless_env_var(self, mock_which, mock_service, mock_chrome, mock_options):
+        mock_which.side_effect = lambda name: f"/usr/bin/{name}"
+        mock_driver = MagicMock()
+        mock_chrome.return_value = mock_driver
+        options_instance = MagicMock()
+        mock_options.return_value = options_instance
+
+        with patch.dict(os.environ, {"HEADLESS": "true"}):
+            scraper = BaseScraper()
+        options_instance.add_argument.assert_any_call("--headless=new")
+        self.assertNotIn(call("--start-maximized"), options_instance.add_argument.call_args_list)
+        scraper.close()
+
+        options_instance.reset_mock()
+        with patch.dict(os.environ, {"HEADLESS": "false"}):
+            scraper = BaseScraper()
+        options_instance.add_argument.assert_any_call("--start-maximized")
+        self.assertNotIn(call("--headless=new"), options_instance.add_argument.call_args_list)
+        scraper.close()
 
     @patch("scraper.base.shutil.which")
     def test_missing_chromedriver_raises_error(self, mock_which):
