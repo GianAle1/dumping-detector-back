@@ -5,6 +5,7 @@ import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from .base import BaseScraper
 
 
@@ -18,10 +19,14 @@ class AliExpressScraper(BaseScraper):
             )
             logging.info("Cargando AliExpress: Página %s", page)
             self.driver.get(url)
-            WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "div.lh_jy"))
-            )
-            self.scroll(6)
+            try:
+                WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, "div.lh_jy"))
+                )
+                self.scroll(6)
+            except TimeoutException:
+                logging.warning("No se cargó la página %s", page)
+                continue
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
             bloques = soup.find_all("div", class_="lh_jy")
