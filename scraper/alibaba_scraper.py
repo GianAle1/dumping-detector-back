@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 import re
-import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from .base import BaseScraper
 
 
@@ -28,7 +30,9 @@ class AlibabaScraper(BaseScraper):
                 f"https://www.alibaba.com/trade/search?SearchText={producto.replace(' ', '+')}&page={pagina}"
             )
             self.driver.get(url)
-            time.sleep(10)
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.card-info.gallery-card-layout-info"))
+            )
             self.scroll(3)
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
