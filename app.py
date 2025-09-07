@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import logging
 import os
 from kombu.exceptions import OperationalError
+from werkzeug.exceptions import NotFound
 
 from config import Config
 from tasks import scrapear
@@ -60,13 +61,14 @@ def resultado(task_id):
 
 @app.route("/api/descargar/<nombre>")
 def descargar(nombre):
-    path = f"data/{nombre}"
-    if not os.path.exists(path):
+    safe_name = os.path.basename(nombre)
+    try:
+        return send_from_directory("data", safe_name, as_attachment=True)
+    except NotFound:
         return (
             jsonify({"success": False, "message": "Archivo no encontrado"}),
             404,
         )
-    return send_file(path, as_attachment=True)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=app.config["DEBUG"])
