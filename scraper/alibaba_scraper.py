@@ -57,8 +57,11 @@ class AlibabaScraper(BaseScraper):
                         if precio_tag
                         else "Sin precio"
                     )
-                    moneda = re.search(r"[A-Z]{2,4}", precio_texto)
-                    moneda = moneda.group(0) if moneda else "N/A"
+                    moneda_match = re.search(r"[A-Z]{2,4}|\w+/", precio_texto)
+                    moneda = (
+                        moneda_match.group(0).replace("/", "") if moneda_match else "N/A"
+                    )
+                    precio_texto = re.sub(r"US\$|/", "", precio_texto)
                     precio_min, precio_max, precio_prom = extraer_rango_precio(precio_texto)
 
                     proveedor_tag = bloque.find("a", class_="search-card-e-company")
