@@ -49,10 +49,13 @@ def scrape():
 def resultado(task_id):
     task = scrapear.AsyncResult(task_id)
     if task.state == "PENDING":
-        return jsonify({"state": task.state})
+        return jsonify({"state": task.state}), 200
     if task.state == "SUCCESS":
-        return jsonify({"state": task.state, **task.result})
-    return jsonify({"state": task.state, "message": str(task.info)}), 400
+        return jsonify({"state": task.state, **task.result}), 200
+    response = {"state": task.state, "message": str(task.info)}
+    if task.state == "FAILURE":
+        response["traceback"] = task.traceback
+    return jsonify(response), 200
 
 @app.route("/api/descargar/<nombre>")
 def descargar(nombre):
