@@ -52,3 +52,13 @@ def test_scrape_endpoint_missing_params(client):
     data = response.get_json()
     assert data["success"] is False
     assert "message" in data
+
+
+def test_descargar_rejects_traversal_outside_data(client):
+    response = client.get("/api/descargar/..%2Fapp.py")
+    assert response.status_code == 404
+
+
+def test_descargar_rejects_parent_directory_reference(client):
+    response = client.get("/api/descargar/..")
+    assert response.status_code == 404
