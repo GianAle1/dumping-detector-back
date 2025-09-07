@@ -1,2 +1,15 @@
-__pycache__/
-*.pyc
+# Perfiles y artefactos de Selenium/Chrome
+selenium-profiles/
+artifacts/
+logs/
+cache/
+*.log
+
+# LevelDB/almacenamientos que generen los scrapers
+**/IndexedDB/
+**/Local Storage/
+**/Session Storage/
+**/Extension Rules/
+**/Extension Scripts/
+**/Extension State/
+**/shared_proto_db/

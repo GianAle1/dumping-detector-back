@@ -25,7 +25,22 @@ class BaseScraper:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
+<<<<<<< HEAD
         options.add_argument("--window-size=1366,900")
+=======
+
+        use_custom_profile = os.getenv("USE_CUSTOM_PROFILE", "").lower() in {
+            "1",
+            "true",
+            "yes",
+        }
+        temp_dir = None
+        if use_custom_profile:
+            temp_dir = tempfile.TemporaryDirectory()
+            options.add_argument(f"--user-data-dir={temp_dir.name}")
+
+        options.add_argument("--start-maximized")
+>>>>>>> e039499f74cb94ab52beac0ea6eedda1c553ac93
 
         # Stealth básico
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -73,12 +88,26 @@ class BaseScraper:
                     Object.defineProperty(navigator, 'languages', {get: () => ['es-ES','es']});
                 """}
             )
+<<<<<<< HEAD
         except Exception:
             pass
+=======
+        service = Service(chromedriver_path)
+        try:
+            self.driver = webdriver.Chrome(service=service, options=options)
+        except Exception:
+            if temp_dir:
+                temp_dir.cleanup()
+            raise
+>>>>>>> e039499f74cb94ab52beac0ea6eedda1c553ac93
 
         # Estructura de datos
         self.data_dir = data_dir
         os.makedirs(self.data_dir, exist_ok=True)
+<<<<<<< HEAD
+=======
+        self.temp_dir = temp_dir
+>>>>>>> e039499f74cb94ab52beac0ea6eedda1c553ac93
 
     def __enter__(self):
         return self
@@ -108,6 +137,12 @@ class BaseScraper:
         if getattr(self, "driver", None):
             self.driver.quit()
             self.driver = None
+<<<<<<< HEAD
         if getattr(self, "_tmp_profile", None):
             shutil.rmtree(self._tmp_profile, ignore_errors=True)
             self._tmp_profile = None
+=======
+        if getattr(self, "temp_dir", None):
+            self.temp_dir.cleanup()
+            self.temp_dir = None
+>>>>>>> e039499f74cb94ab52beac0ea6eedda1c553ac93
