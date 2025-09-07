@@ -37,9 +37,9 @@ def scrapear(producto: str, plataforma: str):
 
     scraper_cls, csv_name = scraper_info
     logging.info("Ejecutando scraper %s para %s", plataforma, producto)
-    scraper = scraper_cls()
     try:
-        productos = scraper.parse(producto)
+        with scraper_cls() as scraper:
+            productos = scraper.parse(producto)
     except Exception as e:
         logging.exception("Error al ejecutar scraper")
         return {"success": False, "message": str(e)}
