@@ -1,10 +1,12 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, abort
 from flask_cors import CORS
 import logging
+import os
 
 from config import Config
 from tasks import scrapear
 import logging_config
+from werkzeug.utils import safe_join
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -43,7 +45,13 @@ def resultado(task_id):
 
 @app.route("/api/descargar/<nombre>")
 def descargar(nombre):
-    path = f"data/{nombre}"
+    path = safe_join("data", nombre)
+    if (
+        path is None
+        or not path.endswith(".csv")
+        or not os.path.isfile(path)
+    ):
+        abort(404)
     return send_file(path, as_attachment=True)
 
 if __name__ == "__main__":
