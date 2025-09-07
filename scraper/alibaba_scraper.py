@@ -8,6 +8,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from .base import BaseScraper
 
+logger = logging.getLogger(__name__)
+
 
 def extraer_rango_precio(texto):
     match = re.findall(r"([\d.,]+)", texto)
@@ -27,7 +29,7 @@ class AlibabaScraper(BaseScraper):
         resultados = []
 
         for pagina in range(1, max_paginas + 1):
-            logging.info("Scrapeando página %s", pagina)
+            logger.info("Scrapeando página %s", pagina)
             url = (
                 f"https://www.alibaba.com/trade/search?SearchText={producto.replace(' ', '+')}&page={pagina}"
             )
@@ -38,13 +40,13 @@ class AlibabaScraper(BaseScraper):
                 )
                 self.scroll(3)
             except TimeoutException:
-                logging.warning("No se cargó la página %s", pagina)
+                logger.warning("No se cargó la página %s", pagina)
                 continue
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
             bloques = soup.find_all("div", class_="card-info gallery-card-layout-info")
             if not bloques:
-                logging.info("Alibaba no devolvió más resultados; deteniendo en la página %s", pagina)
+                logger.info("Alibaba no devolvió más resultados; deteniendo en la página %s", pagina)
                 break
 
             for bloque in bloques:
@@ -106,7 +108,7 @@ class AlibabaScraper(BaseScraper):
                         }
                     )
                 except Exception as e:
-                    logging.error("Error en producto: %s", e)
+                    logger.error("Error en producto: %s", e)
                     continue
 
         self.close()

@@ -5,6 +5,8 @@ from flask import Flask
 import logging
 import logging_config
 
+logger = logging.getLogger(__name__)
+
 from config import Config
 from scraper.aliexpress_scraper import AliExpressScraper
 from scraper.temu_scraper import TemuScraper
@@ -32,16 +34,16 @@ SCRAPERS = {
 def scrapear(producto: str, plataforma: str):
     scraper_info = SCRAPERS.get(plataforma)
     if scraper_info is None:
-        logging.error("Plataforma no soportada: %s", plataforma)
+        logger.error("Plataforma no soportada: %s", plataforma)
         return {"success": False, "message": "Plataforma no soportada."}
 
     scraper_cls, csv_name = scraper_info
-    logging.info("Ejecutando scraper %s para %s", plataforma, producto)
+    logger.info("Ejecutando scraper %s para %s", plataforma, producto)
     scraper = scraper_cls()
     try:
         productos = scraper.parse(producto)
     except Exception as e:
-        logging.exception("Error al ejecutar scraper")
+        logger.exception("Error al ejecutar scraper")
         return {"success": False, "message": str(e)}
     archivo_csv = os.path.join("data", csv_name)
 
@@ -49,8 +51,8 @@ def scrapear(producto: str, plataforma: str):
         os.makedirs("data", exist_ok=True)
         df = pd.DataFrame(productos)
         df.to_csv(archivo_csv, index=False, encoding="utf-8-sig")
-        logging.info("Scraping completado: %d productos", len(productos))
+        logger.info("Scraping completado: %d productos", len(productos))
         return {"success": True, "productos": productos, "archivo": csv_name}
 
-    logging.warning("No se encontraron productos para %s en %s", producto, plataforma)
+    logger.warning("No se encontraron productos para %s en %s", producto, plataforma)
     return {"success": False, "message": "No se encontraron productos."}

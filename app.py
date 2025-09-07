@@ -8,6 +8,8 @@ from config import Config
 from tasks import scrapear
 import logging_config
 
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 app.config.from_object(Config)
 CORS(app, origins=app.config["ALLOWED_ORIGINS"])  # Permitir peticiones desde dominios permitidos
@@ -19,7 +21,7 @@ def scrape():
     plataforma = data.get("plataforma")
 
     if not producto or not plataforma:
-        logging.warning("Parametros faltantes en solicitud de scraping")
+        logger.warning("Parametros faltantes en solicitud de scraping")
         return (
             jsonify(
                 {
@@ -29,11 +31,11 @@ def scrape():
             ),
             400,
         )
-    logging.info("Iniciando scraping de %s en %s", producto, plataforma)
+    logger.info("Iniciando scraping de %s en %s", producto, plataforma)
     try:
         task = scrapear.delay(producto, plataforma)
     except OperationalError:
-        logging.exception("Error al enviar la tarea de scraping")
+        logger.exception("Error al enviar la tarea de scraping")
         return (
             jsonify(
                 {

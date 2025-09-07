@@ -7,6 +7,8 @@ from selenium.common.exceptions import TimeoutException
 import logging
 from .base import BaseScraper
 
+logger = logging.getLogger(__name__)
+
 
 class MadeInChinaScraper(BaseScraper):
     def parse(self, producto: str, paginas: int = 4):
@@ -17,7 +19,7 @@ class MadeInChinaScraper(BaseScraper):
                 "https://es.made-in-china.com/productSearch?keyword="
                 f"{producto.replace(' ', '+')}&currentPage={pagina}&type=Product"
             )
-            logging.info("Visitando página %s - %s", pagina, url)
+            logger.info("Visitando página %s - %s", pagina, url)
             self.driver.get(url)
             try:
                 WebDriverWait(self.driver, 8).until(
@@ -25,12 +27,12 @@ class MadeInChinaScraper(BaseScraper):
                 )
                 self.scroll(3)
             except TimeoutException:
-                logging.warning("No se cargó la página %s", pagina)
+                logger.warning("No se cargó la página %s", pagina)
                 continue
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
             bloques = soup.find_all("div", class_="list-node-content")
-            logging.info("Página %s: %s productos encontrados", pagina, len(bloques))
+            logger.info("Página %s: %s productos encontrados", pagina, len(bloques))
 
             for bloque in bloques:
                 try:
@@ -88,7 +90,7 @@ class MadeInChinaScraper(BaseScraper):
                         }
                     )
                 except Exception as e:
-                    logging.error("Error procesando producto en página %s: %s", pagina, e)
+                    logger.error("Error procesando producto en página %s: %s", pagina, e)
                     continue
 
         self.close()
