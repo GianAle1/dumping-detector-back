@@ -3,5 +3,5 @@ selenium
 beautifulsoup4
 pandas
 webdriver-manager
-celery[redis]
+celery[redis]==5.3.4
 flask-cors
