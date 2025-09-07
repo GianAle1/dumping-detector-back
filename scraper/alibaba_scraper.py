@@ -10,16 +10,32 @@ from .base import BaseScraper
 
 
 def extraer_rango_precio(texto):
-    match = re.findall(r"([\d.,]+)", texto)
+    """Extrae precios mínimo, máximo y moneda desde una cadena.
+
+    La moneda se extrae antes de limpiar los caracteres no numéricos.
+    Soporta rangos de precios indicados con un guion, por ejemplo
+    ``"72.41-80.00"``.
+    """
+
+    # Detectar la moneda antes de eliminar caracteres
+    moneda_match = re.search(r"(US\$|S/|[$€£¥]|[A-Z]{1,4})", texto)
+    moneda = moneda_match.group(0) if moneda_match else "N/A"
+
+    # Eliminar la moneda y otros caracteres no numéricos para procesar el rango
+    texto_limpio = re.sub(r"(US\$|S/|[$€£¥]|[A-Z]{1,4})", "", texto)
+    texto_limpio = re.sub(r"[^0-9.,-]", "", texto_limpio)
+
+    match = re.findall(r"([\d.,]+)", texto_limpio)
     if len(match) == 1:
         precio_min = precio_max = float(match[0].replace(",", ""))
     elif len(match) >= 2:
         precio_min = float(match[0].replace(",", ""))
         precio_max = float(match[1].replace(",", ""))
     else:
-        return None, None, None
+        return None, None, None, moneda
+
     promedio = round((precio_min + precio_max) / 2, 2)
-    return precio_min, precio_max, promedio
+    return precio_min, precio_max, promedio, moneda
 
 
 class AlibabaScraper(BaseScraper):
@@ -65,12 +81,9 @@ class AlibabaScraper(BaseScraper):
                         if precio_tag
                         else "Sin precio"
                     )
-                    moneda_match = re.search(r"[A-Z]{1,4}/?|\w+/?", precio_texto)
-                    moneda = (
-                        moneda_match.group(0).rstrip() if moneda_match else "N/A"
+                    precio_min, precio_max, precio_prom, moneda = extraer_rango_precio(
+                        precio_texto
                     )
-                    precio_texto = re.sub(r"US\$|/", "", precio_texto)
-                    precio_min, precio_max, precio_prom = extraer_rango_precio(precio_texto)
 
                     proveedor_tag = bloque.find("a", class_="search-card-e-company")
                     proveedor = (
