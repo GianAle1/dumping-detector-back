@@ -57,10 +57,20 @@ class AliExpressScraper(BaseScraper):
                     else:
                         precio_original = None
 
-                    descuento_tag = bloque.select_one("div.lh_cv span.lh_lz")
-                    descuento = (
-                        descuento_tag.text.strip() if descuento_tag else None
+                    descuento_tag = bloque.select_one(
+                        "div.lh_l4 span.mz_m1, span.mz_a6"
                     )
+                    if descuento_tag:
+                        descuento_texto = re.sub(r"\s+", " ", descuento_tag.text).strip()
+                        if "%" in descuento_texto:
+                            match = re.search(r"\d+%", descuento_texto)
+                            descuento = match.group() if match else descuento_texto
+                        elif "próximo precio" in descuento_texto.lower():
+                            descuento = "Próximo precio"
+                        else:
+                            descuento = descuento_texto
+                    else:
+                        descuento = None
 
                     ventas_tag = bloque.select_one("div.lh_j5 span.lh_j7")
                     if ventas_tag:
