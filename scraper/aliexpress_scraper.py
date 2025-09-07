@@ -19,48 +19,48 @@ class AliExpressScraper(BaseScraper):
             logging.info("Cargando AliExpress: Página %s", page)
             self.driver.get(url)
             WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "div.jr_js"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, "div.lh_jy"))
             )
             self.scroll(6)
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
-            bloques = soup.find_all("div", class_="jr_js")
+            bloques = soup.find_all("div", class_="lh_jy")
             logging.info("Página %s: %s productos encontrados", page, len(bloques))
 
             for bloque in bloques:
                 try:
-                    titulo_tag = bloque.find("div", class_="jr_ae")
-                    titulo = (
-                        titulo_tag.get("title", "").strip() if titulo_tag else "Sin título"
-                    )
+                    titulo_tag = bloque.select_one("div.lh_ae h3.lh_ki")
+                    titulo = titulo_tag.text.strip() if titulo_tag else "Sin título"
 
-                    precio_tag = bloque.find("div", class_="jr_kr")
-                    spans = precio_tag.find_all("span") if precio_tag else []
-                    if len(spans) >= 3:
-                        precio = float(spans[1].text + spans[2].text)
+                    precio_tag = bloque.select_one("div.lh_cv div.lh_k0")
+                    if precio_tag:
+                        spans = precio_tag.find_all("span")
+                        precio_texto = "".join(span.text for span in spans)
+                        precio_texto = (
+                            re.sub(r"[^0-9.,]", "", precio_texto).replace(",", ".")
+                        )
+                        precio = float(precio_texto) if precio_texto else None
                     else:
                         precio = None
 
-                    precio_ori_tag = bloque.find("div", class_="jr_ks")
+                    precio_ori_tag = bloque.select_one("div.lh_cv div.lh_k1 span")
                     if precio_ori_tag:
-                        texto = precio_ori_tag.text.replace("PEN", "").strip()
+                        texto = (
+                            re.sub(r"[^0-9.,]", "", precio_ori_tag.text).replace(",", ".")
+                        )
                         precio_original = float(texto) if texto else None
                     else:
                         precio_original = None
 
-                    descuento_tag = bloque.find("span", class_="jr_kt")
-                    if descuento_tag:
-                        porcentaje = re.findall(r"-?\d+%", descuento_tag.text)
-                        descuento = porcentaje[0] if porcentaje else None
-                    else:
-                        descuento = None
+                    descuento_tag = bloque.select_one("div.lh_cv span.lh_lz")
+                    descuento = (
+                        descuento_tag.text.strip() if descuento_tag else None
+                    )
 
-                    ventas_tag = bloque.find("span", class_="jr_kw")
+                    ventas_tag = bloque.select_one("div.lh_j5 span.lh_j7")
                     if ventas_tag:
                         ventas_texto = (
-                            ventas_tag.text.strip()
-                            .replace(" vendidos", "")
-                            .replace("+", "")
+                            ventas_tag.text.strip().replace(" vendidos", "").replace("+", "")
                         )
                         ventas = (
                             int(re.sub(r"[^\d]", "", ventas_texto)) if ventas_texto else 0
@@ -68,7 +68,7 @@ class AliExpressScraper(BaseScraper):
                     else:
                         ventas = 0
 
-                    link_tag = bloque.find("a", class_="jr_g")
+                    link_tag = bloque.find("a", class_="lh_e")
                     link = (
                         "https:" + link_tag["href"]
                         if link_tag and link_tag["href"].startswith("//")
