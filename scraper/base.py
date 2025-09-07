@@ -28,6 +28,12 @@ class BaseScraper:
         os.makedirs(self.data_dir, exist_ok=True)
         self.profile_dir = profile_dir
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        self.close()
+
     def scroll(self, times: int = 5, delay: float = 2):
         """Scroll the current page several times waiting for new content."""
         for _ in range(times):
