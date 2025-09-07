@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import logging
+import os
 from kombu.exceptions import OperationalError
 
 from config import Config
@@ -57,6 +58,11 @@ def resultado(task_id):
 @app.route("/api/descargar/<nombre>")
 def descargar(nombre):
     path = f"data/{nombre}"
+    if not os.path.exists(path):
+        return (
+            jsonify({"success": False, "message": "Archivo no encontrado"}),
+            404,
+        )
     return send_file(path, as_attachment=True)
 
 if __name__ == "__main__":
