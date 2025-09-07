@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 import re
+import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -15,7 +16,7 @@ class AliExpressScraper(BaseScraper):
             url = (
                 f"https://es.aliexpress.com/wholesale?SearchText={producto.replace(' ', '+')}&page={page}"
             )
-            print(f"🌀 Cargando AliExpress: Página {page}")
+            logging.info("Cargando AliExpress: Página %s", page)
             self.driver.get(url)
             WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "div.jr_js"))
@@ -24,7 +25,7 @@ class AliExpressScraper(BaseScraper):
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
             bloques = soup.find_all("div", class_="jr_js")
-            print(f"🔍 Página {page}: {len(bloques)} productos encontrados")
+            logging.info("Página %s: %s productos encontrados", page, len(bloques))
 
             for bloque in bloques:
                 try:
@@ -90,7 +91,7 @@ class AliExpressScraper(BaseScraper):
                         }
                     )
                 except Exception as e:
-                    print(f"❌ Error en producto: {e}")
+                    logging.error("Error en producto: %s", e)
                     continue
 
         self.close()

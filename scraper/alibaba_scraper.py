@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 import re
+import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -25,7 +26,7 @@ class AlibabaScraper(BaseScraper):
         resultados = []
 
         for pagina in range(1, max_paginas + 1):
-            print(f"🌐 Scrapeando página {pagina}...")
+            logging.info("Scrapeando página %s", pagina)
             url = (
                 f"https://www.alibaba.com/trade/search?SearchText={producto.replace(' ', '+')}&page={pagina}"
             )
@@ -88,7 +89,7 @@ class AlibabaScraper(BaseScraper):
                         }
                     )
                 except Exception as e:
-                    print(f"❌ Error en producto: {e}")
+                    logging.error("Error en producto: %s", e)
                     continue
 
         self.close()
