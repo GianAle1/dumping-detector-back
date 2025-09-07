@@ -9,6 +9,19 @@ from selenium.common.exceptions import TimeoutException
 from .base import BaseScraper
 
 
+def limpiar_precio(texto: str):
+    """Convierte una cadena de precio a ``float``.
+
+    Primero elimina los separadores de miles (``.``) y luego
+    reemplaza la coma decimal por un punto. Si el resultado queda
+    vacío, retorna ``None`` en lugar de intentar la conversión.
+    """
+
+    numero = re.sub(r"[^0-9.,]", "", texto or "")
+    numero = numero.replace(".", "").replace(",", ".").strip()
+    return float(numero) if numero else None
+
+
 class AliExpressScraper(BaseScraper):
     def parse(self, producto: str, paginas: int = 4):
         try:
@@ -46,18 +59,14 @@ class AliExpressScraper(BaseScraper):
                         precio_tag = card.select_one("[data-price]")
                         if precio_tag:
                             precio_texto = precio_tag.get("data-price") or precio_tag.text
-                            precio_texto = (
-                                re.sub(r"[^0-9.,]", "", precio_texto).replace(",", ".")
-                            )
-                            precio = float(precio_texto) if precio_texto else None
+                            precio = limpiar_precio(precio_texto)
                         else:
                             precio = None
 
                         precio_ori_tag = card.select_one("[data-original-price]")
                         if precio_ori_tag:
                             texto = precio_ori_tag.get("data-original-price") or precio_ori_tag.text
-                            texto = re.sub(r"[^0-9.,]", "", texto).replace(",", ".")
-                            precio_original = float(texto) if texto else None
+                            precio_original = limpiar_precio(texto)
                         else:
                             precio_original = None
 
