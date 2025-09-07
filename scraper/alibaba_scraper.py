@@ -54,8 +54,8 @@ class AlibabaScraper(BaseScraper):
                         titulo_tag.get_text(strip=True) if titulo_tag else "Sin título"
                     )
 
-                    enlace_tag = bloque.find("a", href=True)
-                    enlace = enlace_tag["href"] if enlace_tag else ""
+                    enlace_tag = bloque.select_one("h2.search-card-e-title a")
+                    enlace = enlace_tag.get("href", "") if enlace_tag else ""
                     if enlace and not enlace.startswith("http"):
                         enlace = "https:" + enlace
 
