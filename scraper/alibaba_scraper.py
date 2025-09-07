@@ -38,6 +38,9 @@ class AlibabaScraper(BaseScraper):
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
             bloques = soup.find_all("div", class_="card-info gallery-card-layout-info")
+            if not bloques:
+                logging.info("Alibaba no devolvió más resultados; deteniendo en la página %s", pagina)
+                break
 
             for bloque in bloques:
                 try:
