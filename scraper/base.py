@@ -11,7 +11,13 @@ class BaseScraper:
 
     def __init__(self, data_dir: str = "data"):
         options = webdriver.ChromeOptions()
-        options.binary_location = "/usr/bin/chromium"
+
+        chromium_path = shutil.which("chromium")
+        if not chromium_path:
+            raise FileNotFoundError(
+                "Chromium executable not found. Please install chromium or adjust your PATH."
+            )
+        options.binary_location = chromium_path
         ##options.add_argument("--headless=new")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
@@ -20,7 +26,12 @@ class BaseScraper:
         options.add_argument(f"--user-data-dir={profile_dir}")
         options.add_argument("--start-maximized")
 
-        service = Service("/usr/bin/chromedriver")
+        chromedriver_path = shutil.which("chromedriver")
+        if not chromedriver_path:
+            raise FileNotFoundError(
+                "Chromedriver executable not found. Please install chromedriver or adjust your PATH."
+            )
+        service = Service(chromedriver_path)
         self.driver = webdriver.Chrome(service=service, options=options)
 
         self.data_dir = data_dir
