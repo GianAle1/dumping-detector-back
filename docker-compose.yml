@@ -1,21 +1,46 @@
+# (puedes quitar la línea "version" si quieres; es obsoleta)
 version: "3.9"
+
 services:
   redis:
     image: redis:7
     ports:
       - "6379:6379"
 
+  selenium:
+    image: selenium/standalone-chromium:125.0
+    shm_size: 2g
+    environment:
+      - SE_ENABLE_UI=true           # noVNC en :7900
+      - SE_NODE_MAX_SESSIONS=1      # 1 sesión visible (estable para observar)
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_VNC_NO_PASSWORD=1        # ← quita password
+    ports:
+      - "4444:4444"                 # WebDriver
+      - "7900:7900"                 # noVNC
+    volumes:
+      - ./selenium-profiles:/home/seluser/profiles   # ← PERFIL PERSISTENTE
+    healthcheck:
+      test: ["CMD", "bash", "-lc", "curl -fsS http://localhost:4444/status | jq -e '.value.ready'"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   worker:
     build: .
-    command: celery -A tasks worker --loglevel=info
+    command: celery -A tasks worker --loglevel=info --concurrency=1
     environment:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
-      DISPLAY: ${DISPLAY}
-    volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
+      SELENIUM_REMOTE_URL: http://selenium:4444
+      SELENIUM_PROFILE_DIR: /home/seluser/profiles/aliexpress   # ← usa el perfil persistente
+      VISUAL_MODE: "1"                 # deja la ventana abierta mientras miras (si lo implementaste)
+      # PROXY_URL: http://user:pass@host:port  # (opcional, residencial)
     depends_on:
-      - redis
+      selenium:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   web:
     build: .
