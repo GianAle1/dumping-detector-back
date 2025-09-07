@@ -22,8 +22,8 @@ class BaseScraper:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
-        profile_dir = tempfile.mkdtemp()
-        options.add_argument(f"--user-data-dir={profile_dir}")
+        temp_dir = tempfile.TemporaryDirectory()
+        options.add_argument(f"--user-data-dir={temp_dir.name}")
         options.add_argument("--start-maximized")
 
         chromedriver_path = shutil.which("chromedriver")
@@ -32,11 +32,15 @@ class BaseScraper:
                 "Chromedriver executable not found. Please install chromedriver or adjust your PATH."
             )
         service = Service(chromedriver_path)
-        self.driver = webdriver.Chrome(service=service, options=options)
+        try:
+            self.driver = webdriver.Chrome(service=service, options=options)
+        except Exception:
+            temp_dir.cleanup()
+            raise
 
         self.data_dir = data_dir
         os.makedirs(self.data_dir, exist_ok=True)
-        self.profile_dir = profile_dir
+        self.temp_dir = temp_dir
 
     def __enter__(self):
         return self
@@ -65,6 +69,6 @@ class BaseScraper:
         if getattr(self, "driver", None):
             self.driver.quit()
             self.driver = None
-        if getattr(self, "profile_dir", None):
-            shutil.rmtree(self.profile_dir, ignore_errors=True)
-            self.profile_dir = None
+        if getattr(self, "temp_dir", None):
+            self.temp_dir.cleanup()
+            self.temp_dir = None
