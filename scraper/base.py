@@ -22,8 +22,17 @@ class BaseScraper:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
-        temp_dir = tempfile.TemporaryDirectory()
-        options.add_argument(f"--user-data-dir={temp_dir.name}")
+
+        use_custom_profile = os.getenv("USE_CUSTOM_PROFILE", "").lower() in {
+            "1",
+            "true",
+            "yes",
+        }
+        temp_dir = None
+        if use_custom_profile:
+            temp_dir = tempfile.TemporaryDirectory()
+            options.add_argument(f"--user-data-dir={temp_dir.name}")
+
         options.add_argument("--start-maximized")
 
         chromedriver_path = shutil.which("chromedriver")
@@ -35,7 +44,8 @@ class BaseScraper:
         try:
             self.driver = webdriver.Chrome(service=service, options=options)
         except Exception:
-            temp_dir.cleanup()
+            if temp_dir:
+                temp_dir.cleanup()
             raise
 
         self.data_dir = data_dir

@@ -47,6 +47,9 @@ Antes de iniciar la aplicación o los workers, define las siguientes variables d
 - `CELERY_BROKER_URL`: URL del broker de mensajes para Celery.
 - `CELERY_RESULT_BACKEND`: URL del backend de resultados para Celery.
 - `ALLOWED_ORIGINS`: lista separada por comas de dominios permitidos para CORS (usa `*` para permitir todos).
+- `USE_CUSTOM_PROFILE`: define en `True` para que el scraper cree un perfil
+  temporal de Chromium y pueda mantener la sesión entre ejecuciones; por
+  defecto se omite para iniciar siempre con una sesión limpia.
 
 ### Levantar los servicios
 
