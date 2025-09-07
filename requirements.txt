@@ -2,6 +2,5 @@ flask
 selenium
 beautifulsoup4
 pandas
-webdriver-manager
 celery[redis]==5.3.4  # pinned for Python 3.10–3.12 compatibility
 flask-cors
