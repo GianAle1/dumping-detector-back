@@ -8,6 +8,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from .base import BaseScraper
 
+logger = logging.getLogger(__name__)
+
 
 class AliExpressScraper(BaseScraper):
     def parse(self, producto: str, paginas: int = 4):
@@ -17,7 +19,7 @@ class AliExpressScraper(BaseScraper):
             url = (
                 f"https://es.aliexpress.com/wholesale?SearchText={producto.replace(' ', '+')}&page={page}"
             )
-            logging.info("Cargando AliExpress: Página %s", page)
+            logger.info("Cargando AliExpress: Página %s", page)
             self.driver.get(url)
             try:
                 WebDriverWait(self.driver, 10).until(
@@ -25,12 +27,12 @@ class AliExpressScraper(BaseScraper):
                 )
                 self.scroll(6)
             except TimeoutException:
-                logging.warning("No se cargó la página %s", page)
+                logger.warning("No se cargó la página %s", page)
                 continue
 
             soup = BeautifulSoup(self.driver.page_source, "html.parser")
             bloques = soup.find_all("div", class_="lh_jy")
-            logging.info("Página %s: %s productos encontrados", page, len(bloques))
+            logger.info("Página %s: %s productos encontrados", page, len(bloques))
 
             for bloque in bloques:
                 try:
@@ -96,7 +98,7 @@ class AliExpressScraper(BaseScraper):
                         }
                     )
                 except Exception as e:
-                    logging.error("Error en producto: %s", e)
+                    logger.error("Error en producto: %s", e)
                     continue
 
         self.close()

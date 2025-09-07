@@ -7,6 +7,8 @@ from selenium.common.exceptions import TimeoutException
 import logging
 from .base import BaseScraper
 
+logger = logging.getLogger(__name__)
+
 
 class TemuScraper(BaseScraper):
     def parse(self, producto: str):
@@ -18,7 +20,7 @@ class TemuScraper(BaseScraper):
             )
             self.scroll(5)
         except TimeoutException:
-            logging.warning("No se cargó la página Temu")
+            logger.warning("No se cargó la página Temu")
             self.close()
             return []
 
@@ -26,7 +28,7 @@ class TemuScraper(BaseScraper):
         productos = []
 
         bloques = soup.find_all("div", class_="_6q6qVUF5 _1UrrHYym")
-        logging.info("Se encontraron %s productos en Temu", len(bloques))
+        logger.info("Se encontraron %s productos en Temu", len(bloques))
 
         for bloque in bloques:
             try:
@@ -72,7 +74,7 @@ class TemuScraper(BaseScraper):
                     }
                 )
             except Exception as e:
-                logging.error("Error procesando producto: %s", e)
+                logger.error("Error procesando producto: %s", e)
                 continue
 
         self.close()
