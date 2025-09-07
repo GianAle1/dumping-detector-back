@@ -5,7 +5,7 @@ import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
 from .base import BaseScraper
 
 
@@ -48,14 +48,30 @@ class AlibabaScraper(BaseScraper):
                 url = (
                     f"https://www.alibaba.com/trade/search?SearchText={producto.replace(' ', '+')}&page={pagina}"
                 )
-                self.driver.get(url)
-                try:
-                    WebDriverWait(self.driver, 10).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "div.card-info.gallery-card-layout-info"))
+
+                cargada = False
+                for intento in range(3):
+                    try:
+                        self.driver.get(url)
+                        WebDriverWait(self.driver, 10).until(
+                            EC.presence_of_element_located(
+                                (By.CSS_SELECTOR, "div.card-info.gallery-card-layout-info")
+                            )
+                        )
+                        self.scroll(3)
+                        cargada = True
+                        break
+                    except WebDriverException as e:
+                        logging.error(
+                            "Error cargando Alibaba página %s (intento %s): %s",
+                            pagina,
+                            intento + 1,
+                            e,
+                        )
+                if not cargada:
+                    logging.error(
+                        "Omitiendo página %s de Alibaba tras varios fallos", pagina
                     )
-                    self.scroll(3)
-                except TimeoutException:
-                    logging.warning("No se cargó la página %s", pagina)
                     continue
 
                 soup = BeautifulSoup(self.driver.page_source, "html.parser")
