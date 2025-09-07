@@ -13,6 +13,24 @@ Requiere Python 3.10–3.12 y Celery 5.3.4. Celery 5.5 no funciona en Python 3.1
 pip install -r requirements.txt
 ```
 
+### Actualización de dependencias
+
+Las versiones de Flask, Selenium, BeautifulSoup, Pandas y Flask-CORS se
+fijan en `requirements.txt`. Cuando haya nuevas versiones disponibles:
+
+1. Actualiza el entorno de desarrollo:
+
+   ```bash
+   pip install --upgrade flask selenium beautifulsoup4 pandas flask-cors
+   ```
+
+2. Refleja los cambios en `requirements.txt` usando `pip show` o
+   `pip freeze` y ejecuta las pruebas para verificar que todo sigue
+   funcionando.
+
+3. Crea un commit con los cambios y actualiza esta sección si es
+   necesario.
+
 ### Docker (opcional)
 
 Para evitar problemas de compatibilidad, puedes ejecutar el proyecto con Docker (Python 3.10):

@@ -1,6 +1,6 @@
-flask
-selenium
-beautifulsoup4
-pandas
+flask==3.1.2
+selenium==4.35.0
+beautifulsoup4==4.13.5
+pandas==2.3.2
 celery[redis]==5.3.4  # pinned for Python 3.10–3.12 compatibility
-flask-cors
+flask-cors==6.0.1
