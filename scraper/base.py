@@ -17,7 +17,7 @@ class BaseScraper:
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
 
-        service = Service(ChromeDriverManager().install())
+        service = Service("/usr/bin/chromedriver")
         self.driver = webdriver.Chrome(service=service, options=options)
 
         self.data_dir = data_dir
