@@ -57,7 +57,11 @@ class TemuScraper(BaseScraper):
                         precio_original = None
 
                     descuento_tag = bloque.find("div", class_="_1LLbpUTn")
-                    descuento_extra = descuento_tag.text.strip() if descuento_tag else None
+                    descuento_extra = (
+                        descuento_tag.text.strip()
+                        if descuento_tag and descuento_tag.text
+                        else None
+                    )
 
                     ventas_tag = bloque.find("span", class_="_3vfo0XTx")
                     ventas = ventas_tag.text.strip() if ventas_tag else "0"

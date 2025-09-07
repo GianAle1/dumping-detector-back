@@ -64,7 +64,8 @@ class AliExpressScraper(BaseScraper):
                 cargada = False
                 for intento in range(3):
                     try:
-                        self.driver.get(url)
+                        if intento == 0:
+                            self.driver.get(url)
                         WebDriverWait(self.driver, 10).until(
                             EC.presence_of_element_located(
                                 (By.CSS_SELECTOR, "div.search-item-card-wrapper-gallery")
@@ -113,13 +114,15 @@ class AliExpressScraper(BaseScraper):
                             precio_original = None
 
                         descuento_tag = card.select_one("[data-discount]")
-                        descuento = (
-                            descuento_tag.get("data-discount")
-                            if descuento_tag and descuento_tag.get("data-discount")
-                            else descuento_tag.text.strip()
-                            if descuento_tag
-                            else None
-                        )
+                        if descuento_tag:
+                            if descuento_tag.get("data-discount"):
+                                descuento = descuento_tag.get("data-discount")
+                            elif descuento_tag.text:
+                                descuento = descuento_tag.text.strip()
+                            else:
+                                descuento = None
+                        else:
+                            descuento = None
 
                         ventas_tag = card.select_one("[data-sold]")
                         if ventas_tag:
