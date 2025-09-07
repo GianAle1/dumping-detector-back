@@ -7,10 +7,18 @@ scraper de forma asíncrona.
 
 ### Instalación
 
-Requiere Python 3.10–3.12. Celery 5.5 no funciona en Python 3.13.
+Requiere Python 3.10–3.12 y Celery 5.3.4. Celery 5.5 no funciona en Python 3.13.
 
 ```bash
 pip install -r requirements.txt
+```
+
+### Docker (opcional)
+
+Para evitar problemas de compatibilidad, puedes ejecutar el proyecto con Docker (Python 3.10):
+
+```bash
+docker-compose up --build
 ```
 
 ### Variables de entorno
