@@ -1,6 +1,5 @@
 import os
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,10 +9,10 @@ from selenium.webdriver.support import expected_conditions as EC
 class BaseScraper:
     """Common setup for Selenium based scrapers."""
 
-    def __init__(self, headless: bool = False, data_dir: str = "data"):
-        options = Options()
-        if headless:
-            options.add_argument("--headless")
+    def __init__(self, data_dir: str = "data"):
+        options = webdriver.ChromeOptions()
+        options.binary_location = "/usr/bin/chromium"
+        options.add_argument("--headless")
         options.add_argument("--disable-gpu")
 
         service = Service(ChromeDriverManager().install())
