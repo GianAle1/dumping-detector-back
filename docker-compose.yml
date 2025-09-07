@@ -11,6 +11,9 @@ services:
     environment:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
+      DISPLAY: ${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
     depends_on:
       - redis
 
@@ -24,11 +27,3 @@ services:
       - "5000:5000"
     depends_on:
       - redis
-
-  services:
-    worker:
-      environment:
-        - DISPLAY=$DISPLAY
-      volumes:
-        - /tmp/.X11-unix:/tmp/.X11-unix
-      # (opcional) --shm-size=1g para evitar problemas de memoria compartida
