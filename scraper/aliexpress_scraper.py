@@ -131,7 +131,16 @@ class AliExpressScraper(BaseScraper):
         "[data-discount]", ".discount", ".sale-tag", "span._18_86"
     ]
     SOLD: List[str] = [
-        "[data-sold]", ".sold", ".trade-num", ".sale-desc"
+        "[data-sold]",
+        ".sold",
+        ".trade-num",
+        ".sale-desc",
+        ".order-num",
+        ".ks_j7",
+        ".ks_i2",
+        ".product-reviewer-sold",
+        ".product-info-sale",
+        ".product-info-sold",
     ]
 
     # ----------------- utilidades privadas -----------------
@@ -230,10 +239,10 @@ class AliExpressScraper(BaseScraper):
 
             sold_el = self._first_match(card, self.SOLD)
             if sold_el:
-                ventas_txt = sold_el.get_attribute("data-sold") or sold_el.text
+                ventas_txt = (sold_el.get_attribute("data-sold") or sold_el.text or "").strip()
             else:
                 txt = card.text
-                m = re.search(r"([\d\.\,]+)\s*vendidos?", txt, re.IGNORECASE)
+                m = re.search(r"([\d\.\,]+)\s*(?:vendidos?|sold)", txt, re.IGNORECASE)
                 ventas_txt = m.group(1) if m else ""
             ventas = self._to_int((ventas_txt or "").replace("+", ""))
 
@@ -382,10 +391,23 @@ class AliExpressScraper(BaseScraper):
                                 desc_tag = bloque.select_one(", ".join(self.DISCOUNT))
                                 descuento = (desc_tag.get("data-discount") if desc_tag else None) or (desc_tag.get_text(" ").strip() if desc_tag else None)
 
-                                sold_tag = bloque.select_one(", ".join(self.SOLD))
-                                ventas_txt = (sold_tag.get("data-sold") if sold_tag else None) or (sold_tag.get_text(" ") if sold_tag else "")
+                                ventas_txt = ""
+                                for sold_selector in self.SOLD:
+                                    sold_tag = bloque.select_one(sold_selector)
+                                    if sold_tag:
+                                        ventas_txt = (
+                                            sold_tag.get("data-sold")
+                                            or sold_tag.get_text(" ")
+                                            or ""
+                                        ).strip()
+                                        if ventas_txt:
+                                            break
                                 if not ventas_txt:
-                                    m = re.search(r"([\d\.\,]+)\s*vendidos?", bloque.get_text(" "), re.IGNORECASE)
+                                    m = re.search(
+                                        r"([\d\.\,]+)\s*(?:vendidos?|sold)",
+                                        bloque.get_text(" "),
+                                        re.IGNORECASE,
+                                    )
                                     ventas_txt = m.group(1) if m else ""
                                 ventas = self._to_int((ventas_txt or "").replace("+", ""))
 
