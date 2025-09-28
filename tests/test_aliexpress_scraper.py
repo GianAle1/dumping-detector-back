@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, call
 from urllib.parse import quote_plus
 
 from selenium.common.exceptions import TimeoutException
@@ -57,6 +57,31 @@ class TestAliExpressScraper(unittest.TestCase):
         mock_extract.assert_called_once_with(card_element)
         self.assertEqual(len(resultados), 1)
         self.assertEqual(resultados[0]["titulo"], "Producto")
+
+    @patch("scraper.aliexpress_scraper.BaseScraper.__init__", return_value=None)
+    def test_parse_handles_blank_current_url(self, mock_base_init):
+        scraper = AliExpressScraper()
+        mock_driver = MagicMock()
+        mock_driver.current_url = "about:blank"
+        scraper.driver = mock_driver
+
+        scraper.wait_ready = MagicMock()
+        scraper._accept_banners = MagicMock()
+        scraper._human_scroll_until_growth = MagicMock()
+        scraper._is_blocked = MagicMock(return_value=False)
+        scraper.close = MagicMock()
+
+        def fake_find_all(selectors, timeout=10):
+            return []
+
+        with patch.object(scraper, "_find_all_any", side_effect=fake_find_all) as mock_find_all, \
+             patch.object(scraper, "_extract_card", return_value=None) as mock_extract:
+            resultados = scraper.parse("producto", paginas=1)
+
+        self.assertIsInstance(resultados, list)
+        self.assertEqual(resultados, [])
+        self.assertTrue(all(call.args[0] == scraper.CARD_CONTAINERS for call in mock_find_all.call_args_list))
+        mock_extract.assert_not_called()
 
 
 if __name__ == "__main__":

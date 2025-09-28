@@ -4,7 +4,7 @@ import re
 import time
 from datetime import datetime
 from typing import Dict, List, Optional
-from urllib.parse import urlencode, quote_plus
+from urllib.parse import urlencode, quote_plus, urlparse
 
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import (
@@ -305,8 +305,18 @@ class AliExpressScraper(BaseScraper):
                     time.sleep(2)
 
                 # Decide selectores según host
-                host = (self.driver.current_url or "").split("/")[2].lower()
-                containers = self.MOBILE_CARD_CONTAINERS if host.startswith(("m.", "h5.")) else self.CARD_CONTAINERS
+                current_url = getattr(self.driver, "current_url", "") or ""
+                if not isinstance(current_url, (str, bytes)):
+                    current_url = str(current_url)
+                parsed_url = urlparse(current_url)
+                host = parsed_url.netloc or ""
+                if isinstance(host, bytes):
+                    host = host.decode("utf-8", "ignore")
+                host = host.lower()
+                if host.startswith(("m.", "h5.")):
+                    containers = self.MOBILE_CARD_CONTAINERS
+                else:
+                    containers = self.CARD_CONTAINERS
 
                 # Espera/scroll para lazy-load
                 bloques = self._find_all_any(containers, timeout=12)
