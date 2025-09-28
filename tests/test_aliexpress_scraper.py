@@ -224,6 +224,69 @@ class TestAliExpressScraper(unittest.TestCase):
         self.assertEqual(resultado["ventas"], 1200)
 
     @patch("scraper.aliexpress_scraper.BaseScraper.__init__", return_value=None)
+    def test_extract_card_handles_ks_lg_discount(self, mock_base_init):
+        scraper = AliExpressScraper()
+
+        anchor = MagicMock()
+        anchor.text = "Producto"
+
+        def anchor_get_attribute(attr):
+            mapping = {"href": "https://example.com/item", "title": "Producto"}
+            return mapping.get(attr)
+
+        anchor.get_attribute.side_effect = anchor_get_attribute
+
+        price_el = MagicMock()
+        price_el.text = "10,00"
+
+        def price_get_attribute(attr):
+            mapping = {"data-price": "10.00"}
+            return mapping.get(attr)
+
+        price_el.get_attribute.side_effect = price_get_attribute
+
+        pori_el = MagicMock()
+
+        def pori_get_attribute(attr):
+            mapping = {"data-original-price": "12.00"}
+            return mapping.get(attr)
+
+        pori_el.get_attribute.side_effect = pori_get_attribute
+        pori_el.text = "12,00"
+
+        discount_el = MagicMock()
+        discount_el.text = "-49%"
+
+        def discount_get_attribute(attr):
+            mapping = {"data-discount": None}
+            return mapping.get(attr)
+
+        discount_el.get_attribute.side_effect = discount_get_attribute
+
+        sold_el = MagicMock()
+
+        def sold_get_attribute(attr):
+            mapping = {"data-sold": "3"}
+            return mapping.get(attr)
+
+        sold_el.get_attribute.side_effect = sold_get_attribute
+        sold_el.text = "3 vendidos"
+
+        card = MagicMock()
+        card.text = ""
+
+        sequence = iter([anchor, price_el, pori_el, discount_el, sold_el])
+
+        def fake_first_match(root, selectors):
+            return next(sequence, None)
+
+        with patch.object(scraper, "_first_match", side_effect=fake_first_match):
+            resultado = scraper._extract_card(card)
+
+        self.assertIsNotNone(resultado)
+        self.assertEqual(resultado["descuento"], "-49%")
+
+    @patch("scraper.aliexpress_scraper.BaseScraper.__init__", return_value=None)
     def test_resolve_price_text_with_bs_structure(self, mock_base_init):
         scraper = AliExpressScraper()
 
@@ -261,6 +324,42 @@ class TestAliExpressScraper(unittest.TestCase):
         """
 
         self.assertFalse(scraper._is_blocked(mock_driver))
+
+    @patch("scraper.aliexpress_scraper.BaseScraper.__init__", return_value=None)
+    def test_parse_bs_fallback_captures_ks_lg_discount(self, mock_base_init):
+        scraper = AliExpressScraper()
+
+        html = """
+        <div class="list-item">
+            <a href="//example.com/item" title="Producto">Producto</a>
+            <div class="price">10,00</div>
+            <div class="original-price">12,00</div>
+            <span class="ks_lg">-49%</span>
+            <div class="sold">3 vendidos</div>
+        </div>
+        """
+
+        driver = MagicMock()
+        driver.current_url = "https://es.aliexpress.com/"
+        driver.page_source = html
+
+        def get_side_effect(url):
+            driver.current_url = url
+
+        driver.get.side_effect = get_side_effect
+
+        scraper.driver = driver
+        scraper.wait_ready = MagicMock()
+        scraper._accept_banners = MagicMock()
+        scraper._human_scroll_until_growth = MagicMock()
+        scraper._is_blocked = MagicMock(return_value=False)
+        scraper._apply_mobile_ua = MagicMock()
+        scraper._find_all_any = MagicMock(side_effect=[[], [], []])
+
+        resultados = scraper.parse("producto", paginas=1)
+
+        self.assertEqual(len(resultados), 1)
+        self.assertEqual(resultados[0]["descuento"], "-49%")
 
 
 if __name__ == "__main__":

@@ -176,7 +176,7 @@ class AliExpressScraper(BaseScraper):
         ".ks_kv span",
     ]
     DISCOUNT: List[str] = [
-        "[data-discount]", ".discount", ".sale-tag", "span._18_86"
+        "[data-discount]", ".discount", ".sale-tag", "span._18_86", ".ks_lg"
     ]
     SOLD: List[str] = [
         "[data-sold]",
