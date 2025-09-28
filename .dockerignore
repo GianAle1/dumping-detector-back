@@ -1,0 +1,6 @@
+selenium-profiles/
+cache/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env

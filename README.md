@@ -39,6 +39,12 @@ Para evitar problemas de compatibilidad, puedes ejecutar el proyecto con Docker 
 docker-compose up --build
 ```
 
+Los perfiles persistentes de Selenium se montan como volúmenes en tiempo de
+ejecución (consulta `docker-compose.yml`). Esto permite reutilizar cookies y
+sesiones sin reconstruir la imagen. Por este motivo, la carpeta local
+`selenium-profiles/` se ignora en la construcción (`.dockerignore`) y no debe
+copiarse dentro de la imagen.
+
 ### Variables de entorno
 
 Antes de iniciar la aplicación o los workers, define las siguientes variables de entorno:
