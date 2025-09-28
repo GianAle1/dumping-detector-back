@@ -35,8 +35,50 @@ BLOCK_PATTERNS = (
 )
 
 
+_RANGE_SPLIT_PATTERN = re.compile(r"(?<=\d)\s*[-–—]\s*(?=\d)")
+
+
 def limpiar_precio(texto: Optional[str]) -> Optional[float]:
-    """Normaliza cadenas de precio manejando separadores de miles y decimales."""
+    """Normaliza cadenas de precio manejando rangos y separadores comunes."""
+
+    def _normalizar(texto_unitario: str) -> Optional[float]:
+        # Filtramos solo dígitos y separadores comunes.
+        cleaned = re.sub(r"[^0-9.,]", "", texto_unitario)
+        if not cleaned:
+            return None
+
+        decimal_sep: Optional[str] = None
+        has_dot = "." in cleaned
+        has_comma = "," in cleaned
+
+        if has_dot and has_comma:
+            # Cuando hay ambos separadores, asumimos que el último que aparece es el decimal.
+            decimal_sep = "," if cleaned.rfind(",") > cleaned.rfind(".") else "."
+        elif has_dot:
+            head, _, tail = cleaned.rpartition(".")
+            if len(tail) in (1, 2):
+                decimal_sep = "."
+        elif has_comma:
+            head, _, tail = cleaned.rpartition(",")
+            if len(tail) in (1, 2):
+                decimal_sep = ","
+
+        if decimal_sep:
+            int_part, dec_part = cleaned.rsplit(decimal_sep, 1)
+            int_digits = re.sub(r"[^0-9]", "", int_part)
+            dec_digits = re.sub(r"[^0-9]", "", dec_part)
+            if not int_digits and not dec_digits:
+                return None
+            number_str = f"{int_digits}.{dec_digits or '0'}"
+        else:
+            number_str = re.sub(r"[^0-9]", "", cleaned)
+            if not number_str:
+                return None
+
+        try:
+            return float(number_str)
+        except ValueError:
+            return None
 
     if texto is None:
         return None
@@ -45,43 +87,21 @@ def limpiar_precio(texto: Optional[str]) -> Optional[float]:
     if not texto:
         return None
 
-    # Filtramos solo dígitos y separadores comunes.
-    cleaned = re.sub(r"[^0-9.,]", "", texto)
-    if not cleaned:
-        return None
+    # Detectamos rangos explícitos y seleccionamos el valor mínimo.
+    if _RANGE_SPLIT_PATTERN.search(texto):
+        candidatos = []
+        partes = [p.strip() for p in _RANGE_SPLIT_PATTERN.split(texto) if p.strip()]
+        for parte in partes:
+            valor = _normalizar(parte)
+            if valor is not None:
+                candidatos.append((valor, parte))
+        if candidatos:
+            # Elegimos la parte con el valor mínimo para normalizarla después.
+            texto = min(candidatos, key=lambda item: item[0])[1]
+        elif partes:
+            texto = partes[0]
 
-    decimal_sep: Optional[str] = None
-    has_dot = "." in cleaned
-    has_comma = "," in cleaned
-
-    if has_dot and has_comma:
-        # Cuando hay ambos separadores, asumimos que el último que aparece es el decimal.
-        decimal_sep = "," if cleaned.rfind(",") > cleaned.rfind(".") else "."
-    elif has_dot:
-        head, _, tail = cleaned.rpartition(".")
-        if len(tail) in (1, 2):
-            decimal_sep = "."
-    elif has_comma:
-        head, _, tail = cleaned.rpartition(",")
-        if len(tail) in (1, 2):
-            decimal_sep = ","
-
-    if decimal_sep:
-        int_part, dec_part = cleaned.rsplit(decimal_sep, 1)
-        int_digits = re.sub(r"[^0-9]", "", int_part)
-        dec_digits = re.sub(r"[^0-9]", "", dec_part)
-        if not int_digits and not dec_digits:
-            return None
-        number_str = f"{int_digits}.{dec_digits or '0'}"
-    else:
-        number_str = re.sub(r"[^0-9]", "", cleaned)
-        if not number_str:
-            return None
-
-    try:
-        return float(number_str)
-    except ValueError:
-        return None
+    return _normalizar(texto)
 
 
 def limpiar_cantidad(texto: Optional[str]) -> int:
