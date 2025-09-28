@@ -5,6 +5,7 @@ import tempfile
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 
 
 class BaseScraper:
@@ -110,9 +111,16 @@ class BaseScraper:
         for _ in range(times):
             prev = self.driver.execute_script("return document.body.scrollHeight")
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            WebDriverWait(self.driver, delay).until(
-                lambda d: d.execute_script("return document.body.scrollHeight") > prev
-            )
+            try:
+                WebDriverWait(self.driver, delay).until(
+                    lambda d: d.execute_script("return document.body.scrollHeight") > prev
+                )
+            except TimeoutException:
+                current = self.driver.execute_script(
+                    "return document.body.scrollHeight"
+                )
+                if current <= prev:
+                    break
 
     def close(self):
         # Si estás mirando, puedes dejar la ventana abierta exportando VISUAL_MODE=1

@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import patch, MagicMock
 
+from selenium.common.exceptions import TimeoutException
+
 from scraper.base import BaseScraper
 
 
@@ -40,6 +42,28 @@ class TestBaseScraper(unittest.TestCase):
         )
         with self.assertRaises(FileNotFoundError):
             BaseScraper()
+
+    @patch("scraper.base.WebDriverWait")
+    def test_scroll_handles_timeout_without_exception(self, mock_wait):
+        scraper = object.__new__(BaseScraper)
+        driver = MagicMock()
+        scraper.driver = driver
+
+        driver.execute_script.side_effect = [
+            100,  # initial height
+            None,  # scroll action
+            100,  # height after timeout check
+        ]
+
+        mock_wait.return_value.until.side_effect = TimeoutException()
+
+        try:
+            scraper.scroll(times=2, delay=1)
+        except TimeoutException:  # pragma: no cover - should not be raised
+            self.fail("scroll should handle TimeoutException without raising")
+
+        mock_wait.assert_called_once()
+        self.assertEqual(driver.execute_script.call_count, 3)
 
 
 if __name__ == "__main__":
