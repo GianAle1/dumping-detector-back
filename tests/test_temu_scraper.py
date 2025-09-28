@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
+from urllib.parse import quote_plus
 
 from scraper.temu_scraper import TemuScraper
 
@@ -14,6 +15,7 @@ class TestTemuScraper(unittest.TestCase):
         mock_driver = MagicMock()
         scraper.driver = mock_driver
         scraper.scroll = MagicMock()
+        scraper.close = MagicMock()
 
         mock_driver.page_source = """
         <html><body>
@@ -27,9 +29,15 @@ class TestTemuScraper(unittest.TestCase):
         </body></html>
         """
 
-        productos = scraper.parse("producto")
+        search_term = "cafetera & taza fría"
+        productos = scraper.parse(search_term)
 
         self.assertIsNone(productos[0]["descuento_extra"])
+        expected_url = (
+            "https://www.temu.com/pe/search.html?search_key="
+            f"{quote_plus(search_term)}"
+        )
+        mock_driver.get.assert_called_once_with(expected_url)
 
 
 if __name__ == "__main__":

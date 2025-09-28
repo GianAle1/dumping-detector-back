@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
+from urllib.parse import quote_plus
 import logging
 from .base import BaseScraper
 
@@ -11,7 +12,8 @@ from .base import BaseScraper
 class TemuScraper(BaseScraper):
     def parse(self, producto: str):
         try:
-            url = f"https://www.temu.com/pe/search.html?search_key={producto.replace(' ', '%20')}"
+            encoded_product = quote_plus(producto)
+            url = f"https://www.temu.com/pe/search.html?search_key={encoded_product}"
             productos = []
 
             cargada = False
