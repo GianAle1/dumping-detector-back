@@ -5,75 +5,92 @@ import tempfile
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, SessionNotCreatedException
 
 
 class BaseScraper:
     """Common setup for Selenium-based scrapers (visible o headless)."""
 
     def __init__(self, data_dir: str = "data"):
-        remote_url = os.getenv("SELENIUM_REMOTE_URL")
-        options = webdriver.ChromeOptions()
-
-        # Idioma + UA realista
-        options.add_argument("--lang=es-ES,es;q=0.9")
-        options.add_argument(
-            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
-        )
-
-        # Flags estables
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--window-size=1366,900")
-        options.add_argument("--start-maximized")
-
-        # Stealth básico
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option("useAutomationExtension", False)
-        options.add_argument("--disable-blink-features=AutomationControlled")
-
-        # Proxy (opcional). Exporta PROXY_URL si lo usas (ideal residencial).
-        proxy = os.getenv("PROXY_URL")
-        if proxy:
-            options.add_argument(f"--proxy-server={proxy}")
-
-        # PERFIL
-        use_custom_profile = os.getenv("USE_CUSTOM_PROFILE", "").lower() in {
-            "1",
-            "true",
-            "yes",
-        }
+        self.data_dir = data_dir
+        os.makedirs(self.data_dir, exist_ok=True)
 
         self._tmp_profile = None
         self._temp_dir = None
 
+        remote_url = os.getenv("SELENIUM_REMOTE_URL")  # ej: http://selenium:4444
+        proxy = os.getenv("PROXY_URL")
+        use_custom_profile = os.getenv("USE_CUSTOM_PROFILE", "").lower() in {"1", "true", "yes"}
+
+        def build_options(use_profile: bool, profile_dir: str | None) -> webdriver.ChromeOptions:
+            opts = webdriver.ChromeOptions()
+            # Idioma + UA realista
+            opts.add_argument("--lang=es-ES,es;q=0.9")
+            opts.add_argument(
+                "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+            )
+            # Flags estables para contenedor
+            opts.add_argument("--no-sandbox")
+            opts.add_argument("--disable-dev-shm-usage")
+            opts.add_argument("--disable-gpu")
+            opts.add_argument("--window-size=1366,900")
+            # Evita el bug de DevToolsActivePort
+            opts.add_argument("--remote-debugging-port=0")
+            # Stealth básico
+            opts.add_experimental_option("excludeSwitches", ["enable-automation"])
+            opts.add_experimental_option("useAutomationExtension", False)
+            opts.add_argument("--disable-blink-features=AutomationControlled")
+            # Proxy (opcional)
+            if proxy:
+                opts.add_argument(f"--proxy-server={proxy}")
+            # Perfil (solo si lo pedimos)
+            if use_profile and profile_dir:
+                # OJO: no verificamos desde aquí si existe; Chrome lo validará dentro del contenedor Selenium.
+                opts.add_argument(f"--user-data-dir={profile_dir}")
+            return opts
+
         if remote_url:
-            # Perfil PERSISTENTE dentro del contenedor selenium (montado por docker-compose)
-            profile_dir = os.getenv("SELENIUM_PROFILE_DIR", "/home/seluser/profiles/aliexpress")
-            options.add_argument(f"--user-data-dir={profile_dir}")
-            self.driver = webdriver.Remote(command_executor=remote_url, options=options)
+            # --- MODO REMOTO: Selenium Standalone (contenedor selenium)
+            profile_dir = os.getenv("SELENIUM_PROFILE_DIR") if use_custom_profile else None
+
+            # 1º intento: con perfil (si está habilitado)
+            options = build_options(use_custom_profile, profile_dir)
+            try:
+                self.driver = webdriver.Remote(command_executor=remote_url, options=options)
+            except SessionNotCreatedException as e:
+                # Si Chrome crashea (p.ej. perfil corrupto/permiso), reintenta sin perfil
+                options = build_options(False, None)
+                self.driver = webdriver.Remote(command_executor=remote_url, options=options)
+
         else:
-            # Local (por si alguna vez corres sin selenium remoto)
-            chromium_path = shutil.which("chromium")
+            # --- MODO LOCAL: sin grid
+            chromium_path = shutil.which("chromium") or shutil.which("google-chrome") or shutil.which("chrome")
             if not chromium_path:
-                raise FileNotFoundError("Chromium no encontrado en PATH.")
-            options.binary_location = chromium_path
-
-            if use_custom_profile:
-                self._temp_dir = tempfile.TemporaryDirectory(prefix="ali_profile_")
-                options.add_argument(f"--user-data-dir={self._temp_dir.name}")
-            else:
-                tmp_profile = tempfile.mkdtemp(prefix="ali_profile_")
-                options.add_argument(f"--user-data-dir={tmp_profile}")
-                self._tmp_profile = tmp_profile
-
+                raise FileNotFoundError("Chromium/Chrome no encontrado en PATH.")
             chromedriver_path = shutil.which("chromedriver")
             if not chromedriver_path:
                 raise FileNotFoundError("chromedriver no encontrado en PATH.")
+
+            # Prepara perfil local (temporal por defecto)
+            local_profile_dir = None
+            if use_custom_profile:
+                self._temp_dir = tempfile.TemporaryDirectory(prefix="ali_profile_")
+                local_profile_dir = self._temp_dir.name
+            else:
+                self._tmp_profile = tempfile.mkdtemp(prefix="ali_profile_")
+                local_profile_dir = self._tmp_profile
+
+            options = build_options(True, local_profile_dir)
+            options.binary_location = chromium_path
             service = Service(chromedriver_path)
-            self.driver = webdriver.Chrome(service=service, options=options)
+            try:
+                self.driver = webdriver.Chrome(service=service, options=options)
+            except SessionNotCreatedException:
+                # Reintento sin perfil local
+                options = build_options(False, None)
+                options.binary_location = chromium_path
+                self.driver = webdriver.Chrome(service=service, options=options)
 
         # Stealth extra vía CDP (tras crear driver)
         try:
@@ -89,10 +106,6 @@ class BaseScraper:
             )
         except Exception:
             pass
-
-        # Estructura de datos
-        self.data_dir = data_dir
-        os.makedirs(self.data_dir, exist_ok=True)
 
     def __enter__(self):
         return self
@@ -116,9 +129,7 @@ class BaseScraper:
                     lambda d: d.execute_script("return document.body.scrollHeight") > prev
                 )
             except TimeoutException:
-                current = self.driver.execute_script(
-                    "return document.body.scrollHeight"
-                )
+                current = self.driver.execute_script("return document.body.scrollHeight")
                 if current <= prev:
                     break
 
@@ -127,7 +138,10 @@ class BaseScraper:
         if os.getenv("VISUAL_MODE") == "1":
             return
         if getattr(self, "driver", None):
-            self.driver.quit()
+            try:
+                self.driver.quit()
+            except Exception:
+                pass
             self.driver = None
         if getattr(self, "_tmp_profile", None):
             shutil.rmtree(self._tmp_profile, ignore_errors=True)

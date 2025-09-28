@@ -1,5 +1,5 @@
-# (puedes quitar la línea "version" si quieres; es obsoleta)
-version: "3.9"
+# Puedes quitar "version", es obsoleta
+# version: "3.9"
 
 services:
   redis:
@@ -11,20 +11,27 @@ services:
     image: selenium/standalone-chromium:125.0
     shm_size: 2g
     environment:
-      - SE_ENABLE_UI=true           # noVNC en :7900
-      - SE_NODE_MAX_SESSIONS=1      # 1 sesión visible (estable para observar)
+      - SE_ENABLE_UI=true
+      - SE_NODE_MAX_SESSIONS=1
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
-      - SE_VNC_NO_PASSWORD=1        # ← quita password
+      - SE_VNC_NO_PASSWORD=1
     ports:
-      - "4444:4444"                 # WebDriver
-      - "7900:7900"                 # noVNC
+      - "4444:4444"   # WebDriver
+      - "7900:7900"   # noVNC
     volumes:
-      - ./selenium-profiles:/home/seluser/profiles   # ← PERFIL PERSISTENTE
+      - ./selenium-profiles:/home/seluser/profiles
+    entrypoint: ["/bin/bash","-lc"]
+    command: >
+      mkdir -p /home/seluser/profiles/aliexpress &&
+      chown -R seluser:seluser /home/seluser/profiles &&
+      /opt/bin/entry_point.sh
     healthcheck:
-      test: ["CMD", "bash", "-lc", "curl -fsS http://localhost:4444/status | jq -e '.value.ready'"]
+      # Evitamos jq: comprobamos "ready":true con grep
+      test: ["CMD-SHELL", "curl -fsS http://localhost:4444/status | grep -q '\"ready\": *true'"]
       interval: 5s
       timeout: 5s
       retries: 20
+      start_period: 10s
 
   worker:
     build: .
@@ -33,9 +40,9 @@ services:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
       SELENIUM_REMOTE_URL: http://selenium:4444
-      SELENIUM_PROFILE_DIR: /home/seluser/profiles/aliexpress   # ← usa el perfil persistente
-      VISUAL_MODE: "1"                 # deja la ventana abierta mientras miras (si lo implementaste)
-      # PROXY_URL: http://user:pass@host:port  # (opcional, residencial)
+      SELENIUM_PROFILE_DIR: /home/seluser/profiles/aliexpress
+      VISUAL_MODE: "1"    # si quieres dejar el navegador abierto
+      # PROXY_URL: http://user:pass@host:port  # opcional
     depends_on:
       selenium:
         condition: service_healthy
