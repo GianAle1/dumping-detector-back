@@ -184,6 +184,25 @@ class TestAliExpressScraper(unittest.TestCase):
 
         self.assertAlmostEqual(precio, 1234.56)
 
+    @patch("scraper.aliexpress_scraper.BaseScraper.__init__", return_value=None)
+    def test_is_blocked_ignores_meta_robots(self, mock_base_init):
+        scraper = AliExpressScraper()
+        mock_driver = MagicMock()
+        mock_driver.current_url = "https://es.aliexpress.com/item"
+        mock_driver.page_source = """
+        <html>
+            <head>
+                <meta name="robots" content="noindex, nofollow" />
+                <title>Producto regular</title>
+            </head>
+            <body>
+                <div>Contenido disponible sin captcha.</div>
+            </body>
+        </html>
+        """
+
+        self.assertFalse(scraper._is_blocked(mock_driver))
+
 
 if __name__ == "__main__":
     unittest.main()
