@@ -3,7 +3,7 @@ import logging
 import re
 import time
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 from urllib.parse import urlencode, quote_plus, urlparse
 
 from bs4 import BeautifulSoup
@@ -122,10 +122,24 @@ class AliExpressScraper(BaseScraper):
     PRICE: List[str] = [
         "[data-price]",
         "[data-widget='price']",
-        "div.price", "span.price", "span._18_85"
+        "div.price",
+        "span.price",
+        "span._18_85",
+        "div.ks_kn",
+        "div.ks_le",
+        ".ks_kn span",
+        ".ks_le span",
+        ".ks_cv",
     ]
     PRICE_ORIGINAL: List[str] = [
-        "[data-original-price]", "del", ".original-price", "span._18_84"
+        "[data-original-price]",
+        "del",
+        ".original-price",
+        "span._18_84",
+        "div.ks_kw",
+        "div.ks_kv",
+        ".ks_kw span",
+        ".ks_kv span",
     ]
     DISCOUNT: List[str] = [
         "[data-discount]", ".discount", ".sale-tag", "span._18_86"
@@ -142,6 +156,13 @@ class AliExpressScraper(BaseScraper):
         ".product-info-sale",
         ".product-info-sold",
     ]
+    PRICE_CONTAINER_CLASSES: Set[str] = {
+        "ks_kn",
+        "ks_le",
+        "ks_cv",
+        "ks_kw",
+        "ks_kv",
+    }
 
     # ----------------- utilidades privadas -----------------
 
@@ -212,6 +233,61 @@ class AliExpressScraper(BaseScraper):
     def _to_int(text: Optional[str]) -> int:
         return limpiar_cantidad(text)
 
+    @classmethod
+    def _resolve_price_text(cls, node, data_attribute: Optional[str] = None) -> Optional[str]:
+        if node is None:
+            return None
+
+        get_attribute = getattr(node, "get_attribute", None)
+        if callable(get_attribute):
+            if data_attribute:
+                value = get_attribute(data_attribute)
+                if value:
+                    return value.strip()
+
+            class_attr = get_attribute("class") or ""
+            classes = class_attr.split()
+            if any(class_name in cls.PRICE_CONTAINER_CLASSES for class_name in classes):
+                try:
+                    spans = node.find_elements(By.CSS_SELECTOR, "span")
+                    fragments = [
+                        (span.text or "").strip()
+                        for span in spans
+                        if (span.text or "").strip()
+                    ]
+                    if fragments:
+                        return "".join(fragments)
+                except Exception:
+                    pass
+
+            inner = get_attribute("innerText")
+            if inner:
+                return inner.strip()
+
+            text_content = getattr(node, "text", "")
+            return text_content.strip() or None
+
+        if data_attribute:
+            value = node.get(data_attribute)
+            if value:
+                return value.strip()
+
+        classes = node.get("class", [])
+        if isinstance(classes, str):
+            classes = classes.split()
+        if any(cls_name in cls.PRICE_CONTAINER_CLASSES for cls_name in classes):
+            spans = node.select("span")
+            fragments = [
+                span.get_text(strip=True)
+                for span in spans
+                if span.get_text(strip=True)
+            ]
+            if fragments:
+                return "".join(fragments)
+
+        text_content = node.get_text(" ", strip=True)
+        return text_content or None
+
     def _extract_card(self, card) -> Optional[Dict]:
         try:
             a = self._first_match(card, self.A_CARD) or card
@@ -221,15 +297,11 @@ class AliExpressScraper(BaseScraper):
             titulo = (a.get_attribute("title") or a.text or "Sin título").strip()
 
             price_el = self._first_match(card, self.PRICE)
-            price_text = price_el.get_attribute("data-price") if price_el else None
-            if not price_text and price_el:
-                price_text = price_el.text
+            price_text = self._resolve_price_text(price_el, "data-price")
             precio = self._to_float(price_text)
 
             pori_el = self._first_match(card, self.PRICE_ORIGINAL)
-            pori_text = pori_el.get_attribute("data-original-price") if pori_el else None
-            if not pori_text and pori_el:
-                pori_text = pori_el.text
+            pori_text = self._resolve_price_text(pori_el, "data-original-price")
             precio_original = self._to_float(pori_text)
 
             desc_el = self._first_match(card, self.DISCOUNT)
@@ -381,11 +453,11 @@ class AliExpressScraper(BaseScraper):
                                 titulo = (a.get("title") or a.get_text(" ") or "Sin título").strip()
 
                                 price_tag = bloque.select_one(", ".join(self.PRICE))
-                                ptxt = (price_tag.get("data-price") if price_tag else None) or (price_tag.get_text(" ") if price_tag else None)
+                                ptxt = self._resolve_price_text(price_tag, "data-price")
                                 precio = self._to_float(ptxt)
 
                                 pori_tag = bloque.select_one(", ".join(self.PRICE_ORIGINAL))
-                                potxt = (pori_tag.get("data-original-price") if pori_tag else None) or (pori_tag.get_text(" ") if pori_tag else None)
+                                potxt = self._resolve_price_text(pori_tag, "data-original-price")
                                 precio_original = self._to_float(potxt)
 
                                 desc_tag = bloque.select_one(", ".join(self.DISCOUNT))

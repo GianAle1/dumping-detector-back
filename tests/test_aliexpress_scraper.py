@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock, call
 from urllib.parse import quote_plus
 
+from bs4 import BeautifulSoup
 from selenium.common.exceptions import TimeoutException
 
 from scraper.aliexpress_scraper import AliExpressScraper
@@ -82,6 +83,106 @@ class TestAliExpressScraper(unittest.TestCase):
         self.assertEqual(resultados, [])
         self.assertTrue(all(call.args[0] == scraper.CARD_CONTAINERS for call in mock_find_all.call_args_list))
         mock_extract.assert_not_called()
+
+    @patch("scraper.aliexpress_scraper.BaseScraper.__init__", return_value=None)
+    def test_extract_card_handles_price_container(self, mock_base_init):
+        scraper = AliExpressScraper()
+
+        anchor = MagicMock()
+        anchor.text = "Producto"
+
+        def anchor_get_attribute(attr):
+            mapping = {"href": "https://example.com/item", "title": "Producto"}
+            return mapping.get(attr)
+
+        anchor.get_attribute.side_effect = anchor_get_attribute
+
+        price_container = MagicMock()
+        price_container.text = "US$ 12,34"
+        price_container.tag_name = "div"
+
+        price_spans = []
+        for text in ("US$", "12,34"):
+            span = MagicMock()
+            span.text = text
+            price_spans.append(span)
+
+        def price_get_attribute(attr):
+            mapping = {
+                "data-price": None,
+                "class": "ks_kn ks_le",
+                "innerText": "US$ 12,34",
+            }
+            return mapping.get(attr)
+
+        price_container.get_attribute.side_effect = price_get_attribute
+        price_container.find_elements.return_value = price_spans
+
+        pori_container = MagicMock()
+        pori_container.text = "US$ 15,00"
+        pori_container.tag_name = "div"
+
+        pori_spans = []
+        for text in ("US$", "15,00"):
+            span = MagicMock()
+            span.text = text
+            pori_spans.append(span)
+
+        def pori_get_attribute(attr):
+            mapping = {
+                "data-original-price": None,
+                "class": "ks_kw ks_kv",
+                "innerText": "US$ 15,00",
+            }
+            return mapping.get(attr)
+
+        pori_container.get_attribute.side_effect = pori_get_attribute
+        pori_container.find_elements.return_value = pori_spans
+
+        sold_el = MagicMock()
+
+        def sold_get_attribute(attr):
+            mapping = {"data-sold": "1.2k"}
+            return mapping.get(attr)
+
+        sold_el.get_attribute.side_effect = sold_get_attribute
+        sold_el.text = "1.2k vendidos"
+
+        card = MagicMock()
+        card.text = "1.2k vendidos"
+
+        sequence = iter([anchor, price_container, pori_container, None, sold_el])
+
+        def fake_first_match(root, selectors):
+            return next(sequence, None)
+
+        with patch.object(scraper, "_first_match", side_effect=fake_first_match):
+            resultado = scraper._extract_card(card)
+
+        self.assertIsNotNone(resultado)
+        self.assertAlmostEqual(resultado["precio"], 12.34)
+        self.assertAlmostEqual(resultado["precio_original"], 15.0)
+        self.assertEqual(resultado["ventas"], 1200)
+
+    @patch("scraper.aliexpress_scraper.BaseScraper.__init__", return_value=None)
+    def test_resolve_price_text_with_bs_structure(self, mock_base_init):
+        scraper = AliExpressScraper()
+
+        html = """
+        <div class="list-item">
+            <div class="ks_kn">
+                <span class="ks_cv">US$</span>
+                <span class="ks_le">1.234,56</span>
+            </div>
+        </div>
+        """
+        soup = BeautifulSoup(html, "html.parser")
+        bloque = soup.select_one("div.list-item")
+        price_tag = bloque.select_one(", ".join(scraper.PRICE))
+
+        precio = scraper._to_float(scraper._resolve_price_text(price_tag, "data-price"))
+
+        self.assertAlmostEqual(precio, 1234.56)
 
 
 if __name__ == "__main__":
