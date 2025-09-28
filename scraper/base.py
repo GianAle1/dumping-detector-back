@@ -25,22 +25,8 @@ class BaseScraper:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
-<<<<<<< HEAD
         options.add_argument("--window-size=1366,900")
-=======
-
-        use_custom_profile = os.getenv("USE_CUSTOM_PROFILE", "").lower() in {
-            "1",
-            "true",
-            "yes",
-        }
-        temp_dir = None
-        if use_custom_profile:
-            temp_dir = tempfile.TemporaryDirectory()
-            options.add_argument(f"--user-data-dir={temp_dir.name}")
-
         options.add_argument("--start-maximized")
->>>>>>> e039499f74cb94ab52beac0ea6eedda1c553ac93
 
         # Stealth básico
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -53,12 +39,20 @@ class BaseScraper:
             options.add_argument(f"--proxy-server={proxy}")
 
         # PERFIL
+        use_custom_profile = os.getenv("USE_CUSTOM_PROFILE", "").lower() in {
+            "1",
+            "true",
+            "yes",
+        }
+
+        self._tmp_profile = None
+        self._temp_dir = None
+
         if remote_url:
             # Perfil PERSISTENTE dentro del contenedor selenium (montado por docker-compose)
             profile_dir = os.getenv("SELENIUM_PROFILE_DIR", "/home/seluser/profiles/aliexpress")
             options.add_argument(f"--user-data-dir={profile_dir}")
             self.driver = webdriver.Remote(command_executor=remote_url, options=options)
-            self._tmp_profile = None
         else:
             # Local (por si alguna vez corres sin selenium remoto)
             chromium_path = shutil.which("chromium")
@@ -66,9 +60,13 @@ class BaseScraper:
                 raise FileNotFoundError("Chromium no encontrado en PATH.")
             options.binary_location = chromium_path
 
-            tmp_profile = tempfile.mkdtemp(prefix="ali_profile_")
-            options.add_argument(f"--user-data-dir={tmp_profile}")
-            self._tmp_profile = tmp_profile
+            if use_custom_profile:
+                self._temp_dir = tempfile.TemporaryDirectory(prefix="ali_profile_")
+                options.add_argument(f"--user-data-dir={self._temp_dir.name}")
+            else:
+                tmp_profile = tempfile.mkdtemp(prefix="ali_profile_")
+                options.add_argument(f"--user-data-dir={tmp_profile}")
+                self._tmp_profile = tmp_profile
 
             chromedriver_path = shutil.which("chromedriver")
             if not chromedriver_path:
@@ -88,26 +86,12 @@ class BaseScraper:
                     Object.defineProperty(navigator, 'languages', {get: () => ['es-ES','es']});
                 """}
             )
-<<<<<<< HEAD
         except Exception:
             pass
-=======
-        service = Service(chromedriver_path)
-        try:
-            self.driver = webdriver.Chrome(service=service, options=options)
-        except Exception:
-            if temp_dir:
-                temp_dir.cleanup()
-            raise
->>>>>>> e039499f74cb94ab52beac0ea6eedda1c553ac93
 
         # Estructura de datos
         self.data_dir = data_dir
         os.makedirs(self.data_dir, exist_ok=True)
-<<<<<<< HEAD
-=======
-        self.temp_dir = temp_dir
->>>>>>> e039499f74cb94ab52beac0ea6eedda1c553ac93
 
     def __enter__(self):
         return self
@@ -137,12 +121,9 @@ class BaseScraper:
         if getattr(self, "driver", None):
             self.driver.quit()
             self.driver = None
-<<<<<<< HEAD
         if getattr(self, "_tmp_profile", None):
             shutil.rmtree(self._tmp_profile, ignore_errors=True)
             self._tmp_profile = None
-=======
-        if getattr(self, "temp_dir", None):
-            self.temp_dir.cleanup()
-            self.temp_dir = None
->>>>>>> e039499f74cb94ab52beac0ea6eedda1c553ac93
+        if getattr(self, "_temp_dir", None):
+            self._temp_dir.cleanup()
+            self._temp_dir = None
