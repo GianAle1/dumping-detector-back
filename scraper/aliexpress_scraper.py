@@ -22,6 +22,82 @@ from .base import BaseScraper
 BLOCK_PATTERNS = ("punish", "unusual traffic", "error:gvs", "robot", "captcha")
 
 
+def limpiar_precio(texto: Optional[str]) -> Optional[float]:
+    """Normaliza cadenas de precio manejando separadores de miles y decimales."""
+
+    if texto is None:
+        return None
+
+    texto = texto.strip()
+    if not texto:
+        return None
+
+    # Filtramos solo dígitos y separadores comunes.
+    cleaned = re.sub(r"[^0-9.,]", "", texto)
+    if not cleaned:
+        return None
+
+    decimal_sep: Optional[str] = None
+    has_dot = "." in cleaned
+    has_comma = "," in cleaned
+
+    if has_dot and has_comma:
+        # Cuando hay ambos separadores, asumimos que el último que aparece es el decimal.
+        decimal_sep = "," if cleaned.rfind(",") > cleaned.rfind(".") else "."
+    elif has_dot:
+        head, _, tail = cleaned.rpartition(".")
+        if len(tail) in (1, 2):
+            decimal_sep = "."
+    elif has_comma:
+        head, _, tail = cleaned.rpartition(",")
+        if len(tail) in (1, 2):
+            decimal_sep = ","
+
+    if decimal_sep:
+        int_part, dec_part = cleaned.rsplit(decimal_sep, 1)
+        int_digits = re.sub(r"[^0-9]", "", int_part)
+        dec_digits = re.sub(r"[^0-9]", "", dec_part)
+        if not int_digits and not dec_digits:
+            return None
+        number_str = f"{int_digits}.{dec_digits or '0'}"
+    else:
+        number_str = re.sub(r"[^0-9]", "", cleaned)
+        if not number_str:
+            return None
+
+    try:
+        return float(number_str)
+    except ValueError:
+        return None
+
+
+def limpiar_cantidad(texto: Optional[str]) -> int:
+    """Convierte expresiones de cantidad como "1.2k" o "3 mil" a enteros."""
+
+    if texto is None:
+        return 0
+
+    texto_normalizado = texto.strip().lower()
+    if not texto_normalizado:
+        return 0
+
+    texto_normalizado = texto_normalizado.replace("+", "")
+
+    multiplicador = 1
+    if re.search(r"k\b", texto_normalizado):
+        multiplicador = 1000
+        texto_normalizado = re.sub(r"k\b", "", texto_normalizado)
+    if "mil" in texto_normalizado:
+        multiplicador = max(multiplicador, 1000)
+        texto_normalizado = texto_normalizado.replace("mil", "")
+
+    numero = limpiar_precio(texto_normalizado)
+    if numero is None:
+        numero = 0.0
+
+    return int(round(numero * multiplicador))
+
+
 class AliExpressScraper(BaseScraper):
     """Scraper AliExpress (visible) con banners, selectores robustos y fallback móvil."""
 
@@ -121,19 +197,11 @@ class AliExpressScraper(BaseScraper):
 
     @staticmethod
     def _to_float(text: Optional[str]) -> Optional[float]:
-        if not text:
-            return None
-        cleaned = re.sub(r"[^0-9.,]", "", text).replace(",", ".")
-        try:
-            return float(cleaned)
-        except Exception:
-            return None
+        return limpiar_precio(text)
 
     @staticmethod
     def _to_int(text: Optional[str]) -> int:
-        if not text:
-            return 0
-        return int(re.sub(r"[^\d]", "", text) or 0)
+        return limpiar_cantidad(text)
 
     def _extract_card(self, card) -> Optional[Dict]:
         try:
