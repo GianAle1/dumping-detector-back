@@ -19,7 +19,20 @@ from selenium.webdriver.support.ui import WebDriverWait
 from .base import BaseScraper
 
 
-BLOCK_PATTERNS = ("punish", "unusual traffic", "error:gvs", "robot", "captcha")
+BLOCK_PATTERNS = (
+    "punish",
+    "unusual traffic",
+    "error:gvs",
+    "robot check",
+    "are you a robot",
+    "are you human",
+    "please verify you are a human",
+    "verify you are human",
+    "security verification",
+    "complete the captcha",
+    "captcha verification",
+    "please complete the captcha",
+)
 
 
 def limpiar_precio(texto: Optional[str]) -> Optional[float]:
@@ -334,11 +347,40 @@ class AliExpressScraper(BaseScraper):
 
     @staticmethod
     def _is_blocked(driver) -> bool:
-        url = (driver.current_url or "").lower()
+        url = getattr(driver, "current_url", "") or ""
+        if isinstance(url, bytes):
+            url = url.decode("utf-8", "ignore")
+        url = url.lower()
         if any(p in url for p in BLOCK_PATTERNS):
             return True
-        html = (driver.page_source or "").lower()
-        return any(p in html for p in BLOCK_PATTERNS)
+
+        html = getattr(driver, "page_source", "") or ""
+        if isinstance(html, bytes):
+            html = html.decode("utf-8", "ignore")
+
+        text_content = ""
+        try:
+            soup = BeautifulSoup(html, "html.parser")
+            for meta in soup.find_all(
+                "meta", attrs={"name": re.compile(r"^robots$", re.IGNORECASE)}
+            ):
+                meta.decompose()
+            text_content = soup.get_text(separator=" ", strip=True).lower()
+        except Exception:
+            cleaned_html = re.sub(
+                r"<meta[^>]+name=['\"]robots['\"][^>]*>",
+                " ",
+                html,
+                flags=re.IGNORECASE,
+            )
+            text_content = cleaned_html.lower()
+
+        if any(p in text_content for p in BLOCK_PATTERNS):
+            return True
+
+        verification_markers = ("g-recaptcha", "h-captcha", "cf-chl-captcha")
+        lowered_html = html.lower()
+        return any(marker in lowered_html for marker in verification_markers)
 
     @staticmethod
     def _apply_mobile_ua(driver):
