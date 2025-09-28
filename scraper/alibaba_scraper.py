@@ -27,12 +27,38 @@ def extraer_rango_precio(texto):
     texto_limpio = re.sub(r"(US\$|S/|[$€£¥]|[A-Z]{1,4})", "", texto)
     texto_limpio = re.sub(r"[^0-9.,-]", "", texto_limpio)
 
+    def normalizar_a_float(valor: str) -> float:
+        """Normaliza un número eliminando separadores de miles y unifica la coma decimal."""
+
+        valor = valor.replace("\xa0", "").replace("\u202f", "").replace(" ", "")
+
+        if valor.count(",") > 1 and valor.count(".") == 0:
+            return float(valor.replace(",", ""))
+        if valor.count(".") > 1 and valor.count(",") == 0:
+            return float(valor.replace(".", ""))
+
+        ultima_coma = valor.rfind(",")
+        ultimo_punto = valor.rfind(".")
+
+        if ultima_coma > ultimo_punto:
+            enteros = valor[:ultima_coma].replace(".", "").replace(",", "")
+            decimales = valor[ultima_coma + 1 :].replace(".", "").replace(",", "")
+            valor_normalizado = f"{enteros}.{decimales}" if decimales else enteros
+        elif ultimo_punto != -1:
+            enteros = valor[:ultimo_punto].replace(",", "")
+            decimales = valor[ultimo_punto + 1 :].replace(",", "")
+            valor_normalizado = f"{enteros}.{decimales}" if decimales else enteros
+        else:
+            valor_normalizado = valor.replace(",", "")
+
+        return float(valor_normalizado)
+
     match = re.findall(r"([\d.,]+)", texto_limpio)
     if len(match) == 1:
-        precio_min = precio_max = float(match[0].replace(",", ""))
+        precio_min = precio_max = normalizar_a_float(match[0])
     elif len(match) >= 2:
-        precio_min = float(match[0].replace(",", ""))
-        precio_max = float(match[1].replace(",", ""))
+        precio_min = normalizar_a_float(match[0])
+        precio_max = normalizar_a_float(match[1])
     else:
         return None, None, None, moneda
 
