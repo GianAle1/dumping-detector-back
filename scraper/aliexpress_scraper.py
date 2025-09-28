@@ -124,8 +124,9 @@ class AliExpressScraper(BaseScraper):
     ]
 
     # Contenedores en móvil
-    MOBILE_CARD_CONTAINERS: List[str] = [
-        "div.list-item", "div.product-card", "a.product", "a.list-item"
+    MOBILE_CARD_CONTAINERS: List[str] = CARD_CONTAINERS + [
+        "a.product",
+        "a.list-item",
     ]
 
     # Selectores internos

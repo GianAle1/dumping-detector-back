@@ -4,6 +4,7 @@ from urllib.parse import quote_plus
 
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 
 from scraper.aliexpress_scraper import AliExpressScraper
 
@@ -17,6 +18,7 @@ class TestAliExpressScraper(unittest.TestCase):
         scraper = AliExpressScraper()
         mock_driver = MagicMock()
         scraper.driver = mock_driver
+        mock_driver.page_source = ""
 
         producto = "zapatos niño & niña"
         scraper.parse(producto, paginas=1)
@@ -83,6 +85,63 @@ class TestAliExpressScraper(unittest.TestCase):
         self.assertEqual(resultados, [])
         self.assertTrue(all(call.args[0] == scraper.CARD_CONTAINERS for call in mock_find_all.call_args_list))
         mock_extract.assert_not_called()
+
+    @patch("scraper.aliexpress_scraper.BaseScraper.__init__", return_value=None)
+    @patch("scraper.aliexpress_scraper.WebDriverWait")
+    def test_mobile_fallback_detects_gallery_cards(self, mock_wait, mock_base_init):
+        scraper = AliExpressScraper()
+
+        driver = MagicMock()
+        driver.current_url = "https://es.aliexpress.com/"
+        scraper.driver = driver
+
+        scraper.wait_ready = MagicMock()
+        scraper._accept_banners = MagicMock()
+        scraper._human_scroll_until_growth = MagicMock()
+        scraper._is_blocked = MagicMock(return_value=True)
+        scraper._apply_mobile_ua = MagicMock()
+        scraper.close = MagicMock()
+
+        card_element = MagicMock(name="mobile_card")
+
+        def fake_find_elements(by, selector):
+            if by == By.CSS_SELECTOR and selector == "div.search-item-card-wrapper-gallery":
+                return [card_element]
+            return []
+
+        driver.find_elements = MagicMock(side_effect=fake_find_elements)
+
+        def fake_until(condition):
+            result = condition(driver)
+            if result:
+                return result
+            raise TimeoutException()
+
+        mock_wait.return_value.until.side_effect = fake_until
+
+        def get_side_effect(url):
+            driver.current_url = url
+
+        driver.get.side_effect = get_side_effect
+
+        card_data = {
+            "titulo": "Producto móvil",
+            "precio": 9.99,
+            "precio_original": None,
+            "descuento": None,
+            "ventas": 0,
+            "link": "https://example.com/mobile",
+        }
+
+        scraper._extract_card = MagicMock(return_value=card_data)
+
+        resultados = scraper.parse("producto", paginas=1)
+
+        driver.find_elements.assert_any_call(By.CSS_SELECTOR, "div.search-item-card-wrapper-gallery")
+        scraper._extract_card.assert_called_with(card_element)
+
+        self.assertEqual(len(resultados), 1)
+        self.assertEqual(resultados[0]["titulo"], "Producto móvil")
 
     @patch("scraper.aliexpress_scraper.BaseScraper.__init__", return_value=None)
     def test_extract_card_handles_price_container(self, mock_base_init):
