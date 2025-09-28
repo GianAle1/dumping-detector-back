@@ -1,5 +1,4 @@
-# Puedes quitar "version", es obsoleta
-# version: "3.9"
+# Puedes borrar "version:", es obsoleta.
 
 services:
   redis:
@@ -8,25 +7,25 @@ services:
       - "6379:6379"
 
   selenium:
-  image: selenium/standalone-chromium:125.0
-  shm_size: 2g
-  environment:
-    - SE_ENABLE_UI=true
-    - SE_NODE_MAX_SESSIONS=1
-    - SE_NODE_OVERRIDE_MAX_SESSIONS=true
-    - SE_VNC_NO_PASSWORD=1
-  ports:
-    - "4444:4444"
-    - "7900:7900"
-  volumes:
-    - ./selenium-profiles:/home/seluser/profiles
-  entrypoint: ["/bin/bash","-lc","mkdir -p /home/seluser/profiles/aliexpress && chown -R seluser:seluser /home/seluser/profiles ; exec /opt/bin/entry_point.sh"]
-  healthcheck:
-    test: ["CMD-SHELL", "curl -fsS http://localhost:4444/status | grep -q '\"ready\": *true'"]
-    interval: 5s
-    timeout: 5s
-    retries: 20
-    start_period: 10s
+    image: selenium/standalone-chromium:125.0
+    shm_size: 2g
+    environment:
+      - SE_ENABLE_UI=true
+      - SE_NODE_MAX_SESSIONS=1
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_VNC_NO_PASSWORD=1
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    volumes:
+      - ./selenium-profiles:/home/seluser/profiles
+    entrypoint: ["/bin/bash","-lc","mkdir -p /home/seluser/profiles/aliexpress && chown -R seluser:seluser /home/seluser/profiles ; exec /opt/bin/entry_point.sh"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:4444/status | grep -q '\"ready\": *true'"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
 
   worker:
     build: .
@@ -36,8 +35,7 @@ services:
       CELERY_RESULT_BACKEND: redis://redis:6379/0
       SELENIUM_REMOTE_URL: http://selenium:4444
       SELENIUM_PROFILE_DIR: /home/seluser/profiles/aliexpress
-      VISUAL_MODE: "1"    # si quieres dejar el navegador abierto
-      # PROXY_URL: http://user:pass@host:port  # opcional
+      VISUAL_MODE: "1"
     depends_on:
       selenium:
         condition: service_healthy
