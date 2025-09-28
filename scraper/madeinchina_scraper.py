@@ -5,11 +5,76 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
 import logging
+import re
 from urllib.parse import quote_plus
 from .base import BaseScraper
 
 
 class MadeInChinaScraper(BaseScraper):
+    def _normalizar_precio(self, precio_texto: str):
+        if not precio_texto:
+            return None, None
+
+        texto = re.sub(r"[^\d,\.\-]", "", precio_texto)
+        if not texto:
+            return None, None
+
+        partes = [parte for parte in texto.split("-") if parte]
+        if not partes:
+            return None, None
+
+        def convertir(parte: str):
+            valor = parte.strip()
+            if not valor:
+                return None
+
+            valor = valor.replace(" ", "")
+
+            decimal_sep = None
+            thousand_sep = None
+
+            if "," in valor and "." in valor:
+                if valor.rfind(",") > valor.rfind("."):
+                    decimal_sep = ","
+                    thousand_sep = "."
+                else:
+                    decimal_sep = "."
+                    thousand_sep = ","
+            elif "," in valor:
+                partes_coma = valor.split(",")
+                if len(partes_coma[-1]) in (1, 2):
+                    decimal_sep = ","
+                else:
+                    thousand_sep = ","
+            elif "." in valor:
+                partes_punto = valor.split(".")
+                if len(partes_punto[-1]) in (1, 2):
+                    decimal_sep = "."
+                else:
+                    thousand_sep = "."
+
+            if thousand_sep:
+                valor = valor.replace(thousand_sep, "")
+
+            if decimal_sep and decimal_sep != ".":
+                valor = valor.replace(decimal_sep, ".")
+
+            try:
+                return float(valor)
+            except ValueError:
+                return None
+
+        valores = [convertir(parte) for parte in partes]
+        valores_validos = [valor for valor in valores if valor is not None]
+
+        if not valores_validos:
+            return None, None
+
+        if len(valores_validos) == 1:
+            return valores_validos[0], valores_validos[0]
+
+        return min(valores_validos), max(valores_validos)
+
     def parse(self, producto: str, paginas: int = 4):
         try:
             resultados = []
@@ -62,18 +127,8 @@ class MadeInChinaScraper(BaseScraper):
                         link = enlace_tag["href"] if enlace_tag else ""
 
                         precio_tag = bloque.find("strong", class_="price")
-                        precio_texto = (
-                            precio_tag.text.strip().replace("US$", "")
-                            if precio_tag
-                            else ""
-                        )
-                        precio_min, precio_max = None, None
-                        if "-" in precio_texto:
-                            partes = precio_texto.split("-")
-                            precio_min = float(partes[0].replace(",", "."))
-                            precio_max = float(partes[1].replace(",", "."))
-                        elif precio_texto:
-                            precio_min = precio_max = float(precio_texto.replace(",", "."))
+                        precio_texto = precio_tag.text.strip() if precio_tag else ""
+                        precio_min, precio_max = self._normalizar_precio(precio_texto)
 
                         moq_tag = bloque.find("div", class_="info")
                         moq = moq_tag.text.strip() if moq_tag else "No info"
