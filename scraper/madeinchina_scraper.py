@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import WebDriverException
 import logging
+from urllib.parse import quote_plus
 from .base import BaseScraper
 
 
@@ -16,7 +17,7 @@ class MadeInChinaScraper(BaseScraper):
             for pagina in range(1, paginas + 1):
                 url = (
                     "https://es.made-in-china.com/productSearch?keyword="
-                    f"{producto.replace(' ', '+')}&currentPage={pagina}&type=Product"
+                    f"{quote_plus(producto)}&currentPage={pagina}&type=Product"
                 )
                 logging.info("Visitando página %s - %s", pagina, url)
 
@@ -77,7 +78,7 @@ class MadeInChinaScraper(BaseScraper):
                         moq_tag = bloque.find("div", class_="info")
                         moq = moq_tag.text.strip() if moq_tag else "No info"
 
-                        empresa_tag = bloque.find("a", class_="compnay-name")
+                        empresa_tag = bloque.find("a", class_="company-name")
                         empresa = (
                             empresa_tag.text.strip() if empresa_tag else "Desconocida"
                         )
