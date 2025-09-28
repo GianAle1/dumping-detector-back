@@ -214,7 +214,7 @@ class AliExpressScraper(BaseScraper):
             resultados: List[Dict] = []
 
             for page in range(1, paginas + 1):
-                q = producto.replace(" ", "+")
+                q = quote_plus(producto)
                 url = f"https://es.aliexpress.com/wholesale?SearchText={q}&page={page}"
                 logging.info("Cargando AliExpress: Página %s -> %s", page, url)
                 self.driver.get(url)
@@ -268,7 +268,10 @@ class AliExpressScraper(BaseScraper):
 
                 # Fallback BeautifulSoup si quedó vacío
                 if count_page == 0:
-                    soup = BeautifulSoup(self.driver.page_source, "html.parser")
+                    page_source = getattr(self.driver, "page_source", "") or ""
+                    if not isinstance(page_source, (str, bytes)):
+                        page_source = str(page_source)
+                    soup = BeautifulSoup(page_source, "html.parser")
                     for sel in containers:
                         bs_cards = soup.select(sel)
                         if not bs_cards:
