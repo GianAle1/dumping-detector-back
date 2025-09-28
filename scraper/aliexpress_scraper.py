@@ -315,7 +315,14 @@ class AliExpressScraper(BaseScraper):
                     bloques = self._find_all_any(containers, timeout=6)
 
                 self._human_scroll_until_growth(max_scrolls=10, pause=1.0)
-                bloques = self._find_all_any(containers, timeout=4)
+                nuevos_bloques = self._find_all_any(containers, timeout=4)
+                if nuevos_bloques:
+                    if bloques:
+                        for bloque in nuevos_bloques:
+                            if bloque not in bloques:
+                                bloques.append(bloque)
+                    else:
+                        bloques = nuevos_bloques
                 logging.info("Página %s: %s productos (candidatos)", page, len(bloques))
 
                 # Extrae con Selenium
