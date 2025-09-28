@@ -207,6 +207,8 @@ class AliExpressScraper(BaseScraper):
             (By.XPATH, "//button[contains(., 'Allow all') or contains(., 'Accept all')]"),
             (By.CSS_SELECTOR, "[role='button'][aria-label*='Accept']"),
             (By.XPATH, "//button[contains(., 'Confirmar') or contains(., 'Guardar') or contains(., 'Continuar')]"),
+            (By.XPATH, "//button[contains(., 'Continuar')]"),
+            (By.XPATH, "//input[@type='email']/following::button"),
         ]
         for by, sel in candidates:
             try:
