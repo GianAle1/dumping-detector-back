@@ -44,40 +44,31 @@ def scrapear(producto: str, plataforma: str):
         logging.exception("Error al ejecutar scraper")
         return {"success": False, "message": str(e)}
 
+    # ←—— SIEMPRE usa OUTPUT_DIR (y no "data" relativa)
+    output_dir = os.environ.get("OUTPUT_DIR", "/app/data")
+    os.makedirs(output_dir, exist_ok=True)
+    archivo_csv = os.path.join(output_dir, csv_name)
+
     if not productos:
         logging.warning("No se encontraron productos para %s en %s", producto, plataforma)
         return {"success": False, "message": "No se encontraron productos."}
 
     df = pd.DataFrame(productos)
 
-    # Rutas de guardado (primaria + respaldos)
-    primary_dir = os.environ.get("OUTPUT_DIR", "/app/data")
-    fallback_dirs = ["/tmp", os.path.join(os.getcwd(), "data")]
-    candidate_paths = [os.path.join(primary_dir, csv_name)] + [os.path.join(d, csv_name) for d in fallback_dirs]
-
-    saved_to = None
-    last_error = None
-
-    for path in candidate_paths:
-        try:
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            tmp_path = path + ".tmp"
-            df.to_csv(tmp_path, index=False, encoding="utf-8-sig")
-            os.replace(tmp_path, path)  # escritura atómica
-            saved_to = path
-            break
-        except PermissionError as e:
-            last_error = e
-            logging.warning("Permiso denegado escribiendo %s. Probando ruta de respaldo...", path)
-        except OSError as e:
-            last_error = e
-            logging.warning("No pude escribir en %s (%s). Probando ruta de respaldo...", path, e)
-
-    if saved_to:
-        logging.info("Scraping completado: %d productos -> %s", len(productos), saved_to)
-        return {"success": True, "productos": productos, "archivo": saved_to}
-
-    # Si todas fallan, reporta claramente el último error
-    msg = f"No se pudo guardar el CSV en ninguna ruta. Último error: {last_error!s}"
-    logging.error(msg)
-    return {"success": False, "message": msg}
+    # Escritura atómica + fallback si hay PermissionError
+    tmp_path = archivo_csv + ".tmp"
+    try:
+        df.to_csv(tmp_path, index=False, encoding="utf-8-sig")
+        os.replace(tmp_path, archivo_csv)
+        logging.info("Scraping completado: %d productos -> %s", len(productos), archivo_csv)
+        return {"success": True, "productos": productos, "archivo": archivo_csv}
+    except PermissionError as e:
+        logging.error("Sin permisos en %s: %s. Probando /tmp ...", archivo_csv, e)
+        fallback_dir = "/tmp/dumping-detector"
+        os.makedirs(fallback_dir, exist_ok=True)
+        fallback_csv = os.path.join(fallback_dir, csv_name)
+        tmp2 = fallback_csv + ".tmp"
+        df.to_csv(tmp2, index=False, encoding="utf-8-sig")
+        os.replace(tmp2, fallback_csv)
+        logging.info("Guardado por fallback: %s", fallback_csv)
+        return {"success": True, "productos": productos, "archivo": fallback_csv}
