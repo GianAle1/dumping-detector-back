@@ -27,7 +27,6 @@ SCRAPERS = {
     "madeinchina": (MadeInChinaScraper, "productos_madeinchina.csv"),
 }
 
-
 @celery_app.task(name="scrapear")
 def scrapear(producto: str, plataforma: str):
     scraper_info = SCRAPERS.get(plataforma)
@@ -37,32 +36,48 @@ def scrapear(producto: str, plataforma: str):
 
     scraper_cls, csv_name = scraper_info
     logging.info("Ejecutando scraper %s para %s", plataforma, producto)
+
     try:
         with scraper_cls() as scraper:
             productos = scraper.parse(producto)
     except Exception as e:
         logging.exception("Error al ejecutar scraper")
         return {"success": False, "message": str(e)}
-    archivo_csv = os.path.join("data", csv_name)
 
-    
-    OUTPUT_DIR = os.environ.get("OUTPUT_DIR", "/app/data")
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    if not productos:
+        logging.warning("No se encontraron productos para %s en %s", producto, plataforma)
+        return {"success": False, "message": "No se encontraron productos."}
 
-    # Nombre de archivo fijo por plataforma (como tenías) o con timestamp si prefieres
-    archivo_csv = os.path.join(OUTPUT_DIR, csv_name)
-    
-    if productos:
-        df = pd.DataFrame(productos)
+    df = pd.DataFrame(productos)
 
-        # Escritura atómica para evitar archivos truncados si el proceso muere
-        tmp_path = archivo_csv + ".tmp"
-        df.to_csv(tmp_path, index=False, encoding="utf-8-sig")
-        os.replace(tmp_path, archivo_csv)
+    # Rutas de guardado (primaria + respaldos)
+    primary_dir = os.environ.get("OUTPUT_DIR", "/app/data")
+    fallback_dirs = ["/tmp", os.path.join(os.getcwd(), "data")]
+    candidate_paths = [os.path.join(primary_dir, csv_name)] + [os.path.join(d, csv_name) for d in fallback_dirs]
 
-        logging.info("Scraping completado: %d productos -> %s", len(productos), archivo_csv)
-        # Devuelvo la ruta final por si la quieres mostrar en UI
-        return {"success": True, "productos": productos, "archivo": archivo_csv}
+    saved_to = None
+    last_error = None
 
-    logging.warning("No se encontraron productos para %s en %s", producto, plataforma)
-    return {"success": False, "message": "No se encontraron productos."}
+    for path in candidate_paths:
+        try:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            tmp_path = path + ".tmp"
+            df.to_csv(tmp_path, index=False, encoding="utf-8-sig")
+            os.replace(tmp_path, path)  # escritura atómica
+            saved_to = path
+            break
+        except PermissionError as e:
+            last_error = e
+            logging.warning("Permiso denegado escribiendo %s. Probando ruta de respaldo...", path)
+        except OSError as e:
+            last_error = e
+            logging.warning("No pude escribir en %s (%s). Probando ruta de respaldo...", path, e)
+
+    if saved_to:
+        logging.info("Scraping completado: %d productos -> %s", len(productos), saved_to)
+        return {"success": True, "productos": productos, "archivo": saved_to}
+
+    # Si todas fallan, reporta claramente el último error
+    msg = f"No se pudo guardar el CSV en ninguna ruta. Último error: {last_error!s}"
+    logging.error(msg)
+    return {"success": False, "message": msg}
