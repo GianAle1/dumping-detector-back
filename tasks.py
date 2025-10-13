@@ -1,5 +1,6 @@
 from celery import Celery
 import os
+import csv
 import pandas as pd
 from flask import Flask
 import logging
@@ -44,7 +45,6 @@ def scrapear(producto: str, plataforma: str):
         logging.exception("Error al ejecutar scraper")
         return {"success": False, "message": str(e)}
 
-    # ←—— SIEMPRE usa OUTPUT_DIR (y no "data" relativa)
     output_dir = os.environ.get("OUTPUT_DIR", "/app/data")
     os.makedirs(output_dir, exist_ok=True)
     archivo_csv = os.path.join(output_dir, csv_name)
@@ -55,20 +55,56 @@ def scrapear(producto: str, plataforma: str):
 
     df = pd.DataFrame(productos)
 
-    # Escritura atómica + fallback si hay PermissionError
+    # Orden fijo de columnas
+    cols = [
+        "titulo", "precio", "precio_original", "descuento",
+        "ventas", "link", "pagina", "plataforma", "fecha_scraping"
+    ]
+    df = df.reindex(columns=cols)
+
+    # Limpieza básica (evitar saltos de línea) y neutralizar ';' por si apareciera en títulos
+    for c in ["titulo", "link", "plataforma"]:
+        if c in df.columns:
+            df[c] = (
+                df[c].astype(str)
+                     .str.replace(r"[\r\n]+", " ", regex=True)
+                     .str.replace(";", " -")
+                     .str.strip()
+            )
+
+    # Escritura atómica (delimitador ';' para no chocar con comas en títulos)
     tmp_path = archivo_csv + ".tmp"
     try:
-        df.to_csv(tmp_path, index=False, encoding="utf-8-sig")
+        df.to_csv(
+            tmp_path,
+            index=False,
+            sep=";",                     # <— delimitador seguro en ES
+            encoding="utf-8-sig",
+            quotechar='"',
+            quoting=csv.QUOTE_MINIMAL,   # comillas si alguna celda las necesita
+            lineterminator="\n",
+            na_rep=""
+        )
         os.replace(tmp_path, archivo_csv)
-        logging.info("Scraping completado: %d productos -> %s", len(productos), archivo_csv)
+        logging.info("Scraping completado: %d productos -> %s", len(df), archivo_csv)
         return {"success": True, "productos": productos, "archivo": archivo_csv}
+
     except PermissionError as e:
         logging.error("Sin permisos en %s: %s. Probando /tmp ...", archivo_csv, e)
         fallback_dir = "/tmp/dumping-detector"
         os.makedirs(fallback_dir, exist_ok=True)
         fallback_csv = os.path.join(fallback_dir, csv_name)
         tmp2 = fallback_csv + ".tmp"
-        df.to_csv(tmp2, index=False, encoding="utf-8-sig")
+        df.to_csv(
+            tmp2,
+            index=False,
+            sep=";",                     # mantener el mismo delimitador
+            encoding="utf-8-sig",
+            quotechar='"',
+            quoting=csv.QUOTE_MINIMAL,
+            lineterminator="\n",
+            na_rep=""
+        )
         os.replace(tmp2, fallback_csv)
         logging.info("Guardado por fallback: %s", fallback_csv)
         return {"success": True, "productos": productos, "archivo": fallback_csv}

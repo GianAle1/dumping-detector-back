@@ -18,7 +18,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from .base import BaseScraper
 
-
 BLOCK_PATTERNS = (
     "punish",
     "unusual traffic",
@@ -34,25 +33,17 @@ BLOCK_PATTERNS = (
     "please complete the captcha",
 )
 
-
 _RANGE_SPLIT_PATTERN = re.compile(r"(?<=\d)\s*[-–—]\s*(?=\d)")
 
-
 def limpiar_precio(texto: Optional[str]) -> Optional[float]:
-    """Normaliza cadenas de precio manejando rangos y separadores comunes."""
-
     def _normalizar(texto_unitario: str) -> Optional[float]:
-        # Filtramos solo dígitos y separadores comunes.
         cleaned = re.sub(r"[^0-9.,]", "", texto_unitario)
         if not cleaned:
             return None
-
         decimal_sep: Optional[str] = None
         has_dot = "." in cleaned
         has_comma = "," in cleaned
-
         if has_dot and has_comma:
-            # Cuando hay ambos separadores, asumimos que el último que aparece es el decimal.
             decimal_sep = "," if cleaned.rfind(",") > cleaned.rfind(".") else "."
         elif has_dot:
             head, _, tail = cleaned.rpartition(".")
@@ -62,7 +53,6 @@ def limpiar_precio(texto: Optional[str]) -> Optional[float]:
             head, _, tail = cleaned.rpartition(",")
             if len(tail) in (1, 2):
                 decimal_sep = ","
-
         if decimal_sep:
             int_part, dec_part = cleaned.rsplit(decimal_sep, 1)
             int_digits = re.sub(r"[^0-9]", "", int_part)
@@ -74,7 +64,6 @@ def limpiar_precio(texto: Optional[str]) -> Optional[float]:
             number_str = re.sub(r"[^0-9]", "", cleaned)
             if not number_str:
                 return None
-
         try:
             return float(number_str)
         except ValueError:
@@ -82,12 +71,9 @@ def limpiar_precio(texto: Optional[str]) -> Optional[float]:
 
     if texto is None:
         return None
-
     texto = texto.strip()
     if not texto:
         return None
-
-    # Detectamos rangos explícitos y seleccionamos el valor mínimo.
     if _RANGE_SPLIT_PATTERN.search(texto):
         candidatos = []
         partes = [p.strip() for p in _RANGE_SPLIT_PATTERN.split(texto) if p.strip()]
@@ -96,26 +82,18 @@ def limpiar_precio(texto: Optional[str]) -> Optional[float]:
             if valor is not None:
                 candidatos.append((valor, parte))
         if candidatos:
-            # Elegimos la parte con el valor mínimo para normalizarla después.
             texto = min(candidatos, key=lambda item: item[0])[1]
         elif partes:
             texto = partes[0]
-
     return _normalizar(texto)
 
-
 def limpiar_cantidad(texto: Optional[str]) -> int:
-    """Convierte expresiones de cantidad como "1.2k" o "3 mil" a enteros."""
-
     if texto is None:
         return 0
-
     texto_normalizado = texto.strip().lower()
     if not texto_normalizado:
         return 0
-
     texto_normalizado = texto_normalizado.replace("+", "")
-
     multiplicador = 1
     if re.search(r"k\b", texto_normalizado):
         multiplicador = 1000
@@ -123,16 +101,13 @@ def limpiar_cantidad(texto: Optional[str]) -> int:
     if "mil" in texto_normalizado:
         multiplicador = max(multiplicador, 1000)
         texto_normalizado = texto_normalizado.replace("mil", "")
-
     numero = limpiar_precio(texto_normalizado)
     if numero is None:
         numero = 0.0
-
     return int(round(numero * multiplicador))
 
-
 class AliExpressScraper(BaseScraper):
-    """Scraper AliExpress (visible) con banners, selectores robustos y fallback móvil."""
+    """Scraper AliExpress con selectores robustos y fallback móvil."""
 
     # Contenedores de cards (desktop)
     CARD_CONTAINERS: List[str] = [
@@ -141,6 +116,8 @@ class AliExpressScraper(BaseScraper):
         "div.list-item",
         "a.search-card-item",
         "div.product-card",
+        # Nuevos layouts compactos
+        "div.kt_x",  # wrapper que aparece en tu HTML
     ]
 
     # Contenedores en móvil
@@ -150,14 +127,28 @@ class AliExpressScraper(BaseScraper):
     ]
 
     # Selectores internos
-    A_CARD: List[str] = [
-        "a.search-card-item", "a.product", "a"
+    A_CARD: List[str] = ["a.search-card-item", "a.product", "a"]
+
+    # ---------- NUEVO: título específico del HTML que pasaste ----------
+    TITLE: List[str] = [
+        "h3.kt_ki",                 # título de tu snippet
+        "[data-widget-name='title']",
+        ".product-title",
+        ".manhattan--titleText--WccSjUS",
+        ".multi--titleText--nXeOvyr",
+        "h1.product-title", "h2.product-title", "h3.product-title",
+        "h1", "h2", "h3",
+        "span.product-title", "div.product-title",
     ]
+
+    # ---------- NUEVO: precios/strike/discount/ventas según tu snippet ----------
     PRICE: List[str] = [
         "[data-price]",
         "[data-widget='price']",
         "div.price",
         "span.price",
+        "div.kt_lg",        # contenedor del precio con spans troceados
+        ".kt_lg span",
         "span._18_85",
         "div.ks_kn",
         "div.ks_le",
@@ -169,6 +160,9 @@ class AliExpressScraper(BaseScraper):
         "[data-original-price]",
         "del",
         ".original-price",
+        "div.kt_lh",             # bloque del precio tachado
+        ".kt_lh span",
+        ".kt_lh [style*='line-through']",
         "span._18_84",
         "div.ks_kw",
         "div.ks_kv",
@@ -176,9 +170,15 @@ class AliExpressScraper(BaseScraper):
         ".ks_kv span",
     ]
     DISCOUNT: List[str] = [
-        "[data-discount]", ".discount", ".sale-tag", "span._18_86", ".ks_lg"
+        "span.kt_lj",            # -62%
+        "[data-discount]",
+        ".discount",
+        ".sale-tag",
+        "span._18_86",
+        ".ks_lg",
     ]
     SOLD: List[str] = [
+        "span.kt_j7",            # '5,000+ sold'
         "[data-sold]",
         ".sold",
         ".trade-num",
@@ -190,7 +190,10 @@ class AliExpressScraper(BaseScraper):
         ".product-info-sale",
         ".product-info-sold",
     ]
+
+    # Contenedores que debemos “unir” spans para construir el número/precio
     PRICE_CONTAINER_CLASSES: Set[str] = {
+        "kt_lg",  # <<—— importante para concatenar  S/ 30 . 19
         "ks_kn",
         "ks_le",
         "ks_cv",
@@ -201,7 +204,6 @@ class AliExpressScraper(BaseScraper):
     # ----------------- utilidades privadas -----------------
 
     def _accept_banners(self, timeout: int = 5):
-        """Cierra banners (GDPR/idioma/confirm). Silencioso si no hay."""
         candidates = [
             (By.XPATH, "//button[contains(., 'Aceptar') or contains(., 'Acepto') or contains(., 'Aceptar todo')]"),
             (By.XPATH, "//button[contains(., 'Allow all') or contains(., 'Accept all')]"),
@@ -219,7 +221,6 @@ class AliExpressScraper(BaseScraper):
                 pass
 
     def _human_scroll_until_growth(self, max_scrolls: int = 12, pause: float = 1.0):
-        """Scroll visible con verificación de crecimiento del DOM."""
         last_height = 0
         for _ in range(max_scrolls):
             try:
@@ -330,8 +331,18 @@ class AliExpressScraper(BaseScraper):
             link = a.get_attribute("href") or ""
             if link.startswith("//"):
                 link = "https:" + link
-            titulo = (a.get_attribute("title") or a.text or "Sin título").strip()
 
+            # ---------- TÍTULO preciso ----------
+            titulo_el = self._first_match(card, self.TITLE)
+            if titulo_el:
+                titulo = (titulo_el.get_attribute("innerText") or titulo_el.text or "").strip()
+            else:
+                titulo = (a.get_attribute("title") or "").strip()
+            if not titulo:
+                inner = (a.get_attribute("innerText") or "").strip()
+                titulo = inner if 0 < len(inner) <= 140 else "Sin título"
+
+            # ---------- PRECIO(S) / DESCUENTO ----------
             price_el = self._first_match(card, self.PRICE)
             price_text = self._resolve_price_text(price_el, "data-price")
             precio = self._to_float(price_text)
@@ -345,6 +356,7 @@ class AliExpressScraper(BaseScraper):
             if desc_el:
                 descuento = (desc_el.get_attribute("data-discount") or desc_el.text or "").strip() or None
 
+            # ---------- VENTAS ----------
             sold_el = self._first_match(card, self.SOLD)
             if sold_el:
                 ventas_txt = (sold_el.get_attribute("data-sold") or sold_el.text or "").strip()
@@ -384,18 +396,11 @@ class AliExpressScraper(BaseScraper):
         text_content = ""
         try:
             soup = BeautifulSoup(html, "html.parser")
-            for meta in soup.find_all(
-                "meta", attrs={"name": re.compile(r"^robots$", re.IGNORECASE)}
-            ):
+            for meta in soup.find_all("meta", attrs={"name": re.compile(r"^robots$", re.IGNORECASE)}):
                 meta.decompose()
             text_content = soup.get_text(separator=" ", strip=True).lower()
         except Exception:
-            cleaned_html = re.sub(
-                r"<meta[^>]+name=['\"]robots['\"][^>]*>",
-                " ",
-                html,
-                flags=re.IGNORECASE,
-            )
+            cleaned_html = re.sub(r"<meta[^>]+name=['\"]robots['\"][^>]*>", " ", html, flags=re.IGNORECASE)
             text_content = cleaned_html.lower()
 
         if any(p in text_content for p in BLOCK_PATTERNS):
@@ -407,7 +412,6 @@ class AliExpressScraper(BaseScraper):
 
     @staticmethod
     def _apply_mobile_ua(driver):
-        """Cambia UA a móvil en caliente (CDP)."""
         mobile_ua = (
             "Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36"
@@ -421,26 +425,20 @@ class AliExpressScraper(BaseScraper):
         except Exception:
             pass
 
-    # ----------------- flujo principal -----------------
-
     def parse(self, producto: str, paginas: int = 4):
         try:
             resultados: List[Dict] = []
-
             for page in range(1, paginas + 1):
                 q = quote_plus(producto)
                 url = f"https://es.aliexpress.com/wholesale?SearchText={q}&page={page}"
                 logging.info("Cargando AliExpress: Página %s -> %s", page, url)
                 self.driver.get(url)
-
-                # Espera carga base + banners
                 try:
                     self.wait_ready(15)
                     self._accept_banners(4)
                 except Exception:
                     pass
 
-                # ¿bloqueo desktop? -> fallback móvil
                 if self._is_blocked(self.driver):
                     logging.warning("Bloqueo detectado en desktop. Cambiando a versión móvil...")
                     self._apply_mobile_ua(self.driver)
@@ -450,21 +448,11 @@ class AliExpressScraper(BaseScraper):
                     self.driver.get(m_url)
                     time.sleep(2)
 
-                # Decide selectores según host
                 current_url = getattr(self.driver, "current_url", "") or ""
-                if not isinstance(current_url, (str, bytes)):
-                    current_url = str(current_url)
                 parsed_url = urlparse(current_url)
-                host = parsed_url.netloc or ""
-                if isinstance(host, bytes):
-                    host = host.decode("utf-8", "ignore")
-                host = host.lower()
-                if host.startswith(("m.", "h5.")):
-                    containers = self.MOBILE_CARD_CONTAINERS
-                else:
-                    containers = self.CARD_CONTAINERS
+                host = (parsed_url.netloc or "").lower()
+                containers = self.MOBILE_CARD_CONTAINERS if host.startswith(("m.", "h5.")) else self.CARD_CONTAINERS
 
-                # Espera/scroll para lazy-load
                 bloques = self._find_all_any(containers, timeout=12)
                 if not bloques:
                     self._human_scroll_until_growth(max_scrolls=4, pause=0.8)
@@ -481,7 +469,6 @@ class AliExpressScraper(BaseScraper):
                         bloques = nuevos_bloques
                 logging.info("Página %s: %s productos (candidatos)", page, len(bloques))
 
-                # Extrae con Selenium
                 count_page = 0
                 for card in bloques:
                     data = self._extract_card(card)
@@ -497,11 +484,8 @@ class AliExpressScraper(BaseScraper):
 
                 logging.info("Página %s: %s productos válidos", page, count_page)
 
-                # Fallback BeautifulSoup si quedó vacío
                 if count_page == 0:
                     page_source = getattr(self.driver, "page_source", "") or ""
-                    if not isinstance(page_source, (str, bytes)):
-                        page_source = str(page_source)
                     soup = BeautifulSoup(page_source, "html.parser")
                     for sel in containers:
                         bs_cards = soup.select(sel)
@@ -510,13 +494,25 @@ class AliExpressScraper(BaseScraper):
                         for bloque in bs_cards:
                             try:
                                 a = bloque.select_one("a[href]")
-                                if not a:
-                                    continue
-                                link = a.get("href", "")
+                                link = (a.get("href", "") if a else "") or ""
                                 if link.startswith("//"):
                                     link = "https:" + link
-                                titulo = (a.get("title") or a.get_text(" ") or "Sin título").strip()
 
+                                # Título (BS4)
+                                titulo_tag = None
+                                for tsel in self.TITLE:
+                                    titulo_tag = bloque.select_one(tsel)
+                                    if titulo_tag:
+                                        break
+                                if titulo_tag:
+                                    titulo = (titulo_tag.get_text(" ", strip=True) or "").strip()
+                                else:
+                                    titulo = (a.get("title") if a else "") or ""
+                                if not titulo:
+                                    inner = (a.get_text(" ", strip=True) if a else "") or ""
+                                    titulo = inner if 0 < len(inner) <= 140 else "Sin título"
+
+                                # Precios / descuento
                                 price_tag = bloque.select_one(", ".join(self.PRICE))
                                 ptxt = self._resolve_price_text(price_tag, "data-price")
                                 precio = self._to_float(ptxt)
@@ -526,25 +522,18 @@ class AliExpressScraper(BaseScraper):
                                 precio_original = self._to_float(potxt)
 
                                 desc_tag = bloque.select_one(", ".join(self.DISCOUNT))
-                                descuento = (desc_tag.get("data-discount") if desc_tag else None) or (desc_tag.get_text(" ").strip() if desc_tag else None)
+                                descuento = (desc_tag.get("data-discount") if desc_tag else None) or (desc_tag.get_text(" ", strip=True) if desc_tag else None)
 
+                                # Ventas
                                 ventas_txt = ""
                                 for sold_selector in self.SOLD:
                                     sold_tag = bloque.select_one(sold_selector)
                                     if sold_tag:
-                                        ventas_txt = (
-                                            sold_tag.get("data-sold")
-                                            or sold_tag.get_text(" ")
-                                            or ""
-                                        ).strip()
+                                        ventas_txt = (sold_tag.get("data-sold") or sold_tag.get_text(" ", strip=True) or "").strip()
                                         if ventas_txt:
                                             break
                                 if not ventas_txt:
-                                    m = re.search(
-                                        r"([\d\.\,]+)\s*(?:vendidos?|sold)",
-                                        bloque.get_text(" "),
-                                        re.IGNORECASE,
-                                    )
+                                    m = re.search(r"([\d\.\,]+)\s*(?:vendidos?|sold)", bloque.get_text(" ", strip=True), re.IGNORECASE)
                                     ventas_txt = m.group(1) if m else ""
                                 ventas = self._to_int((ventas_txt or "").replace("+", ""))
 
@@ -561,9 +550,7 @@ class AliExpressScraper(BaseScraper):
                                 })
                             except Exception:
                                 continue
-                        break  # usa el primer selector que devolvió algo
-
+                        break
             return resultados
         finally:
-            # Si VISUAL_MODE=1, BaseScraper.close() no cierra el navegador.
             self.close()
