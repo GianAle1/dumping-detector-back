@@ -57,9 +57,13 @@ def scrapear(producto: str, plataforma: str):
 
     # Orden fijo de columnas
     cols = [
-        "titulo", "precio", "precio_original", "descuento",
-        "ventas", "link", "pagina", "plataforma", "fecha_scraping"
+        "titulo","precio","precio_original","descuento","ventas","link",
+        "pagina","plataforma","fecha_scraping",
+        # extras Alibaba:
+        "moneda","proveedor","proveedor_anios","proveedor_pais","proveedor_verificado",
+        "rating_score","rating_count","moq","moq_texto","envio_promesa","tasa_repeticion",
     ]
+
     df = df.reindex(columns=cols)
 
     # Limpieza básica (evitar saltos de línea) y neutralizar ';' por si apareciera en títulos
