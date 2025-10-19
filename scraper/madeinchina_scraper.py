@@ -3,8 +3,8 @@ import logging
 import re
 import time
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple, Set
-from urllib.parse import quote_plus, urlparse, parse_qs
+from typing import Dict, List, Optional, Tuple
+from urllib.parse import quote_plus
 
 from bs4 import BeautifulSoup
 from selenium.common.exceptions import (
@@ -24,6 +24,7 @@ from .base import BaseScraper
 _RANGE_SPLIT_PATTERN = re.compile(r"(?<=\d)\s*[-–—]\s*(?=\d)")
 
 def limpiar_precio(texto: Optional[str]) -> Optional[float]:
+    """Normaliza precios con separadores internacionales; si es rango, devuelve el menor."""
     def _norm(t: str) -> Optional[float]:
         cleaned = re.sub(r"[^0-9.,-]", "", t or "")
         if not cleaned:
@@ -69,6 +70,7 @@ def limpiar_precio(texto: Optional[str]) -> Optional[float]:
     return _norm(texto.strip())
 
 def limpiar_rango_precio(texto: Optional[str]) -> Tuple[Optional[float], Optional[float], Optional[str]]:
+    """Devuelve (min, max, moneda) desde strings como 'US$3.60 - 5.60 / Piece'."""
     if not texto:
         return None, None, None
     m = re.search(r"(US\$|S/|[$€£¥]|[A-Z]{1,4})", texto)
@@ -90,6 +92,7 @@ def limpiar_cantidad(texto: Optional[str]) -> int:
     if not texto:
         return 0
     t = texto.strip().lower().replace("+", "")
+    # “1,200 Pieces (MOQ)” -> 1200
     n = re.findall(r"[\d,\.]+", t)
     if not n:
         return 0
@@ -119,21 +122,22 @@ def _text(node) -> Optional[str]:
 # ---------------- scraper ----------------
 
 class MadeInChinaScraper(BaseScraper):
-    """Scraper Made-in-China:
-       - card: div.product-info (principal) / fallbacks
+    """Scraper Made-in-China adaptado al HTML:
+       - card: div.product-info
        - título: .product-name a h3/span
        - precio: .product-price .price  (rango con moneda)
        - moq: .product-unit
        - atributos: .prodcut-table .product-table-item
-       - paginación: URL 'currentPage=' + fallback por click "Siguiente"
     """
 
+    # Contenedor de cada producto (del snippet que pasaste)
     CARD_CONTAINERS: List[str] = [
-        "div.product-info",
-        "div.list-node-content",
+        "div.product-info",                      # << principal
+        "div.list-node-content",                 # fallback layouts previos
         "div.product-list div.product-item",
     ]
 
+    # Selectores internos (ajustados al snippet)
     A_CARD: List[str] = [
         ".product-name a[href]", "a.product-title[href]", "a[href]"
     ]
@@ -147,7 +151,7 @@ class MadeInChinaScraper(BaseScraper):
         ".product-unit", "div.info", ".moq", "span.moq"
     ]
     ATTR_ROW: List[str] = [
-        ".prodcut-table .product-table-item",
+        ".prodcut-table .product-table-item",  # (sic) 'prodcut-table' así viene en el HTML
         ".product-table .product-table-item"
     ]
     COMPANY: List[str] = [
@@ -161,12 +165,6 @@ class MadeInChinaScraper(BaseScraper):
     ]
     SOLD: List[str] = [
         ".sold", ".trade-num", ".sale-desc"
-    ]
-
-    # Paginación por clic (fallback)
-    NEXT_BUTTONS: List[str] = [
-        "a.next", "a.page-next", "li.next > a", "a[aria-label='Next']",
-        "a[rel='next']", ".pagination .next a", ".pager .next a"
     ]
 
     # ----------- helpers de scroll / selección -----------
@@ -226,55 +224,6 @@ class MadeInChinaScraper(BaseScraper):
                 continue
         return []
 
-    # ---------- paginación robusta ----------
-
-    def _page_in_dom_looks_like(self, expected_page: int) -> bool:
-        """Intenta detectar el número de página activo en la UI o en la URL."""
-        try:
-            # Heurística por URL
-            cur = getattr(self.driver, "current_url", "") or ""
-            parsed = urlparse(cur)
-            q = parse_qs(parsed.query)
-            if "currentPage" in q:
-                try:
-                    return int(q["currentPage"][0]) == expected_page
-                except Exception:
-                    pass
-
-            # Heurística por paginador (active)
-            pagers = self.driver.find_elements(By.CSS_SELECTOR, ".pagination, .pager, ul.pagination")
-            for p in pagers:
-                actives = p.find_elements(By.CSS_SELECTOR, "li.active, a.active, .current")
-                for a in actives:
-                    txt = (a.text or "").strip()
-                    if txt.isdigit() and int(txt) == expected_page:
-                        return True
-        except Exception:
-            pass
-        return False
-
-    def _try_click_next(self) -> bool:
-        """Intenta clicar en 'Siguiente'."""
-        for sel in self.NEXT_BUTTONS:
-            try:
-                btn = WebDriverWait(self.driver, 4).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, sel))
-                )
-                self.driver.execute_script("arguments[0].scrollIntoView({block:'center'});", btn)
-                time.sleep(0.2)
-                btn.click()
-                # espera carga
-                self._accept_banners(2)
-                WebDriverWait(self.driver, 10).until(
-                    lambda d: d.execute_script("return document.readyState") == "complete"
-                )
-                time.sleep(0.6)
-                self._human_scroll_until_growth(max_scrolls=10, pause=0.8)
-                return True
-            except Exception:
-                continue
-        return False
-
     # ----------- extracción por card (Selenium) -----------
 
     def _extract_card(self, card) -> Optional[Dict]:
@@ -282,6 +231,7 @@ class MadeInChinaScraper(BaseScraper):
             a = self._first_match(card, self.A_CARD) or card
             link = _abs_link((a.get_attribute("href") or "").strip())
 
+            # Título
             titulo = None
             tnode = self._first_match(card, self.TITLE)
             if tnode:
@@ -289,20 +239,24 @@ class MadeInChinaScraper(BaseScraper):
             if not titulo:
                 titulo = (a.get_attribute("title") or a.text or "").strip() or "Sin título"
 
+            # Precio (rango + moneda)
             pnode = self._first_match(card, self.PRICE)
             ptxt = _text(pnode) if pnode else None
             precio_min, precio_max, moneda = limpiar_rango_precio(ptxt)
 
+            # Precio “base” para CSV comparativo
             precio = precio_min
             precio_original = precio_max if (precio_max and precio_min and precio_max > precio_min) else None
-            descuento = None  # listados no suelen mostrar %
+            descuento = None  # MIC no muestra % explícito en listados
 
+            # MOQ
             moq_text = None
             mnode = self._first_match(card, self.MOQ)
             if mnode:
                 moq_text = _text(mnode) or None
             moq_unidades = limpiar_cantidad(moq_text) if moq_text else 0
 
+            # Atributos (tabla: Size, Collar Style, Color, etc.)
             atributos: Dict[str, str] = {}
             rows = None
             for sel in self.ATTR_ROW:
@@ -324,6 +278,7 @@ class MadeInChinaScraper(BaseScraper):
                     except Exception:
                         continue
 
+            # Empresa / ubicación / badges (si están en el card padre)
             empresa = None
             for sel in self.COMPANY:
                 try:
@@ -355,6 +310,7 @@ class MadeInChinaScraper(BaseScraper):
                 except Exception:
                     continue
 
+            # Ventas (raro en MIC)
             ventas = 0
             for s in self.SOLD:
                 try:
@@ -366,12 +322,15 @@ class MadeInChinaScraper(BaseScraper):
                     continue
 
             return {
+                # columnas base (compatibles con tu CSV)
                 "titulo": titulo,
                 "precio": precio,
                 "precio_original": precio_original,
                 "descuento": descuento,
                 "ventas": ventas,
                 "link": link,
+
+                # extras MIC útiles para comparativas
                 "precio_min": precio_min,
                 "precio_max": precio_max,
                 "moneda": moneda,
@@ -380,7 +339,7 @@ class MadeInChinaScraper(BaseScraper):
                 "empresa": empresa,
                 "ubicacion": ubicacion,
                 "miembro_diamante": miembro_diamante,
-                "atributos": atributos,
+                "atributos": atributos,  # dict con pares k:v (Size, Collar Style, Color, etc.)
             }
         except (NoSuchElementException, StaleElementReferenceException):
             return None
@@ -393,65 +352,53 @@ class MadeInChinaScraper(BaseScraper):
     def parse(self, producto: str, paginas: int = 4):
         try:
             resultados: List[Dict] = []
-            links_vistos: Set[str] = set()
-
-            base_q = quote_plus(producto)
 
             for page in range(1, paginas + 1):
-                # 1) Intento por URL directa
-                url = f"https://es.made-in-china.com/productSearch?keyword={base_q}&currentPage={page}&type=Product"
-                logging.info("Cargando Made-in-China (URL): Página %s -> %s", page, url)
+                q = quote_plus(producto)
+                url = f"https://es.made-in-china.com/productSearch?keyword={q}&currentPage={page}&type=Product"
+                logging.info("Cargando Made-in-China: Página %s -> %s", page, url)
 
                 cargada = False
-                for intento in range(2):
+                for intento in range(3):
                     try:
                         self.driver.get(url)
-                        self._accept_banners(3)
+                        self._accept_banners(4)
                         WebDriverWait(self.driver, 12).until(
                             EC.presence_of_any_elements_located(
                                 (By.CSS_SELECTOR, ", ".join(self.CARD_CONTAINERS))
                             )
                         )
-                        self._human_scroll_until_growth(max_scrolls=12, pause=0.8)
+                        # scroll humano para lazy-load
+                        self._human_scroll_until_growth(max_scrolls=16, pause=0.9)
                         cargada = True
                         break
                     except (TimeoutException, WebDriverException) as e:
-                        logging.warning("Reintento URL p%s (%s): %s", page, intento + 1, e)
-                        time.sleep(0.8)
+                        logging.warning("Reintento MIC p%s (%s): %s", page, intento + 1, e)
+                        time.sleep(1.0)
 
-                # 2) Si no parece la página correcta, intentamos botón “Siguiente”
-                if not self._page_in_dom_looks_like(page):
-                    logging.info("La URL puede no haber cambiado a p%s; intentando NEXT...", page)
-                    ok_next = self._try_click_next()
-                    if not ok_next:
-                        logging.warning("No se pudo avanzar a p%s; continuando con lo cargado.", page)
+                if not cargada:
+                    logging.error("Omitiendo página %s (Made-in-China).", page)
+                    continue
 
-                # 3) Extraer
+                # Selenium
                 bloques = self._find_all_any(self.CARD_CONTAINERS, timeout=8)
                 logging.info("Página %s: %s productos (Selenium)", page, len(bloques))
 
-                nuevos = 0
+                validos = 0
                 for card in bloques:
                     data = self._extract_card(card)
                     if not data:
                         continue
-                    # Evita duplicados entre páginas
-                    key = data.get("link") or data.get("titulo")
-                    if key and key in links_vistos:
-                        continue
-                    if key:
-                        links_vistos.add(key)
-
                     data.update({
                         "pagina": page,
                         "plataforma": "Made-in-China",
                         "fecha_scraping": datetime.now().strftime("%Y-%m-%d"),
                     })
                     resultados.append(data)
-                    nuevos += 1
+                    validos += 1
 
-                # 4) Fallback BS4 si Selenium no trajo nada nuevo
-                if nuevos == 0:
+                # Fallback BS4 si hiciera falta
+                if validos == 0:
                     page_source = getattr(self.driver, "page_source", "") or ""
                     soup = BeautifulSoup(page_source, "html.parser")
                     bs_cards: List = []
@@ -465,9 +412,6 @@ class MadeInChinaScraper(BaseScraper):
                                 a = bloque.select_one(sel)
                                 if a: break
                             link = _abs_link(a.get("href", "") if a else "")
-                            key = link or (a.get_text(" ", strip=True) if a else "")
-                            if key and key in links_vistos:
-                                continue
 
                             titulo = None
                             for tsel in self.TITLE:
@@ -541,7 +485,7 @@ class MadeInChinaScraper(BaseScraper):
                             if sold_node:
                                 ventas = limpiar_cantidad(sold_node.get_text(" ", strip=True))
 
-                            data = {
+                            resultados.append({
                                 "pagina": page,
                                 "plataforma": "Made-in-China",
                                 "fecha_scraping": datetime.now().strftime("%Y-%m-%d"),
@@ -560,21 +504,9 @@ class MadeInChinaScraper(BaseScraper):
                                 "ubicacion": ubicacion,
                                 "miembro_diamante": miembro_diamante,
                                 "atributos": atributos,
-                            }
-
-                            if key:
-                                links_vistos.add(key)
-                            resultados.append(data)
-                            nuevos += 1
+                            })
                         except Exception:
                             continue
-
-                logging.info("Página %s: %s productos nuevos", page, nuevos)
-
-                # Si no hubo nuevos, asumimos fin de resultados y salimos
-                if nuevos == 0:
-                    logging.info("Sin productos nuevos en p%s; deteniendo paginación.", page)
-                    break
 
             return resultados
         finally:

@@ -1,0 +1,5 @@
+Modelo,AUC
+Regresión Logística,0.999999469711437
+Random Forest,1.0
+XGBoost,0.999996607793265
+Isolation Forest (no supervisado),
