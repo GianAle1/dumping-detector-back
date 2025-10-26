@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Script: normalizar_y_graficar.py
-Autor: [Tu nombre]
+Autor: Anthony Mendoza
 Descripción:
-Limpia y normaliza los datos de AliExpress, Alibaba y precios nacionales.
-Genera imágenes de las variables principales para el análisis de dumping.
+Limpia, normaliza y analiza precios de AliExpress, Alibaba y datos nacionales.
+Detecta dumping y genera gráficos comparativos.
 """
 
 import pandas as pd
@@ -20,59 +20,82 @@ DATA_DIR = "data"
 OUTPUT_DIR = "output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-TIPO_CAMBIO = 3.8  # Tipo de cambio USD → Soles
+TIPO_CAMBIO = 3.8  # USD → Soles
 
 # ==============================
 # 2. FUNCIONES DE LIMPIEZA
 # ==============================
 
 def limpiar_precio(valor):
-    """Convierte valores tipo 'S/ 23,45' o '$4.5' a float."""
+    """Convierte textos tipo '$4.50', 'S/ 23,45', '18.51', etc. a float."""
     if pd.isna(valor):
         return np.nan
-    valor = str(valor)
-    valor = re.sub(r"[^\d.,]", "", valor)
-    valor = valor.replace(",", ".")
+    valor = str(valor).strip()
+    valor = valor.replace("PEN", "").replace("S/", "").replace("$", "")
+    valor = valor.replace("US", "").replace("USD", "")
+    valor = re.sub(r"[^\d,.-]", "", valor)
+    if valor == "":
+        return np.nan
+    # Detectar separador decimal
+    if "," in valor and "." in valor:
+        if valor.rfind(",") > valor.rfind("."):
+            valor = valor.replace(".", "").replace(",", ".")
+        else:
+            valor = valor.replace(",", "")
+    elif "," in valor:
+        partes = valor.split(",")
+        if len(partes[-1]) in (1, 2):
+            valor = valor.replace(",", ".")
+        else:
+            valor = valor.replace(",", "")
     try:
         return float(valor)
-    except:
+    except ValueError:
         return np.nan
 
+
 def limpiar_texto(txt):
-    """Limpieza básica de texto (minúsculas, sin espacios extras)."""
+    """Limpieza básica de texto."""
     if pd.isna(txt):
         return ""
     txt = str(txt).strip().lower()
     txt = re.sub(r"\s+", " ", txt)
     return txt
 
+
+def cargar_csv_puntoycoma(path):
+    """Lee CSV delimitado por punto y coma, limpia encabezados y columnas vacías."""
+    df = pd.read_csv(
+        path,
+        sep=";",
+        quotechar='"',
+        encoding="utf-8-sig",
+        on_bad_lines="skip",
+        engine="python"
+    )
+    df.columns = (
+        df.columns.str.strip()
+        .str.lower()
+        .str.replace(" ", "_")
+        .str.replace("﻿", "", regex=False)
+    )
+    df = df.dropna(axis=1, how="all")
+    return df
+
 # ==============================
 # 3. CARGA DE DATOS
 # ==============================
-
 print("Cargando archivos...")
 
-# Lectura robusta de CSV con comillas y comas internas
-ali_exp = pd.read_csv(
-    os.path.join(DATA_DIR, "productos_aliexpress.csv"),
-    sep=",",
-    quotechar='"',
-    encoding="utf-8-sig",
-    on_bad_lines="skip",
-    engine="python"
-)
+ali_exp = cargar_csv_puntoycoma(os.path.join(DATA_DIR, "productos_aliexpress.csv"))
+ali_ba = cargar_csv_puntoycoma(os.path.join(DATA_DIR, "productos_alibaba.csv"))
 
-ali_ba = pd.read_csv(
-    os.path.join(DATA_DIR, "productos_alibaba.csv"),
-    sep=",",
-    quotechar='"',
-    encoding="utf-8-sig",
-    on_bad_lines="skip",
-    engine="python"
-)
-
-# Archivo Excel nacional
-nacionales = pd.read_excel(os.path.join(DATA_DIR, "precios_nacionales.xls"))
+# Carga de precios nacionales
+excel_path = os.path.join(DATA_DIR, "precios_nacionales.xls")
+try:
+    nacionales = pd.read_excel(excel_path, engine="xlrd")
+except Exception:
+    nacionales = pd.read_excel(excel_path, engine="openpyxl")
 
 print("Archivos cargados correctamente.")
 
@@ -80,30 +103,38 @@ print("Archivos cargados correctamente.")
 # 4. LIMPIEZA Y NORMALIZACIÓN
 # ==============================
 
-for df, name in [(ali_exp, "AliExpress"), (ali_ba, "Alibaba")]:
+def preparar_dataframe(df, name):
+    """Estandariza columnas y calcula precios locales."""
     df["plataforma"] = name
-    df["titulo"] = df["titulo"].apply(limpiar_texto)
-    df["precio"] = df["precio"].apply(limpiar_precio)
-    df["precio_original"] = df["precio_original"].apply(limpiar_precio)
-    df["ventas"] = pd.to_numeric(df["ventas"], errors="coerce").fillna(0)
-    df["precio_local"] = df["precio"] * TIPO_CAMBIO
-    df["fecha_scraping"] = pd.to_datetime(df["fecha_scraping"], errors="coerce")
+    df["titulo"] = df.get("titulo", "").apply(limpiar_texto)
+    df["precio"] = df.get("precio", 0).apply(limpiar_precio)
+    df["precio_original"] = df.get("precio_original", 0).apply(limpiar_precio)
+    df["ventas"] = pd.to_numeric(df.get("ventas", 0), errors="coerce").fillna(0)
+    df["precio_local"] = df["precio"].fillna(0) * TIPO_CAMBIO
+    df["fecha_scraping"] = pd.to_datetime(df.get("fecha_scraping", ""), errors="coerce")
+    return df[["titulo", "precio", "precio_local", "plataforma", "ventas", "fecha_scraping"]]
 
-# Combinar ambas fuentes
+ali_exp = preparar_dataframe(ali_exp, "AliExpress")
+ali_ba = preparar_dataframe(ali_ba, "Alibaba")
+
+# Combinar datasets
 df_internacional = pd.concat([ali_exp, ali_ba], ignore_index=True)
+df_internacional = df_internacional.dropna(subset=["precio_local"])
+df_internacional = df_internacional[df_internacional["precio_local"] > 0]
 
 # --- Normalización precios nacionales ---
-nacionales["DESCRIPCION_ARTICULO"] = nacionales["DESCRIPCION_ARTICULO"].apply(limpiar_texto)
-nacionales["Val_Act"] = (
-    nacionales["Val_Act"]
-    .astype(str)
-    .str.replace(",", ".")
-    .apply(limpiar_precio)
+nacionales.columns = (
+    nacionales.columns.str.strip()
+    .str.lower()
+    .str.replace(" ", "_")
 )
-nacionales = nacionales.dropna(subset=["Val_Act"])
-nacionales.rename(columns={"Val_Act": "precio_nacional"}, inplace=True)
 
-# Precio promedio nacional
+if "val_act" in nacionales.columns:
+    nacionales["precio_nacional"] = nacionales["val_act"].astype(str).apply(limpiar_precio)
+else:
+    raise ValueError("No se encontró la columna 'Val_Act' en precios_nacionales.xls")
+
+nacionales = nacionales.dropna(subset=["precio_nacional"])
 precio_nac_prom = nacionales["precio_nacional"].mean()
 
 print(f"Precio nacional promedio: S/ {precio_nac_prom:.2f}")
@@ -111,31 +142,25 @@ print(f"Precio nacional promedio: S/ {precio_nac_prom:.2f}")
 # ==============================
 # 5. CÁLCULOS COMPARATIVOS
 # ==============================
-
 df_internacional["precio_nacional_prom"] = precio_nac_prom
 df_internacional["variacion_pct"] = (
-    (df_internacional["precio_nacional_prom"] - df_internacional["precio_local"])
-    / df_internacional["precio_nacional_prom"]
+    (precio_nac_prom - df_internacional["precio_local"]) / precio_nac_prom
 ) * 100
-
-df_internacional["ratio_precio"] = (
-    df_internacional["precio_local"] / df_internacional["precio_nacional_prom"]
-)
-
+df_internacional["ratio_precio"] = df_internacional["precio_local"] / precio_nac_prom
 df_internacional["dumping_flag"] = (df_internacional["variacion_pct"] >= 30).astype(int)
 
 # Guardar dataset limpio
-df_internacional.to_csv(os.path.join(OUTPUT_DIR, "productos_normalizados.csv"), index=False, encoding="utf-8-sig")
+output_path = os.path.join(OUTPUT_DIR, "productos_normalizados.csv")
+df_internacional.to_csv(output_path, index=False, encoding="utf-8-sig")
 
 print("Datos normalizados correctamente. Archivo generado: productos_normalizados.csv")
 
 # ==============================
 # 6. VISUALIZACIÓN DE VARIABLES
 # ==============================
-
 plt.style.use("seaborn-v0_8-muted")
 
-# --- 1. Comparativa de precios promedio por plataforma ---
+# --- 1. Comparativa de precios promedio ---
 plt.figure(figsize=(8, 5))
 df_internacional.groupby("plataforma")["precio_local"].mean().plot(kind="bar", color="skyblue")
 plt.title("Precio promedio internacional por plataforma")
@@ -148,7 +173,7 @@ plt.close()
 
 # --- 2. Distribución de precios ---
 plt.figure(figsize=(8, 5))
-plt.hist(df_internacional["precio_local"].dropna(), bins=15, color="lightgreen", edgecolor="black")
+plt.hist(df_internacional["precio_local"], bins=20, color="lightgreen", edgecolor="black")
 plt.title("Distribución de precios internacionales normalizados")
 plt.xlabel("Precio (S/)")
 plt.ylabel("Frecuencia")
@@ -156,11 +181,9 @@ plt.tight_layout()
 plt.savefig(os.path.join(OUTPUT_DIR, "grafico_distribucion_precios.png"))
 plt.close()
 
-# --- 3. Casos detectados de dumping ---
+# --- 3. Dumping detectado ---
 plt.figure(figsize=(6, 5))
-df_internacional["dumping_flag"].value_counts().plot(
-    kind="bar", color=["red", "gray"]
-)
+df_internacional["dumping_flag"].value_counts().plot(kind="bar", color=["red", "gray"])
 plt.title("Casos detectados de dumping (1 = Sí, 0 = No)")
 plt.ylabel("Cantidad de productos")
 plt.xticks([0, 1], ["Sí", "No"], rotation=0)
@@ -168,10 +191,7 @@ plt.tight_layout()
 plt.savefig(os.path.join(OUTPUT_DIR, "grafico_dumping_detectado.png"))
 plt.close()
 
-print("Gráficos generados exitosamente en la carpeta /output:")
-print(" - grafico_precios_plataforma.png")
-print(" - grafico_distribucion_precios.png")
-print(" - grafico_dumping_detectado.png")
+print("Gráficos generados en carpeta /output.")
 
 # ==============================
 # 7. KPI RESUMEN
