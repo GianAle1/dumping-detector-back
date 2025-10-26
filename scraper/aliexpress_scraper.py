@@ -178,7 +178,7 @@ class AliExpressScraper(BaseScraper):
         ".ks_lg",
     ]
     SOLD: List[str] = [
-        "span.kt_j7",            # '5,000+ sold'
+        "span.kt_j7",           
         "[data-sold]",
         ".sold",
         ".trade-num",
@@ -193,7 +193,7 @@ class AliExpressScraper(BaseScraper):
 
     # Contenedores que debemos “unir” spans para construir el número/precio
     PRICE_CONTAINER_CLASSES: Set[str] = {
-        "kt_lg",  # <<—— importante para concatenar  S/ 30 . 19
+        "kt_lg",  
         "ks_kn",
         "ks_le",
         "ks_cv",
