@@ -11,4 +11,4 @@ joblib==1.4.2
 openpyxl==3.1.5
 numpy==2.0.2
 matplotlib==3.9.2
-xlrd==2.0.1   # ✅ necesario para leer archivos .xls
+xlrd==2.0.1  
