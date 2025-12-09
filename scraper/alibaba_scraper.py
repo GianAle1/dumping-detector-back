@@ -29,8 +29,6 @@ BLOCK_PATTERNS = (
 )
 
 _RANGE_SPLIT_PATTERN = re.compile(r"(?<=\d)\s*[-–—]\s*(?=\d)")
-
-# Expresiones Regulares para Atributos Internos
 _PRODUCT_ID_RE = re.compile(r"productId=(\d+)")
 _ITEM_TYPE_RE = re.compile(r"item_type:([a-zA-Z0-9]+)")
 _PRODUCT_TYPE_RE = re.compile(r"product_type:([a-zA-Z0-9]+)")
@@ -141,11 +139,11 @@ def parse_repeat_rate(texto: str) -> Optional[int]:
     if not m: return None
     try: return int(m.group(1))
     except: return None
+# -------------------------------------------------------------
 
-# ------------------- Scraper Alibaba -------------------
 
 class AlibabaScraper(BaseScraper):
-    """Scraper Alibaba (layout searchx/fy26) con scroll humano y datos extra para comparativas."""
+    """Scraper Alibaba (layout searchx/fy26) con robustez extra en la extracción de datos críticos."""
 
     CARD_CONTAINERS: List[str] = [
         "div.fy26-product-card-wrapper", "div.fy26-product-card-content",
@@ -155,14 +153,23 @@ class AlibabaScraper(BaseScraper):
     # Selectores para campos estándar
     A_CARD: List[str] = ["h2.searchx-product-e-title a", "a.searchx-product-link-wrapper", "a"]
     TITLE: List[str] = ["h2.searchx-product-e-title span", "h2.searchx-product-e-title a", "h2.search-card-e-title"]
-    PRICE: List[str] = ["div.searchx-product-price-price-main", "div.searchx-product-price"]
+    
+    # Selectores de Precio: ¡Máxima prioridad a encontrar el precio!
+    PRICE: List[str] = [
+        "div.searchx-product-price-price-main", # Típico
+        "div.searchx-product-price", 
+        ".price--two-line", 
+        "div[data-aplus-auto-card-mod*='area=price'] div", # Buscar por atributo de área
+        "div.price" # Genérico
+    ]
+    
     PRICE_ORIGINAL: List[str] = ["del", "s", ".price-origin"]
     DISCOUNT: List[str] = [".discount", ".sale-tag", "[data-discount]"]
     MOQ_CONTAINER: List[str] = ["div.searchx-moq"]
     SOLD_COUNT: List[str] = ["div.searchx-sold-order"]
     IMAGE_URL: List[str] = ["img.searchx-product-e-slider__img", "img[src*='alicdn']"]
 
-    # Selectores para campos de proveedor y calidad
+    # Selectores de Proveedor y Calidad
     SUPPLIER_NAME: List[str] = ["a.searchx-product-e-company", "a.search-card-e-company"]
     SUPPLIER_LINK: List[str] = ["a.searchx-product-e-company", "a.search-card-e-company"] 
     SUPPLIER_YEAR_COUNTRY: List[str] = ["a.searchx-product-e-supplier__year"]
@@ -232,8 +239,8 @@ class AlibabaScraper(BaseScraper):
     def _first_match(self, root, selectors: List[str]):
         for css in selectors:
             try:
-                el = root.find_element(By.CSS_SELECTOR, css)
-                if el: return el
+                elements = root.find_elements(By.CSS_SELECTOR, css)
+                if elements: return elements[0]
             except Exception: continue
         return None
 
@@ -256,7 +263,7 @@ class AlibabaScraper(BaseScraper):
         if not href.startswith("http"): return "https://www.alibaba.com/" + href
         return href
 
-    # ----------------- extracción Selenium (Gradual) -----------------
+    # ----------------- extracción Selenium (Robusta) -----------------
 
     def _extract_card(self, card) -> Optional[Dict]:
         data = {}
@@ -273,13 +280,24 @@ class AlibabaScraper(BaseScraper):
             
             if not data["link"] and data["titulo"] == "Sin título": return None
 
-            # --- FASE 2: Precios, Transacciones e Imagen (Datos esenciales) ---
+            # --- FASE 2: PRECIO (Extracción con máxima robustez) ---
             
-            price_el = self._first_match(card, self.PRICE)
-            price_text = self._resolve_price_text(price_el, "data-price")
+            price_text = None
+            # Iteramos sobre todos los selectores de precio definidos
+            for price_sel in self.PRICE:
+                price_el = self._first_match(card, [price_sel])
+                if price_el:
+                    price_text = self._resolve_price_text(price_el, "data-price")
+                    if price_text: break
+            
             data["precio"] = limpiar_precio(price_text)
             data["moneda"] = detectar_moneda(price_text or "") if price_text else None
+            
+            # Si el precio sigue siendo None, podríamos intentar buscar en todo el contenedor de la tarjeta,
+            # pero eso puede ser demasiado agresivo y capturar ruido. Lo mantenemos así por ahora.
+            # --------------------------------------------------------
 
+            # Transacciones e Imagen
             moq_el = self._first_match(card, self.MOQ_CONTAINER)
             data["moq"], data["moq_texto"] = parse_moq(self._resolve_text(moq_el) or "")
             
@@ -289,7 +307,7 @@ class AlibabaScraper(BaseScraper):
             image_el = self._first_match(card, self.IMAGE_URL)
             data["imagen_url"] = self._abs_link(image_el.get_attribute("src") or "") if image_el else None
 
-            # --- FASE 3: Datos de Proveedor y Calidad (Medidas de confianza) ---
+            # --- FASE 3: Proveedor y Calidad ---
 
             proveedor_el = self._first_match(card, self.SUPPLIER_NAME)
             data["proveedor"] = self._resolve_text(proveedor_el) if proveedor_el else None
@@ -304,43 +322,33 @@ class AlibabaScraper(BaseScraper):
             rating_el = self._first_match(card, self.RATING)
             data["rating_score"], data["rating_count"] = parse_rating(self._resolve_text(rating_el) or "")
             
-            # --- FASE 4: Metadatos Avanzados y Clasificación Interna (Extracción completa) ---
+            # --- FASE 4: Metadatos Avanzados (Extracción completa) ---
 
             aplus_data = card.get_attribute("data-aplus-auto-offer") or ""
             track_info = card.get_attribute("data-p4p-eurl") or ""
 
-            # IDs y Ranks Internos
-            if not data.get("product_id"):
-                 m = _PRODUCT_ID_RE.search(aplus_data); data["product_id"] = m.group(1) if m else None
+            if not data.get("product_id"): m = _PRODUCT_ID_RE.search(aplus_data); data["product_id"] = m.group(1) if m else None
             
             m = _P4P_ID_RE.search(aplus_data) or _P4P_ID_RE.search(track_info)
             data["p4p_id"] = m.group(1) if m else None
             
-            m = _RLT_RANK_RE.search(aplus_data)
-            data["rlt_rank"] = int(m.group(1)) if m and m.group(1).isdigit() else None
-            
-            m = _PAGE_RANK_ID_RE.search(aplus_data)
-            data["page_rank_id"] = int(m.group(1)) if m and m.group(1).isdigit() else None
-
-            # Tipos y Flags internos (si existen)
+            m = _RLT_RANK_RE.search(aplus_data); data["rlt_rank"] = int(m.group(1)) if m and m.group(1).isdigit() else None
+            m = _PAGE_RANK_ID_RE.search(aplus_data); data["page_rank_id"] = int(m.group(1)) if m and m.group(1).isdigit() else None
             m = _ITEM_TYPE_RE.search(aplus_data); data["item_type"] = m.group(1) if m else None
             m = _PRODUCT_TYPE_RE.search(aplus_data); data["product_type"] = m.group(1) if m else None
             m = _IS_P4P_RE.search(aplus_data); data["is_p4p"] = (m and m.group(1) == 'true')
             m = _IS_TOPRANK_RE.search(aplus_data); data["is_toprank"] = (m and m.group(1) == 'true')
 
-            # Anuncios
             data["es_anuncio"] = data.get("is_p4p", False) or data.get("is_toprank", False) or bool(self._first_match(card, self.AD_BADGE))
             if not data["es_anuncio"]:
                 spm_type = card.get_attribute("data-spm") or ""
                 if "p_offer" in spm_type or "is_ad=true" in aplus_data: data["es_anuncio"] = True
 
-            # Precio Original y Descuento
             pori_el = self._first_match(card, self.PRICE_ORIGINAL)
             data["precio_original"] = limpiar_precio(self._resolve_price_text(pori_el, "data-original-price") if pori_el else None)
             desc_el = self._first_match(card, self.DISCOUNT)
             data["descuento"] = self._resolve_text(desc_el) if desc_el else None
 
-            # Selling points y Etiquetas Especiales
             sp = self._first_match(card, self.SELLING_POINTS)
             data["envio_promesa"] = None; data["tasa_repeticion"] = None
             if sp:
@@ -384,8 +392,7 @@ class AlibabaScraper(BaseScraper):
         try:
             resultados: List[Dict] = []
             
-            # 🔔 IMPORTANTE: Lista de 15 columnas relevantes para la detección de DUMPING.
-            # Solo estas columnas aparecerán en el resultado final para simplificar el análisis.
+            # Columnas relevantes (15)
             COLUMN_ORDER = [
                 "product_id", "titulo", "precio", "moneda", "precio_original", 
                 "ventas", "moq", "proveedor_verificado", "proveedor_anios", 
@@ -425,12 +432,10 @@ class AlibabaScraper(BaseScraper):
 
                 count_page = 0
                 for card in bloques:
-                    # Extraemos TODOS los datos posibles, pero solo guardamos 15
                     data = self._extract_card(card)
                     if not data:
                         continue
                     
-                    # Filtramos y ordenamos solo las 15 columnas relevantes
                     final_data = {col: data.get(col) for col in COLUMN_ORDER}
                     final_data.update({
                         "pagina": page,
