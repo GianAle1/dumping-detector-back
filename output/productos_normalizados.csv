@@ -1,214 +1,256 @@
-﻿titulo;precio;precio_original;descuento;ventas;link;pagina;plataforma;fecha_scraping;moneda;proveedor;proveedor_anios;proveedor_pais;proveedor_verificado;rating_score;rating_count;moq;moq_texto;envio_promesa;tasa_repeticion,plataforma,precio_local,precio_nacional_prom,variacion_pct,ratio_precio,dumping_flag
- ropa de marca;23.68;78.85;-69%;5000;https://es.aliexpress.com/item/1005007010620226.html?algo_pvid=9b668c04-2df4-422c-8124-19a57093b21e&algo_exp_id=9b668c04-2df4-422c-8124-19a57093b21e-0&pdp_ext_f=%7B%22order%22%3A%227537%22%2C%22spu_best_type%22%3A%22price%22%2C%22eval%22%3A%221%22%2C%22orig_sl_item_id%22%3A%221005007010620226%22%2C%22orig_item_id%22%3A%221005006064016318%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%2178.85%2123.68%21%21%21160.56%2148.23%21%402101f51e17608369187907075e04b2%2112000039051156250%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3Ab9a21526%3Bm03_new_user%3A-29895%3BpisId%3A5000000187448270&curPageLogUid=LBjU28Mbphxd&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005007010620226%7C_p_origin_prod%3A1005006064016318;1;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- ropa de marca;23.69;87.75;-73%;2000;https://es.aliexpress.com/item/1005006064016318.html?aem_p4p_detail=202510181821589672765121224990004597805&algo_pvid=9b668c04-2df4-422c-8124-19a57093b21e&algo_exp_id=9b668c04-2df4-422c-8124-19a57093b21e-3&pdp_ext_f=%7B%22order%22%3A%222872%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%2187.75%2123.69%21%21%21178.68%2148.23%21%402101f51e17608369187907075e04b2%2112000035563720909%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3Ab9a21526%3Bm03_new_user%3A-29895%3BpisId%3A5000000187448270&curPageLogUid=Et2M43PfJdkz&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005006064016318%7C_p_origin_prod%3A&search_p4p_id=202510181821589672765121224990004597805_1;1;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- color sólido mercerizado vertical;49.4;65.14;-24%;299;https://es.aliexpress.com/item/1005004759564806.html?aem_p4p_detail=202510181821589672765121224990004597805&algo_pvid=9b668c04-2df4-422c-8124-19a57093b21e&algo_exp_id=9b668c04-2df4-422c-8124-19a57093b21e-7&pdp_ext_f=%7B%22order%22%3A%22299%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%2165.14%2149.40%21%21%2118.62%2114.12%21%402101f51e17608369187907075e04b2%2112000030369340046%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3Ab9a21526%3Bm03_new_user%3A-29895%3BpisId%3A5000000187448270&curPageLogUid=EE0kEDrElRhH&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005004759564806%7C_p_origin_prod%3A&search_p4p_id=202510181821589672765121224990004597805_2;1;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- ropa de marca;23.68;78.85;-69%;5000;https://es.aliexpress.com/item/1005007010620226.html?algo_pvid=136ac8b6-fb29-4b70-b04a-bf42cc434928&algo_exp_id=136ac8b6-fb29-4b70-b04a-bf42cc434928-0&pdp_ext_f=%7B%22order%22%3A%227537%22%2C%22eval%22%3A%221%22%2C%22orig_sl_item_id%22%3A%221005007010620226%22%2C%22orig_item_id%22%3A%221005006064016318%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%2178.85%2123.68%21%21%21160.56%2148.23%21%402101c45717608369517841801ee749%2112000039051156250%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A7b64a1b%3Bm03_new_user%3A-29895%3BpisId%3A5000000187448270&curPageLogUid=k7nYwDCNYEF4&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005007010620226%7C_p_origin_prod%3A1005006064016318;2;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- camisas de vestir informales formales de manga corta con botones de diamante para arrugas sociales;36.75;104.98;-65%;2;https://es.aliexpress.com/item/1005010106770051.html?algo_pvid=136ac8b6-fb29-4b70-b04a-bf42cc434928&algo_exp_id=136ac8b6-fb29-4b70-b04a-bf42cc434928-6&pdp_ext_f=%7B%22order%22%3A%222%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%21104.98%2136.75%21%21%21213.76%2174.82%21%402101c45717608369517841801ee749%2112000051174670732%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A7b64a1b%3Bm03_new_user%3A-29895&curPageLogUid=70UNDoDX6iFO&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005010106770051%7C_p_origin_prod%3A;2;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- camisas ajustadas jóvenes y de moda;22.39;44.79;-50%;8;https://es.aliexpress.com/item/1005009372741339.html?aem_p4p_detail=2025101818223111145850434232530004739353&algo_pvid=136ac8b6-fb29-4b70-b04a-bf42cc434928&algo_exp_id=136ac8b6-fb29-4b70-b04a-bf42cc434928-7&pdp_ext_f=%7B%22order%22%3A%228%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%2144.79%2122.39%21%21%2191.21%2145.60%21%402101c45717608369517841801ee749%2112000048901241812%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A7b64a1b%3Bm03_new_user%3A-29895&curPageLogUid=Ned8z5qLa6Cv&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005009372741339%7C_p_origin_prod%3A&search_p4p_id=2025101818223111145850434232530004739353_2;2;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- Camisa larga informal de otoño para hombre;15.5;94.67;-83%;4;https://es.aliexpress.com/item/1005010025899206.html?algo_pvid=136ac8b6-fb29-4b70-b04a-bf42cc434928&algo_exp_id=136ac8b6-fb29-4b70-b04a-bf42cc434928-56&pdp_ext_f=%7B%22order%22%3A%224%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%2194.67%2115.50%21%21%21192.78%2131.57%21%402101c45717608369517841801ee749%2112000050874393120%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A7b64a1b%3Bm03_new_user%3A-29895%3BpisId%3A5000000187448270&curPageLogUid=XMpjEi4iVvEp&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005010025899206%7C_p_origin_prod%3A;2;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- S65;78.05;147.28;-47%;1;https://es.aliexpress.com/item/1005007695486280.html?aem_p4p_detail=202510181823106936154164329150004483071&algo_pvid=d1131f70-91ef-494f-ba7e-ff6ac65800da&algo_exp_id=d1131f70-91ef-494f-ba7e-ff6ac65800da-11&pdp_ext_f=%7B%22order%22%3A%221%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%21147.28%2178.05%21%21%2142.10%2122.31%21%402101f4c117608369907444507ec988%2112000041878591818%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A7b64a1b%3Bm03_new_user%3A-29895&curPageLogUid=MY3fmiASfHGb&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005007695486280%7C_p_origin_prod%3A&search_p4p_id=202510181823106936154164329150004483071_3;3;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- Camisa hawaiana de manga corta de talla grande 5XL para Hombre;34.25;48.94;-30%;40;https://es.aliexpress.com/item/32887274353.html?aem_p4p_detail=202510181823489169350862008960004740766&algo_pvid=4f2a69b4-da98-4d11-9778-aa5d049422b7&algo_exp_id=4f2a69b4-da98-4d11-9778-aa5d049422b7-3&pdp_ext_f=%7B%22order%22%3A%2240%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%2148.94%2134.25%21%21%2113.99%219.79%21%402101f41f17608370286043482e9239%2165742312660%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A7b64a1b%3Bm03_new_user%3A-29895&curPageLogUid=uZiinlsVrkt9&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A32887274353%7C_p_origin_prod%3A&search_p4p_id=202510181823489169350862008960004740766_1;4;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- color negro;26.97;85.43;-68%;162;https://es.aliexpress.com/item/1005007539011170.html?algo_pvid=4f2a69b4-da98-4d11-9778-aa5d049422b7&algo_exp_id=4f2a69b4-da98-4d11-9778-aa5d049422b7-6&pdp_ext_f=%7B%22order%22%3A%22162%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21PEN%2185.43%2126.97%21%21%2124.42%217.71%21%402101f41f17608370286043482e9239%2112000041206727284%21sea%21PE%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A7b64a1b%3Bm03_new_user%3A-29895%3BpisId%3A5000000187448270&curPageLogUid=WuoriMeBsP8o&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005007539011170%7C_p_origin_prod%3A;4;AliExpress;2025-10-19;;;;;;;;;;;,AliExpress,0.0,41352.49852460905,100.0,0.0,1
-,AliExpress,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;False;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
-,Alibaba,0.0,41352.49852460905,100.0,0.0,1
- Ltd.;;;True;;;;;;,Alibaba,0.0,41352.49852460905,100.0,0.0,1
+﻿titulo,precio,precio_local,plataforma,ventas,fecha_scraping,precio_nacional_prom,variacion_pct,ratio_precio,dumping_flag
+"nueva camisa de negocios de color sólido de talla grande para hombre, camisa de manga larga blanca ajustada informal básica clásica a la moda, ropa de marca",23.68,89.984,AliExpress,5000,2025-10-19,41352.49852460905,99.78239767073217,0.002176023292678437,1
+fgkks nueva camisa para hombre a estrenar color sólido manga larga tela elástica para hombre varios colores camisa básica de calidad masculina,23.18,88.08399999999999,AliExpress,900,2025-10-19,41352.49852460905,99.78699231450892,0.002130076854910733,1
+"nueva camisa de vestir para hombre, manga larga, fina, sin planchar, informal, de negocios, ajustada, a la moda, transpirable, alta calidad, color sólido",19.18,72.884,AliExpress,600,2025-10-19,41352.49852460905,99.8237494647231,0.0017625053527691057,1
+"nueva camisa de negocios de color sólido de talla grande para hombre, camisa de manga larga blanca ajustada informal básica clásica a la moda, ropa de marca",23.69,90.022,AliExpress,2000,2025-10-19,41352.49852460905,99.78230577785664,0.0021769422214337913,1
+"camiseta informal ajustada de manga larga con cuello levantado para hombre, top informal de negocios a la moda con estampado para primavera y verano",37.64,143.03199999999998,AliExpress,7,2025-10-19,41352.49852460905,99.65411521648473,0.003458847835152718,1
+"camisa de manga larga para hombre, camisas de vestir formales básicas sólidas, cómoda, de negocios, social, ajuste estándar, fácil cuidado, camisa blanca de oficina 5xl",21.46,81.548,AliExpress,190,2025-10-19,41352.49852460905,99.80279788910102,0.0019720211089898337,1
+"nueva camisa informal de negocios de manga larga de color sólido para hombre, resistente a las arrugas, cómoda, versátil para todas las estaciones",25.81,98.07799999999999,AliExpress,166,2025-10-19,41352.49852460905,99.76282448824311,0.0023717551175688537,1
+"6xl nueva camisa negra de verano para hombre, camisa informal de negocios de manga larga sin hierro con fuerza elástica, color sólido mercerizado vertical",49.4,187.72,AliExpress,299,2025-10-19,41352.49852460905,99.54604919485509,0.004539508051449105,1
+"camisas informales oxford de algodón puro para hombre, camisa de vestir blanca de manga larga con diseño de caballo bordado, ajuste regular, con botones a la moda",16.25,61.75,AliExpress,700,2025-10-19,41352.49852460905,99.85067407725496,0.0014932592274503633,1
+"camisas oxford de algodón 100% para hombre, camisa de vestir formal de ajuste regular suave a cuadros de manga larga, blusa social con bolsillo, ropa masculina s-7xl",57.69,219.22199999999998,AliExpress,800,2025-10-19,41352.49852460905,99.46987000103623,0.005301299989637628,1
+"camisa estampada de manga larga informal y de moda para hombre, top de negocios sin planchar y resistente a las arrugas",34.6,131.48,AliExpress,466,2025-10-19,41352.49852460905,99.68205065064748,0.003179493493525081,1
+"camisa ligera de secado rápido, camisa táctica militar para exteriores, camisa de trabajo de manga larga, camisetas deportivas transpirables, protección solar",63.35,240.73,AliExpress,10,2025-10-19,41352.49852460905,99.41785863348319,0.005821413665168032,1
+camisa de manga larga ajustada versión coreana informal sencilla de color sólido nuevo de primavera para hombre,37.4,142.11999999999998,AliExpress,347,2025-10-19,41352.49852460905,99.65632064549757,0.0034367935450242203,1
+"camisa estampada de manga larga para hombre, camisa informal de negocios con resistencia a las arrugas, sin planchado, top versátil cómodo para todas las estaciones, nueva",33.13,125.894,AliExpress,23,2025-10-19,41352.49852460905,99.6955589033512,0.0030444109664880333,1
+camisa de solapa de manga larga con contraste de color a la moda para hombre con bolsillos cárdigan informal para exteriores para hombre ropa personalizada para hombre,39.04,148.352,AliExpress,41,2025-10-19,41352.49852460905,99.64125021390977,0.0035874978609022885,1
+"camisa de hombre buscar en la imagen descargar la aplicación aliexpress en/usd hola, cuenta de nombre predeterminado 0 carro ropa de hombre pero",23.57,89.566,AliExpress,0,2025-10-19,41352.49852460905,99.78340849236305,0.0021659150763695422,1
+"nueva camisa de negocios de color sólido de talla grande para hombre, camisa de manga larga blanca ajustada informal básica clásica a la moda, ropa de marca",23.68,89.984,AliExpress,5000,2025-10-19,41352.49852460905,99.78239767073217,0.002176023292678437,1
+"nueva camisa de vestir para hombre, manga larga, fina, sin planchar, informal, de negocios, ajustada, a la moda, transpirable, alta calidad, color sólido",19.18,72.884,AliExpress,600,2025-10-19,41352.49852460905,99.8237494647231,0.0017625053527691057,1
+"camisa elástica de manga larga para hombre de 55-105kg, vestido de negocios sin planchar, traje de trabajo profesional, camisa con cuello levantado",37.64,143.03199999999998,AliExpress,1000,2025-10-19,41352.49852460905,99.65411521648473,0.003458847835152718,1
+"gidyq, camisas ajustadas a la moda para mujer, ropa de calle coreana que combina con todo, blusa ajustada para mujer, camisa informal blanca con manga acampanada para primavera, nueva",21.93,83.33399999999999,AliExpress,900,2025-10-19,41352.49852460905,99.79847892395085,0.002015210760491475,1
+"nueva camisa informal de negocios de manga corta de color sólido para hombre, moda de verano, sin planchar, top cómodo y versátil",15.68,59.583999999999996,AliExpress,2000,2025-10-19,41352.49852460905,99.85591197116047,0.0014408802883951813,1
+"camisa de manga larga para hombre, camisas de vestir formales básicas sólidas, cómoda, de negocios, social, ajuste estándar, fácil cuidado, camisa blanca de oficina 5xl",21.46,81.548,AliExpress,190,2025-10-19,41352.49852460905,99.80279788910102,0.0019720211089898337,1
+"camisas blancas con botones de taladro para hombre, camisas de manga larga y para hombre, camisas de vestir informales formales de manga corta con botones de diamante para arrugas sociales",36.75,139.65,AliExpress,2,2025-10-19,41352.49852460905,99.66229368240738,0.0033770631759262064,1
+"camisas de manga corta para hombre, camisas de tela oxford de estilo coreano, camisas ajustadas jóvenes y de moda",22.39,85.082,AliExpress,8,2025-10-19,41352.49852460905,99.79425185167622,0.0020574814832377618,1
+"camisa informal de manga larga para hombre, camisa de color sólido, sin planchado, resistente a las arrugas, top de negocios",22.29,84.702,AliExpress,117,2025-10-19,41352.49852460905,99.79517078043159,0.0020482921956842216,1
+"camisa blanca de manga larga para hombre, informal, de negocios, profesional, estilo coreano, usable de otoño, no requiere planchado para el trabajo",21.48,81.624,AliExpress,42,2025-10-19,41352.49852460905,99.80261410334994,0.0019738589665005417,1
+"2025 camisas a cuadros de manga larga cálidas de invierno para hombre, camisas formales gruesas con forro de piel de franela, camisa informal de lana para hombre, camisas de vestir",36.91,140.25799999999998,AliExpress,600,2025-10-19,41352.49852460905,99.66082339639881,0.003391766036011871,1
+"blusa vintage de lino y algodón, camisa, top, blusa femenina, ropa de manga larga, camisa informal de calidad para primavera y otoño, tops para mujer",37.17,141.246,AliExpress,115,2025-10-19,41352.49852460905,99.65843418163489,0.0034156581836510772,1
+"nueva ropa de calle, camisa informal holgada de color sólido de manga larga de mezcla de algodón con solapa cómoda, camisa larga informal de otoño para hombre",15.5,58.9,AliExpress,4,2025-10-19,41352.49852460905,99.85756604292013,0.0014243395707988081,1
+"camisa elástica de manga larga para hombre, vestido de negocios informal sin planchar, traje de trabajo profesional, ropa de oficina azul marino ajustada, 100kg",37.55,142.68999999999997,AliExpress,252,2025-10-19,41352.49852460905,99.65494225236455,0.003450577476354531,1
+"camisa casual holgada para hombre, moderna y cómoda, con pana gruesa de manga larga, top versátil",44.89,170.582,AliExpress,71,2025-10-19,41352.49852460905,99.58749288172154,0.004125071182784419,1
+2025 primavera nuevo estilo chino de gama alta camisa con cuello levantado de manga larga elástica adelgazante top camisa de vestir social,46.59,177.042,AliExpress,99,2025-10-19,41352.49852460905,99.57187109288054,0.004281289071194611,1
+"camisa clásica de negocios para hombre, camisa de manga corta de color sólido a la moda, negra, blanca, azul, ajustada, camisas de oficina de verano",7.2,27.36,AliExpress,63,2025-10-19,41352.49852460905,99.9338371296145,0.0006616287038549302,1
+"camisas sociales elásticas de fibra de bambú para hombres, camisa de manga larga antiarrugas, ajustada, informal, formal, de negocios, ropa blanca",54.89,208.582,AliExpress,91,2025-10-19,41352.49852460905,99.49560000618615,0.005043999938138488,1
+"camisa elástica de manga larga para hombre, sin arrugas, planchado, comodidad de negocios, moda, transpirable, ajustada, primavera y otoño",24.58,93.40399999999998,AliExpress,700,2025-10-19,41352.49852460905,99.77412731193397,0.002258726880660303,1
+"camisa de vestir formal para hombre morada, camisas de manga larga blancas, negras y azules, camisa ajustada para oficina de negocios, talla asiática, camisa roja.",34.59,131.442,AliExpress,7,2025-10-19,41352.49852460905,99.68214254352303,0.0031785745647697275,1
+11xl 10xl 9xl 8xl 7xl super tamaño nueva camisa de negocios ajustada para hombres otoño manga larga casual social negro blanco vestido camisa 2024,44.04,167.35199999999998,AliExpress,240,2025-10-19,41352.49852460905,99.59530377614207,0.004046962238579322,1
+camisa de color sólido de manga larga informal y de moda para hombre top de negocios sin planchar y resistente a las arrugas,27.6,104.88,AliExpress,5000,2025-10-19,41352.49852460905,99.74637566352229,0.0025362433647772324,1
+primavera otoño estilo harajuku hombres slim fit moda simple versátil abrigo de manga larga casual estilo coreano camisa de hombres adultos,27.78,105.564,AliExpress,59,2025-10-19,41352.49852460905,99.74472159176264,0.0025527840823736055,1
+"camisa de manga larga con estampado floral para mujer, blusa básica de cuello redondo con botones, color azul claro, blanco y rosa, 3/4",34.43,130.834,AliExpress,64,2025-10-19,41352.49852460905,99.68361282953158,0.0031638717046840624,1
+camisa formal para hombre color sólido boda al aire libre negro rojo azul marino verde oscuro manga larga solapa verano primavera ropa xs-6xl,23.74,90.21199999999999,AliExpress,155,2025-10-19,41352.49852460905,99.78184631347895,0.002181536865210561,1
+"camisa de manga corta con bloques de color sólido y cuello levantado para hombre, camisa informal a la moda con contraste de un solo pecho para verano",21.01,79.83800000000001,AliExpress,59,2025-10-19,41352.49852460905,99.8069330685001,0.0019306693149989008,1
+"camisas de manga corta para hombre, gran oferta de lino y algodón, color sólido, cuello cómodo, informal, estilo playero, camisas de talla grande para hombre, m-5xl",17.41,66.158,AliExpress,2000,2025-10-19,41352.49852460905,99.84001450369286,0.0015998549630714355,1
+"camisa de manga larga con cuello floral para hombre, ropa de padrino, s65",78.05,296.59,AliExpress,1,2025-10-19,41352.49852460905,99.28277610644616,0.007172238935538514,1
+"2025 camisa hawaiana para hombre, camisa ligera transpirable, camisa de manga corta, camisa informal de verano, blusa de verano 3xl para hombre",24.51,93.138,AliExpress,45,2025-10-19,41352.49852460905,99.77477056206271,0.002252294379372825,1
+"2025 camisa elegante y cómoda a la moda para hombre, novedad de verano, manga corta, estampado 3d, cuello en v, camisa de vacaciones de tres botones, s-5xl",18.38,69.844,AliExpress,80,2025-10-19,41352.49852460905,99.83110089476594,0.00168899105234078,1
+"nuevas camisas antiarrugas para hombre, camisas de vestir de manga larga para hombre, blusa ajustada para negocios sociales, camisa blanca y azul para oficina, s-4xl",22.74,86.41199999999999,AliExpress,55,2025-10-19,41352.49852460905,99.79103560103249,0.0020896439896751543,1
+"camisa holgada informal de manga larga de algodón y lino para mujer, blusa elegante lisa con solapa harajuku, tops vintage de gran tamaño, túnica de calle y2k",22.15,84.16999999999999,AliExpress,40,2025-10-19,41352.49852460905,99.79645728068908,0.002035427193109264,1
+camisa de manga larga para hombre primavera verano otoño invierno oxford tejida delgada planchado libre cómoda suave moda casual trabajo simple,28.79,109.40199999999999,AliExpress,498,2025-10-19,41352.49852460905,99.73544041133356,0.0026455958866643666,1
+camisa de vestir para hombre elástica primavera otoño manga larga antiarrugas planchado libre negocios sin bolsillo suave moda suave delgado,34.49,131.062,AliExpress,124,2025-10-19,41352.49852460905,99.68306147227838,0.003169385277216187,1
+"camisa blanca de manga larga ajustada para hombre, informal, para padrinos de boda, estilo coreano, camisa formal de negocios con lazo, ropa de primavera y otoño",3.46,13.148,AliExpress,24,2025-10-19,41352.49852460905,99.96820506506474,0.0003179493493525081,1
+"camisa hawaiana de moda para hombre, camisas aloha de playa con estampado colorido informal para hombre, camisa hawaiana de manga corta de talla grande 5xl para hombre",34.25,130.15,AliExpress,40,2025-10-19,41352.49852460905,99.68526690129123,0.0031473309870876888,1
+"camisa con cuello levantado para hombre, traje tang de estilo chino de manga larga, transpirable, antiarrugas, fácil cuidado, camisas de vestir informales de negocios",32.12,122.05599999999998,AliExpress,52,2025-10-19,41352.49852460905,99.70484008378028,0.0029515991621972717,1
+"nueva camisa informal de negocios de manga corta de color sólido para hombre, moda de verano, sin planchar, top cómodo y versátil",15.09,57.342,AliExpress,413,2025-10-19,41352.49852460905,99.86133365081707,0.0013866634918292913,1
+"camisa holgada informal de manga larga para hombre, top de punto fino informal inteligente drapeado de estilo coreano a la moda, color negro",26.97,102.48599999999999,AliExpress,162,2025-10-19,41352.49852460905,99.75216491468102,0.0024783508531899257,1
+"camisa 100% de algodón con bolsillo grande para hombre, chaqueta cargo informal a la moda, camisas de pana de color sólido para hombre, camisa ajustada de otoño, abrigo para ropa de trabajo",58.79,223.402,AliExpress,2,2025-10-19,41352.49852460905,99.45976178472733,0.005402382152726576,1
+"camisas de manga corta para hombre, gran oferta de lino y algodón, camisetas informales de estilo playero con cuello vuelto de color sólido para verano, camisetas de talla grande",23.66,89.908,AliExpress,2000,2025-10-19,41352.49852460905,99.78258145648323,0.002174185435167729,1
+"camisa de manga corta de seda de hielo para hombre, camisa informal holgada de estilo coreano, camisa negra de moda para verano, manga fina informal",12.11,46.017999999999994,AliExpress,1000,2025-10-19,41352.49852460905,99.88871772772663,0.0011128227227337783,1
+"blusa de gran tamaño m-5xl para hombre, blusa informal de verano con cuello vuelto y botones de bolsillo, ropa de trabajo lisa de manga corta, camisas yycfs- 1231001",14.66,55.708,AliExpress,23,2025-10-19,41352.49852460905,99.8652850444651,0.0013471495553490662,1
+"camisa de manga larga de pana de color sólido para primavera/otoño, ropa informal de moda para hombre, diseño de bolsillo con botones, ropa de calle de estilo retro",24.31,92.37799999999999,AliExpress,10,2025-10-19,41352.49852460905,99.77660841957344,0.0022339158042657434,1
+camisa de vestir para hombre camisa con botones color sólido boda formal negro blanco vino azul manga larga solapa ropa para las cuatro estaciones,24.33,92.454,AliExpress,3,2025-10-19,41352.49852460905,99.77642463382236,0.0022357536617764514,1
+"camisas blancas a la moda para mujer, corbata negra, estilo japonés, estudiantes preppy, blusa jk para niñas, tops sencillos lisos sueltos de verano con botones, novedad",12.12,46.056,AliExpress,390,2025-10-19,41352.49852460905,99.8886258348511,0.0011137416514891325,1
+"camisa hawaiana de grulla animal para hombre, camisa con estampado floral de plantas 3d, flores de playa de talla grande, verano, 2023",14.44,54.87199999999999,AliExpress,124,2025-10-19,41352.49852460905,99.86730668772687,0.0013269331227312765,1
+"camisa de manga larga para hombre, camisa con botones de cristal, elástica, alta calidad, negocios, ocio, ajustada, tendencia, nueva",60.9,231.42,AliExpress,32,2025-10-19,41352.49852460905,99.44037238798937,0.005596276120106284,1
+xxl men's dress formal shirt with stand collar long sleeves button closure white suit style,4.4,16.72,Alibaba,0,2025-10-13,41352.49852460905,99.95956713476441,0.00040432865235579067,1
+2018 100%cotton latest wholesale mens dress shirts,5.0,19.0,Alibaba,0,2025-10-13,41352.49852460905,99.95405356223229,0.00045946437767703486,1
+plaid loose fit men long sleeve business casual outdoor plus size dress shirt new striped men dress shirt,12.65,48.07,Alibaba,0,2025-10-13,41352.49852460905,99.88375551244772,0.0011624448755228982,1
+men's formal dress shirt long sleeve solid color square collar shirt for men high elastic breathable plus size men's shirt,9.03,34.31399999999999,Alibaba,0,2025-10-13,41352.49852460905,99.91702073339152,0.0008297926660847248,1
+high quality slim fit men's shirt button up long sleeve white cotton casual formal dress shirt,6.5,24.7,Alibaba,0,2025-10-13,41352.49852460905,99.940269630902,0.0005973036909801453,1
+men's high quality slim fit 100% cotton dress shirt single breasted stand breathable embroidered formal design autumn dot 140/2s,25.0,95.0,Alibaba,0,2025-10-13,41352.49852460905,99.77026781116149,0.002297321888385174,1
+cotton ready to wear non-iron shirt men's solid color business formal wear long-sleeved wrinkle-resistant professional clothing,15.0,57.0,Alibaba,0,2025-10-13,41352.49852460905,99.86216068669688,0.0013783931330311047,1
+wholesale high quality bamboo fiber formal uniform office shirt men's dress dress men's shirt business,6.96,26.448,Alibaba,0,2025-10-13,41352.49852460905,99.93604255862736,0.0006395744137264325,1
+high quality 100% cotton twill dress shirt wholesale formal satin breathable anti-wrinkle anti-shrink anti-pilling for autumn,18.8,71.44,Alibaba,0,2025-10-13,41352.49852460905,99.82724139399343,0.001727586060065651,1
+british style long sleeve shirt men clothing fashion 2021 autumn business formal wear chemise homme slim fit camisa masculina,8.67,32.946,Alibaba,0,2025-10-13,41352.49852460905,99.92032887691079,0.0007967112308919784,1
+top sale high quality dress shirt for men - regular fit flannel classic collar dress shirt export,2.3,8.739999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.97886463862686,0.000211353613731436,1
+tongyang 100% cotton men long sleeve oxford dress shirt with left chest pocket male casual solid button down shirts,9.98,37.924,Alibaba,0,2025-10-13,41352.49852460905,99.90829091021567,0.0009170908978433616,1
+wholesale plus size men formal cotton oxford shirt long sleeve button down men's dress casual shirts,7.85,29.83,Alibaba,0,2025-10-13,41352.49852460905,99.9278640927047,0.0007213590729529447,1
+fashion custom men tee dress shirts casual clothes long sleeve printing shirts for mens,6.3,23.939999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.94210748841269,0.0005789251158730638,1
+business shirt for men long sleeve formal style oem logo office shirt,7.2,27.36,Alibaba,0,2025-10-13,41352.49852460905,99.9338371296145,0.0006616287038549302,1
+popular fashion formal colour blocking leisure slim long-sleeved business mens dress shirt,11.5,43.699999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.8943231931343,0.00105676806865718,1
+wholesale men's long sleeve dress shirts business shirt solid button down shirt,6.4,24.32,Alibaba,0,2025-10-13,41352.49852460905,99.94118855965735,0.0005881144034266047,1
+maqvob men's long-sleeved dress shirt high stretch luxury branded shirt business slim fit suit business working office shirt,6.92,26.296,Alibaba,0,2025-10-13,41352.49852460905,99.93641013012949,0.0006358986987050162,1
+wholesale anti wrinkles dress shirts spandex cotton slim fit long sleeves shirts for men,14.99,56.961999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.86225257957243,0.0013774742042757505,1
+men's business casual button down dress shirt solid long sleeve stretch viscose material turn-down collar sizes available,6.8,25.84,Alibaba,0,2025-10-13,41352.49852460905,99.93751284463593,0.0006248715536407674,1
+men's colorblocking double collar long sleeve stretch business casual shirt tops blouse sehe fashion,7.82,29.716,Alibaba,0,2025-10-13,41352.49852460905,99.92813977133132,0.0007186022866868825,1
+chenyue men's shirts long-sleeved business custom solid color shirt wholesale classic style without pocket tc polyester cotton,4.98,18.924,Alibaba,0,2025-10-13,41352.49852460905,99.95423734798337,0.0004576265201663267,1
+hot sale men's shirt dress shirt business shirts for men,7.0,26.599999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.93567498712522,0.0006432501287478488,1
+men's large size solid color bamboo fiber linen cotton dress shirt business leisure long sleeve work shirt breathable feature,13.2,50.16,Alibaba,0,2025-10-13,41352.49852460905,99.87870140429325,0.001212985957067372,1
+men's long-sleeve striped dress shirt anti-wrinkle white square collar breathable business formal style for summer and autumn,5.72,21.735999999999997,Alibaba,0,2025-10-13,41352.49852460905,99.94743727519375,0.0005256272480625278,1
+2025 luxury men's dress shirts shinny silk satin breathable comfortable for wedding prom tuxedo casual wear spring season,7.5,28.5,Alibaba,0,2025-10-13,41352.49852460905,99.93108034334844,0.0006891965665155523,1
+hot sale button dress shirts long-sleeved shirt pocket four seasons wear men's all-match stretch anti-wrinkle men's shirt,6.0,22.799999999999997,Alibaba,0,2025-10-13,41352.49852460905,99.94486427467875,0.0005513572532124417,1
+mens vintage pink dress shirt long sleeve button single breasted closure sizes xl 5xl anti-wrinkle breathable casual,6.4,24.32,Alibaba,0,2025-10-13,41352.49852460905,99.94118855965735,0.0005881144034266047,1
+2025 men's slim fit long sleeve dress shirt casual graphic button-up printed sublimation business anti-pilling twill spring,3.99,15.162,Alibaba,0,2025-10-13,41352.49852460905,99.96333474266137,0.0003666525733862738,1
+liu ming customized men s spring summer fashion clothing cotton comfortable business long sleeve solid stripe shirts,8.36,31.767999999999997,Alibaba,0,2025-10-13,41352.49852460905,99.92317755605241,0.0007682244394760022,1
+new design spring autumn fashion high quality long sleeve embroidery logo young and middle-aged 100% cotton men dress shirts,7.2,27.36,Alibaba,0,2025-10-13,41352.49852460905,99.9338371296145,0.0006616287038549302,1
+oem new fashion trendy striped printed t-shirt 100% oxford cotton anti-wrinkle regular fit formal long sleeve dress shirt,7.0,26.599999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.93567498712522,0.0006432501287478488,1
+best quality men's 100% cotton dress shirts oem odm long sleeve formal design breathable and yarn dyed for spring season,25.0,95.0,Alibaba,0,2025-10-13,41352.49852460905,99.77026781116149,0.002297321888385174,1
+formal dress shirts 93% cotton 7% elastane long sleeve muscle fit shirt in green,7.51,28.537999999999997,Alibaba,0,2025-10-13,41352.49852460905,99.93098845047291,0.0006901154952709063,1
+high quality mens dress shirts long sleeve formal dress shirts for men striped oxford dress shirts 100% cotton,9.99,37.961999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.90819901734012,0.0009180098265987156,1
+attractive dress shirts for men's in blue color turn down collar full sleeves dress shirts with customized label,8.0,30.4,Alibaba,0,2025-10-13,41352.49852460905,99.92648569957167,0.0007351430042832558,1
+100s/100%cotton high-end quality men formal long sleeve casual business dress shirt,14.9,56.62,Alibaba,0,2025-10-13,41352.49852460905,99.86307961545224,0.0013692038454775639,1
+resure mens dress shirts long sleeve slim fit dress shirts for men formal business big and tall button down shirts,5.52,20.976,Alibaba,0,2025-10-13,41352.49852460905,99.94927513270446,0.0005072486729554464,1
+high-quality fashion shirts custom latest shirt brand designs dress shirts for men,13.1,49.779999999999994,Alibaba,0,2025-10-13,41352.49852460905,99.87962033304862,0.0012037966695138311,1
+t174 y6650 men's plus size smart casual long sleeve formal dress shirt business style single breasted closure yarn dyed weavin,61.0,231.79999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.439453459234,0.005605465407659825,1
+men's dress shirt regular fit solid,2.0,7.6,Alibaba,0,2025-10-13,41352.49852460905,99.98162142489292,0.00018378575107081394,1
+mens waterproof dress shirts liquid resistant tops oil resistant clothing slim fit business casual attire formal shirt,14.76,56.087999999999994,Alibaba,0,2025-10-13,41352.49852460905,99.86436611570973,0.0013563388429026068,1
+american size stretch shirt men's business casual long sleeve shirt slim-fit version professional custom logo dress shirt,8.98,34.124,Alibaba,0,2025-10-13,41352.49852460905,99.9174801977692,0.0008251980223079547,1
+china supplier premium men's long sleeve dress shirt - 100% cotton wrinkle-free & breathable business casual shirt,8.37,31.805999999999994,Alibaba,0,2025-10-13,41352.49852460905,99.92308566317686,0.0007691433682313562,1
+white men's long sleeve classic formal dress shirt for business clothing shirts luxury shirts for men,24.9,94.61999999999999,Alibaba,0,2025-10-13,41352.49852460905,99.77118673991683,0.0022881326008316336,1
+regular fit dress shirts for men fashion long sleeve office mens shirts uniform,6.32,24.016,Alibaba,0,2025-10-13,41352.49852460905,99.94192370266161,0.000580762973383772,1
+shirtjack men's office dress shirtjack slim fit non-iron long sleeve breasted wrinkle-free solid color poplin oem service,7.99,30.362,Alibaba,0,2025-10-13,41352.49852460905,99.9265775924472,0.0007342240755279017,1
+rts 100% cotton men's grey blue stripe shirt long sleeve high quality non iron dress shirt for men,19.0,72.2,Alibaba,0,2025-10-13,41352.49852460905,99.82540353648274,0.0017459646351727326,1
+motor mechanic uniform for mens short sleeve work shirt turn-down collar t-shirts workshop uniforms,2.5,9.5,Alibaba,0,2025-10-13,41352.49852460905,99.97702678111615,0.00022973218883851743,1
+classic modern wrinkle-resistant striped shirt oem men long sleeve dress shirt for man,4.5,17.099999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.95864820600907,0.0004135179399093313,1
+hot sell mens long sleeve cotton t shirts new design mens golf polo shirts high quality embroidered t shirt men's polo,12.8,48.64,Alibaba,0,2025-10-13,41352.49852460905,99.88237711931468,0.0011762288068532093,1
+men's long-sleeved vintage casual dress shirts autumn collar single breasted breathable size xl professional business style,10.6,40.279999999999994,Alibaba,0,2025-10-13,41352.49852460905,99.90259355193247,0.0009740644806753138,1
+men's casual office long sleeve plaid printed single-breasted shirt polyester cotton chest pocket for autumn oem service,18.18,69.08399999999999,Alibaba,0,2025-10-13,41352.49852460905,99.83293875227662,0.0016706124772336984,1
+high quality summer men's simple solid short sleeve breathable stretch casual button down men's dress shirt,5.9,22.42,Alibaba,0,2025-10-13,41352.49852460905,99.94578320343412,0.0005421679656589012,1
+oversized men's hawaiian style creative pattern printed casual shirt,10.5,39.9,Alibaba,0,2025-10-13,41352.49852460905,99.90351248068782,0.0009648751931217732,1
+"""factory direct men's breathable long sleeve dress shirt-casual wear top selling""",6.5,24.7,Alibaba,0,2025-10-13,41352.49852460905,99.940269630902,0.0005973036909801453,1
+america style shirt fashion men half button full placket drill farmer workshirts,6.0,22.799999999999997,Alibaba,0,2025-10-13,41352.49852460905,99.94486427467875,0.0005513572532124417,1
+2022 white 100% cotton dress shirts button up shirt men's shirts for men long sleeves,24.55,93.28999999999999,Alibaba,0,2025-10-13,41352.49852460905,99.77440299056057,0.002255970094394241,1
+new arrival premium quality printing breathable cotton personalized polo shirt with logo,9.0,34.199999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.91729641201815,0.0008270358798186626,1
+latest arrival hot selling mens dress shirt made with premium quality fabric featuring best customization options anti-pilling,7.0,26.599999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.93567498712522,0.0006432501287478488,1
+fr shirts lightweight welding shirts flame resistant men's fire retardant shirt,9.0,34.199999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.91729641201815,0.0008270358798186626,1
+hot sale men's floral pattern short sleeve dress shirts factory direct slim fit button down xl size casual business style,4.6,17.479999999999997,Alibaba,0,2025-10-13,41352.49852460905,99.9577292772537,0.000422707227462872,1
+osha breathable work button clothing flame resistant men durable fr up country lightweight flame uniform fr pocket shirts,17.92,68.096,Alibaba,0,2025-10-13,41352.49852460905,99.83532796704056,0.0016467203295944931,1
+wholesale latest design 100% cotton long sleeve formal dress shirt custom slim fit casual shirt for men,6.19,23.522000000000002,Alibaba,0,2025-10-13,41352.49852460905,99.94311831004359,0.0005688168995641692,1
+hawaii honolulu hot selling shirt dress custom print rayon fabric short sleeve button down dress with pockets,13.0,49.4,Alibaba,0,2025-10-13,41352.49852460905,99.88053926180397,0.0011946073819602905,1
+8xl plus size cotton long-sleeve dress shirts for men double collar office wear breathable and yarn dyed white for spring,6.5,24.7,Alibaba,0,2025-10-13,41352.49852460905,99.940269630902,0.0005973036909801453,1
+man dress 100% cotton polo shirt high quality turn-down collar knitted sweater summer short sleeve quarter zip sweater man,18.0,68.39999999999999,Alibaba,0,2025-10-13,41352.49852460905,99.83459282403626,0.0016540717596373253,1
+txwd4601 -quality slim fit men shirt button up long sleeve white cotton casual formal dress shirt,59.0,224.2,Alibaba,0,2025-10-13,41352.49852460905,99.45783203434111,0.005421679656589011,1
+casual polo shirt for boys stock fabric bird eye pattern combed cotton polyester dyed weft knit checkered mesh 180gsm plain,2.38,9.043999999999999,Alibaba,0,2025-10-13,41352.49852460905,99.97812949562257,0.00021870504377426855,1
+men's long sleeve dress shirt with front pleat design solid color anti-pilling poplin fabric for autumn cross-border formal wear,6.9,26.22,Alibaba,0,2025-10-13,41352.49852460905,99.93659391588056,0.0006340608411943081,1
+2025 wholesale custom color casual summer mens cotton hawaiian shirts manufacturer,8.0,30.4,Alibaba,0,2025-10-13,41352.49852460905,99.92648569957167,0.0007351430042832558,1
+new design oem factory high quality business dress shirt casual plus size men's shirts full sleeve,5.8,22.04,Alibaba,0,2025-10-13,41352.49852460905,99.94670213218946,0.0005329786781053604,1
+high quality custom sublimated long sleeve fishing shirts breathable 100% polyester quick dry anti-uv oem quick dry fishing,7.35,27.929999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.93245873648148,0.0006754126351852411,1
+men's breathable dress shirt soft long staple cotton machine washable fade resistant plaid multi-color for autumn office wear,6.74,25.612,Alibaba,0,2025-10-13,41352.49852460905,99.93806420188913,0.000619357981108643,1
+oem design printing personalized cotton golf men's luxury polo shirt,9.0,34.199999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.91729641201815,0.0008270358798186626,1
+men's 2024 new fashion casual solid color long sleeve dress shirt breathable for spring season woven oem service available,11.5,43.699999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.8943231931343,0.00105676806865718,1
+oem odm low moq shirt dress with pockets custom print rayon women button down dress,13.0,49.4,Alibaba,0,2025-10-13,41352.49852460905,99.88053926180397,0.0011946073819602905,1
+2025 custom 100%cotton dress shirt men's anti-wrinkle shirt professional business men's wear,14.99,56.961999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.86225257957243,0.0013774742042757505,1
+hot sale factory custom button up long sleeve cotton fishing shirts men,8.5,32.3,Alibaba,0,2025-10-13,41352.49852460905,99.9218910557949,0.0007810894420509592,1
+shenjippc women's dress shirts wrinkle free long sleeve shirts solid work business button down shirts,5.0,19.0,Alibaba,0,2025-10-13,41352.49852460905,99.95405356223229,0.00045946437767703486,1
+customized high-quality upf50+ quick-drying uv moisture-wicking long-sleeved sun shirt performance fishing shirts,8.56,32.528,Alibaba,0,2025-10-13,41352.49852460905,99.9213396985417,0.0007866030145830836,1
+summer quick dry silk men's dress shirt regular fit stretch long sleeve solid business button down shirts,9.0,34.199999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.91729641201815,0.0008270358798186626,1
+100% cotton breathable polo shirts customized logo blank cheap mens polo shirts,5.2,19.759999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.95221570472158,0.0004778429527841162,1
+wholesale customization high quality long sleeve collection striped design business formal dress shirt for men male,4.28,16.264,Alibaba,0,2025-10-13,41352.49852460905,99.96066984927083,0.0003933015072915418,1
+ansi work mechanic button up breathable men clothing flame resistant country flame uniform fr solid shirts,17.92,68.096,Alibaba,0,2025-10-13,41352.49852460905,99.83532796704056,0.0016467203295944931,1
+male fashion casual flower print formal dress shirts 100% cotton men long sleeve floral shirt,7.92,30.096,Alibaba,0,2025-10-13,41352.49852460905,99.92722084257596,0.0007277915742404232,1
+wholesale supplier hawaiian shirts manufacturer custom pattern print summer mens beach shirt,10.5,39.9,Alibaba,0,2025-10-13,41352.49852460905,99.90351248068782,0.0009648751931217732,1
+men's casual long sleeve dress shirts breathable formal office poplin with stand-up collar knitted summer wear,9.0,34.199999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.91729641201815,0.0008270358798186626,1
+1x1 weave polyester jacquard neck trim rib flat knit collar color-changing business polo shirts solid cotton fabric fashionable,20.59,78.24199999999999,Alibaba,0,2025-10-13,41352.49852460905,99.81079256927259,0.0018920743072740292,1
+high-quality gentlemen's jacquard dress shirt 100% cotton white light blue sleeve with fold cuff for summer business wear,12.99,49.362,Alibaba,0,2025-10-13,41352.49852460905,99.8806311546795,0.0011936884532049367,1
+custom high quality breathable anti-uv quick dry heat-transfer printed oem long sleeve fishing clothing shirts,11.0,41.8,Alibaba,0,2025-10-13,41352.49852460905,99.89891783691105,0.0010108216308894766,1
+men's dress shirts solid long sleeve stretch wrinkle-free formal shirt business casual button down shirts,4.9,18.62,Alibaba,0,2025-10-13,41352.49852460905,99.95497249098764,0.0004502750901234942,1
+customized logo ribbed knit collars eco-friendly jacquard pattern polo shirt 1*1 striped design,20.53,78.014,Alibaba,0,2025-10-13,41352.49852460905,99.8113439265258,0.0018865607347419051,1
+customized logo and design men dress shirts plus size men shirts 100% cotton high fashion dress shirt,5.0,19.0,Alibaba,0,2025-10-13,41352.49852460905,99.95405356223229,0.00045946437767703486,1
+jxkrszf hotel fashion chef uniforme clothing uniforms,19.95,75.80999999999999,Alibaba,0,2025-10-13,41352.49852460905,99.81667371330687,0.001833262866931369,1
+men's formal dress shirt long sleeve solid color square collar shirt for men high elastic breathable plus size men's shirt,9.03,34.31399999999999,Alibaba,0,2025-10-13,41352.49852460905,99.91702073339152,0.0008297926660847248,1
+female dress shirts for women formal shirt,4.5,17.099999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.95864820600907,0.0004135179399093313,1
+100%cotton oxford long-sleeve shirts for men slim fit formal plain plaid casual clothes,8.5,32.3,Alibaba,0,2025-10-13,41352.49852460905,99.9218910557949,0.0007810894420509592,1
+2024 new autumn pure cotton checkered shirt men's long sleeved fashion casual slim fit youth all cotton checkered shirt,12.5,47.5,Alibaba,0,2025-10-13,41352.49852460905,99.88513390558073,0.001148660944192587,1
+factory wholesale luxury slim fit men's long sleeve shirt cotton office shirts for formal wear,6.5,24.7,Alibaba,0,2025-10-13,41352.49852460905,99.940269630902,0.0005973036909801453,1
+men's work wear button up shirt australia classic country style 100 cotton long sleeve man work shirts,10.0,38.0,Alibaba,0,2025-10-13,41352.49852460905,99.90810712446459,0.0009189287553540697,1
+men's high quality slim fit 100% cotton dress shirt single breasted stand breathable embroidered formal design autumn dot 140/2s,25.0,95.0,Alibaba,0,2025-10-13,41352.49852460905,99.77026781116149,0.002297321888385174,1
+"casual men's loose fitting shirt, cotton and linen short sleeves, solid color in stock",12.5,47.5,Alibaba,0,2025-10-13,41352.49852460905,99.88513390558073,0.001148660944192587,1
+cotton ready to wear non-iron shirt men's solid color business formal wear long-sleeved wrinkle-resistant professional clothing,15.0,57.0,Alibaba,0,2025-10-13,41352.49852460905,99.86216068669688,0.0013783931330311047,1
+custom color long sleeve breathable twill work shirt country uniform work wear light weight button up shirt,18.0,68.39999999999999,Alibaba,0,2025-10-13,41352.49852460905,99.83459282403626,0.0016540717596373253,1
+wholesale high quality bamboo fiber formal uniform office shirt men's dress dress men's shirt business,6.96,26.448,Alibaba,0,2025-10-13,41352.49852460905,99.93604255862736,0.0006395744137264325,1
+2025 mens linen/cotton casual shirt with enzyme washed,4.1,15.579999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.96232392103049,0.00037676078969516854,1
+high quality 100% cotton twill dress shirt wholesale formal satin breathable anti-wrinkle anti-shrink anti-pilling for autumn,18.8,71.44,Alibaba,0,2025-10-13,41352.49852460905,99.82724139399343,0.001727586060065651,1
+wholesale 100% cotton men's polo shirts high fabric custom logo embroidery printing plain blank casual golf polo shirt uniforms,2.3,8.739999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.97886463862686,0.000211353613731436,1
+british style long sleeve shirt men clothing fashion 2021 autumn business formal wear chemise homme slim fit camisa masculina,8.67,32.946,Alibaba,0,2025-10-13,41352.49852460905,99.92032887691079,0.0007967112308919784,1
+100% cotton construction mining coal high visibility workwear custom worker clothes road reflective safety hi vis work shirts,6.9,26.22,Alibaba,0,2025-10-13,41352.49852460905,99.93659391588056,0.0006340608411943081,1
+tongyang 100% cotton men long sleeve oxford dress shirt with left chest pocket male casual solid button down shirts,9.98,37.924,Alibaba,0,2025-10-13,41352.49852460905,99.90829091021567,0.0009170908978433616,1
+long sleeve solid color nylon spandex men's western shirts with lens cloth zipper pocket custom wholesale western fishing shirts,8.5,32.3,Alibaba,0,2025-10-13,41352.49852460905,99.9218910557949,0.0007810894420509592,1
+wholesale plus size men formal cotton oxford shirt long sleeve button down men's dress casual shirts,7.85,29.83,Alibaba,0,2025-10-13,41352.49852460905,99.9278640927047,0.0007213590729529447,1
+men's casual office long sleeve single-breasted shirt polyester cotton chest pocket for autumn oem service,18.18,69.08399999999999,Alibaba,0,2025-10-13,41352.49852460905,99.83293875227662,0.0016706124772336984,1
+rts garments supplier men's shirt bamboo fiber non-iron stand-up collar long sleeve business dress shirt for men,9.5,36.1,Alibaba,0,2025-10-13,41352.49852460905,99.91270176824136,0.0008729823175863663,1
+2025 check new fashion custom print summer linen polo shirt for men,9.0,34.199999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.91729641201815,0.0008270358798186626,1
+business shirt for men long sleeve formal style oem logo office shirt,7.2,27.36,Alibaba,0,2025-10-13,41352.49852460905,99.9338371296145,0.0006616287038549302,1
+men's casual office long sleeve single-breasted shirt polyester cotton chest pocket for autumn oem service,18.18,69.08399999999999,Alibaba,0,2025-10-13,41352.49852460905,99.83293875227662,0.0016706124772336984,1
+popular fashion formal colour blocking leisure slim long-sleeved business mens dress shirt,11.5,43.699999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.8943231931343,0.00105676806865718,1
+new fashion high quality printing casual personalized polo shirts custom logo,11.5,43.699999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.8943231931343,0.00105676806865718,1
+wholesale men's long sleeve dress shirts business shirt solid button down shirt,6.4,24.32,Alibaba,0,2025-10-13,41352.49852460905,99.94118855965735,0.0005881144034266047,1
+industrial workwear regular fit durable button up long sleeve men's work shirt,5.0,19.0,Alibaba,0,2025-10-13,41352.49852460905,99.95405356223229,0.00045946437767703486,1
+maqvob men's long-sleeved dress shirt high stretch luxury branded shirt business slim fit suit business working office shirt,6.92,26.296,Alibaba,0,2025-10-13,41352.49852460905,99.93641013012949,0.0006358986987050162,1
+men's high quality slim fit short sleeve button-up knitted shirt casual office business formal for spring wholesale,5.22,19.836,Alibaba,0,2025-10-13,41352.49852460905,99.9520319189705,0.00047968081029482436,1
+wholesale anti wrinkles dress shirts spandex cotton slim fit long sleeves shirts for men,14.99,56.961999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.86225257957243,0.0013774742042757505,1
+osha retardant flame button up work flame resistant uniform comfortable fr breathable clothing fr solid shirts,17.92,68.096,Alibaba,0,2025-10-13,41352.49852460905,99.83532796704056,0.0016467203295944931,1
+men's business casual button down dress shirt solid long sleeve stretch viscose material turn-down collar sizes available,6.8,25.84,Alibaba,0,2025-10-13,41352.49852460905,99.93751284463593,0.0006248715536407674,1
+men's sun protection shirt water resistant short sleeve button down shirt quick dry cooling for hiking fishing,7.5,28.5,Alibaba,0,2025-10-13,41352.49852460905,99.93108034334844,0.0006891965665155523,1
+chenyue men's shirts long-sleeved business custom solid color shirt wholesale classic style without pocket tc polyester cotton,4.98,18.924,Alibaba,0,2025-10-13,41352.49852460905,99.95423734798337,0.0004576265201663267,1
+s-4xl professional women's long sleeved blazer small suit formal outfit button solid color business suits for work clothes,15.5,58.9,Alibaba,0,2025-10-13,41352.49852460905,99.85756604292013,0.0014243395707988081,1
+hot sale men's shirt dress shirt business shirts for men,7.0,26.599999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.93567498712522,0.0006432501287478488,1
+nfpa 2112 clothing men fire resistant out breathable fr flame breathable button fr flame durable lightweight men's work shirts,17.92,68.096,Alibaba,0,2025-10-13,41352.49852460905,99.83532796704056,0.0016467203295944931,1
+men's quick dry twill shirt sustainable breathable anti-wrinkle anti-pilling yarn dyed chemise homme spring formal business,4.99,18.962,Alibaba,0,2025-10-13,41352.49852460905,99.95414545510783,0.0004585454489216808,1
+new fashion custom long sleeve 100% cotton snap buttons mens shirts flannel shirt plaid,8.45,32.10999999999999,Alibaba,0,2025-10-13,41352.49852460905,99.92235052017257,0.0007764947982741887,1
+men's large size solid color bamboo fiber linen cotton dress shirt business leisure long sleeve work shirt breathable feature,13.2,50.16,Alibaba,0,2025-10-13,41352.49852460905,99.87870140429325,0.001212985957067372,1
+men fourche mountain short sleeve river guide fishing shirt upf 40 uv protection,7.5,28.5,Alibaba,0,2025-10-13,41352.49852460905,99.93108034334844,0.0006891965665155523,1
+men's long-sleeve striped dress shirt anti-wrinkle white square collar breathable business formal style for summer and autumn,5.72,21.735999999999997,Alibaba,0,2025-10-13,41352.49852460905,99.94743727519375,0.0005256272480625278,1
+harchoy men's latest summer breathable cool sleeved white bamboo fiber shirt casual business style breathable bamboo shirt,11.76,44.687999999999995,Alibaba,0,2025-10-13,41352.49852460905,99.89193397837036,0.001080660216296386,1
+2025 luxury men's dress shirts shinny silk satin breathable comfortable for wedding prom tuxedo casual wear spring season,7.5,28.5,Alibaba,0,2025-10-13,41352.49852460905,99.93108034334844,0.0006891965665155523,1
+custom men's fishing vented shirts lightweight long sleeve upf 50+ quick dry shirts summer outdoor work casual sun protection,7.0,26.599999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.93567498712522,0.0006432501287478488,1
+hot sale button dress shirts long-sleeved shirt pocket four seasons wear men's all-match stretch anti-wrinkle men's shirt,6.0,22.799999999999997,Alibaba,0,2025-10-13,41352.49852460905,99.94486427467875,0.0005513572532124417,1
+wholesale summer holiday custom button up collared shirt short sleeve hawaiian shirt,12.0,45.599999999999994,Alibaba,0,2025-10-13,41352.49852460905,99.88972854935751,0.0011027145064248834,1
+summer dress shirts for men long-sleeved white with non-iron multi-color office worker formal wear breathable for comfort,7.36,27.968,Alibaba,0,2025-10-13,41352.49852460905,99.93236684360593,0.0006763315639405954,1
+men's summer pure color simple linen breathable casual long sleeved shirt,15.0,57.0,Alibaba,0,2025-10-13,41352.49852460905,99.86216068669688,0.0013783931330311047,1
+men's formal dress shirt 100% cotton single breasted with breathable stripes spring anti-shrink & anti-pilling 140/2s,17.8,67.64,Alibaba,0,2025-10-13,41352.49852460905,99.83643068154697,0.001635693184530244,1
+pearl snap button western style men shirts with zipper pockets mesh liner inside quick dry fishing shirts,5.0,19.0,Alibaba,0,2025-10-13,41352.49852460905,99.95405356223229,0.00045946437767703486,1
+designed mens dress shirt cotton with long / short sleeve - oem odm cheap price and high quality business formal dress shirts,1.5,5.699999999999999,Alibaba,0,2025-10-13,41352.49852460905,99.98621606866969,0.00013783931330311043,1
+mens 100% cotton pigment dyed shirt,15.0,57.0,Alibaba,0,2025-10-13,41352.49852460905,99.86216068669688,0.0013783931330311047,1
+2024 fashion office men shirt long sleeve shirts dress shirts,9.8,37.24,Alibaba,0,2025-10-13,41352.49852460905,99.9099449819753,0.0009005501802469884,1
+new arrival sun protection mens button down columbia short sleeve fishing shirt custom,8.5,32.3,Alibaba,0,2025-10-13,41352.49852460905,99.9218910557949,0.0007810894420509592,1
+best quality men's 100% cotton dress shirts oem odm long sleeve formal design breathable and yarn dyed for spring season,25.0,95.0,Alibaba,0,2025-10-13,41352.49852460905,99.77026781116149,0.002297321888385174,1
+"shirt for men , casual wear , linen short sleeve shirt",4.65,17.67,Alibaba,0,2025-10-13,41352.49852460905,99.95726981287604,0.0004273018712396425,1
+high quality plain solid color button up long sleeve office formal dress shirt for men,12.9,49.019999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.88145819055933,0.00118541809440675,1
+men's half button long sleeves double pocket workshirts,10.0,38.0,Alibaba,0,2025-10-13,41352.49852460905,99.90810712446459,0.0009189287553540697,1
+mens waterproof dress shirts liquid resistant tops oil resistant clothing slim fit business casual attire formal shirt,14.76,56.087999999999994,Alibaba,0,2025-10-13,41352.49852460905,99.86436611570973,0.0013563388429026068,1
+jxkrszf hotel chef uniform kitchen with long sleeves,19.95,75.80999999999999,Alibaba,0,2025-10-13,41352.49852460905,99.81667371330687,0.001833262866931369,1
+american size stretch shirt men's business casual long sleeve shirt slim-fit version professional custom logo dress shirt,8.98,34.124,Alibaba,0,2025-10-13,41352.49852460905,99.9174801977692,0.0008251980223079547,1
+newest style custom wholesale polyester spandex men's fishing shirts anti uv upf50 high quality fishing hiking shirt with pocket,8.5,32.3,Alibaba,0,2025-10-13,41352.49852460905,99.9218910557949,0.0007810894420509592,1
+factory direct sale in stock business custom dress shirt men short sleeve dress shirts,5.7,21.66,Alibaba,0,2025-10-13,41352.49852460905,99.94762106094481,0.0005237893905518197,1
+titi mens dress shirts solid long sleeve stretch 4-way stretch formal shirt business casual button down shirts,6.5,24.7,Alibaba,0,2025-10-13,41352.49852460905,99.940269630902,0.0005973036909801453,1
+high-grade men's single breasted silk dress shirt long-sleeved anti-wrinkle breathable for summer formal & casual business use,6.88,26.144,Alibaba,0,2025-10-13,41352.49852460905,99.93677770163164,0.0006322229836836,1
+men women clerk business formal wear long sleeve dress shirts custom logo solid color white work shirt,6.12,23.256,Alibaba,0,2025-10-13,41352.49852460905,99.94376156017233,0.0005623843982766907,1
+custom men's shirts formal office dress shirts for men cotton casual stand-up collar long sleeve shirt,4.5,17.099999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.95864820600907,0.0004135179399093313,1
+wholesale new solid color cotton big size professional business man office shirt long sleeve men dress shirt,9.2,34.959999999999994,Alibaba,0,2025-10-13,41352.49852460905,99.91545855450742,0.000845414454925744,1
+oem custom non-iron elastic cotton men's business dress shirt hidden button long sleeve party banquet shirt classic style,6.9,26.22,Alibaba,0,2025-10-13,41352.49852460905,99.93659391588056,0.0006340608411943081,1
+men's slim-fitting dress shirt turn down collar casual style knitted solid color anti wrinkle dress shirt,8.1,30.779999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.92556677081632,0.0007443322918367964,1
+chemise homme 100% cotton oxford men's long-sleeved casual business shirt anti-wrinkle summer style shirts for men high quality,10.97,41.686,Alibaba,0,2025-10-13,41352.49852460905,99.89919351553766,0.0010080648446234145,1
+0903 custom wholesale gentleman full formal long sleeve plain tee plus size white men dress clothing mens shirts usd4.98-5.98/pc,5.78,21.964,Alibaba,0,2025-10-13,41352.49852460905,99.94688591794053,0.0005311408205946523,1
+high quality cotton men's dress shirts custom formal business casual long sleeve solid paint spring season anti-wrinkle,21.73,82.574,Alibaba,0,2025-10-13,41352.49852460905,99.80031678146156,0.0019968321853843936,1
+comfort multiple choices cotton men's shirt business formal shirt anti-wrinkle non iron formal shirt men,14.5,55.099999999999994,Alibaba,0,2025-10-13,41352.49852460905,99.86675533047367,0.001332446695263401,1
+oem cotton casual office men's shirts custom dress shirts white shirts for men,24.5,93.1,Alibaba,0,2025-10-13,41352.49852460905,99.77486245493824,0.0022513754506174708,1
+men's customizable short sleeve dress shirts elegant comfortable ideal for summer casual wear,15.0,57.0,Alibaba,0,2025-10-13,41352.49852460905,99.86216068669688,0.0013783931330311047,1
+anti-wrinkle fashionable cotton black short-sleeved casual mens formal shirts dress shirts,8.5,32.3,Alibaba,0,2025-10-13,41352.49852460905,99.9218910557949,0.0007810894420509592,1
+chenyue men's long-sleeved casual shirt cotton oxford stand collar poplin vertical striped design for spring autumn business,5.5,20.9,Alibaba,0,2025-10-13,41352.49852460905,99.94945891845552,0.0005054108154447383,1
+mens classic fit dress shirt simple and casual collared shirt for men oem odm,15.0,57.0,Alibaba,0,2025-10-13,41352.49852460905,99.86216068669688,0.0013783931330311047,1
+ready to ship men's 100% cotton solid dress shirts stand collar breathable poplin fabric anti-wrinkle wrinkle-free custom shirts,20.0,76.0,Alibaba,0,2025-10-13,41352.49852460905,99.81621424892919,0.0018378575107081394,1
+men formal dress shirts 2025 hot selling stretchy men's business formal dress shirts breathable anti-wrinkle dress shirts,6.2,23.56,Alibaba,0,2025-10-13,41352.49852460905,99.94302641716806,0.0005697358283195232,1
+cotton daily coat business slim urban shirt men casual long sleeves lapel plaid cotton buttons shirt check shirt for men,14.0,53.199999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.87134997425044,0.0012865002574956976,1
+solid color long sleeve stretch shirt men's business casual tops blouse clothing sehe fashion,6.87,26.105999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.93686959450717,0.0006313040549282458,1
+mens 2022 new summer short sleeve dress shirts men button down slim fit shirt tops custom logo label,6.98,26.524,Alibaba,0,2025-10-13,41352.49852460905,99.9358587728763,0.0006414122712371407,1
+quality men shirt long sleeve twill solid dress business office casual shirt slim fit man dress shirts,5.9,22.42,Alibaba,0,2025-10-13,41352.49852460905,99.94578320343412,0.0005421679656589012,1
+wholesale anti-pilling dress shirt for men solid color polyester cotton hot sale full shirts casual poplin style,8.19,31.121999999999996,Alibaba,0,2025-10-13,41352.49852460905,99.9247397349365,0.0007526026506349831,1
+customization mens business dress shirt athletic workwear oversized casual printed custom logo plaid button up long sleeve shirt,4.99,18.962,Alibaba,0,2025-10-13,41352.49852460905,99.95414545510783,0.0004585454489216808,1
+men's dress shirt brand new slim fit long sleeve chemise homme non iron easy care formal shirt for men,2.9,11.02,Alibaba,0,2025-10-13,41352.49852460905,99.97335106609474,0.0002664893390526802,1
+best material men dress shirts soft fabric and breathable top selling wholesale for adults wear,6.5,24.7,Alibaba,0,2025-10-13,41352.49852460905,99.940269630902,0.0005973036909801453,1
+xxl men's dress formal shirt with stand collar long sleeves button closure white suit style,4.4,16.72,Alibaba,0,2025-10-13,41352.49852460905,99.95956713476441,0.00040432865235579067,1
+men's professional formal office dress shirts fashion long sleeve clothes men lapel french cuffs anti-wrinkle shirts for men,5.6,21.279999999999998,Alibaba,0,2025-10-13,41352.49852460905,99.94853998970018,0.000514600102998279,1
+men's 100% cotton business dress shirt solid black satin single-breasted breathable spring dyeing plain color formal,30.0,114.0,Alibaba,0,2025-10-13,41352.49852460905,99.72432137339378,0.0027567862660622094,1
+top selling casual dress shirt easy care long sleeve men button up dress shirt formal office dress shirts,2.39,9.082,Alibaba,0,2025-10-13,41352.49852460905,99.97803760274702,0.00021962397252962268,1
+plus size 5xl 6xl 7xl men solid color business shirt fashion casual slim white long sleeve shirt male brand clothes,5.11,19.418,Alibaba,0,2025-10-13,41352.49852460905,99.95304274060142,0.00046957259398592964,1
